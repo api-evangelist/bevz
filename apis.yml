@@ -1,7 +1,25 @@
 aid: bevz
+accessModel:
+  pricing: unknown
+  onboarding: unknown
+  trial: false
+  try_now: false
+  public: false
+  label: Unknown
+  confidence: low
+  source: []
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bevz.png
 name: Bevz
-description: Bevz is a company surfaced as a portfolio company of techstars and added to the API Evangelist
-  network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: Bevz is a delivery-management platform built for liquor stores and convenience retailers
+  that consolidates multiple third-party delivery apps (DoorDash, Uber Eats, GrubHub) into a single
+  dashboard. Its products cover menu management across platforms (Connect), AI-powered marketing and
+  local promotion on Yelp, Google, and Facebook (Reach), cross-platform performance analytics
+  (Reporting+), and a white-label direct-delivery storefront for restricted items (Shop.Bevz). Bevz
+  bundles an iPad plus software, access to a 215,000+ product catalog, barcode scanning, onboarding,
+  and training. Bevz is a Techstars-backed company; no public API, developer portal, or SDKs are
+  currently published, so this profile is identity-only pending an API surface.
 url: https://raw.githubusercontent.com/api-evangelist/bevz/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
@@ -11,9 +29,16 @@ x-tier: stub
 x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-18'
 tags:
 - Company
+- Delivery Management
+- Liquor Retail
+- Convenience Store
+- Point of Sale
+- Food Delivery
+- Retail Technology
+- Marketing
 apis: []
 maintainers:
 - FN: Kin Lane
@@ -21,5 +46,24 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: DomainSecurity
+  url: security/bevz-domain-security.yml
 - type: Website
   url: https://bevz.com/
+- type: Pricing
+  url: https://www.bevz.com/pricing
+- type: Blog
+  url: https://www.bevz.com/blog
+- type: Support
+  url: https://www.bevz.com/support
+- type: HelpCenter
+  url: https://22677957.hs-sites.com/en/bevz-help
+- type: TermsOfService
+  url: https://www.bevz.com/terms-of-service
+- type: PrivacyPolicy
+  url: https://www.bevz.com/privacy-policy
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence
