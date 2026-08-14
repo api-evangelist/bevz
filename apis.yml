@@ -1,35 +1,48 @@
 aid: bevz
 accessModel:
-  pricing: unknown
-  onboarding: unknown
-  trial: false
+  pricing: subscription
+  onboarding: sales
+  trial: true
   try_now: false
   public: false
-  label: Unknown
-  confidence: low
-  source: []
-  generated: '2026-07-22'
-  method: derived
+  label: Partner
+  confidence: high
+  source:
+  - https://www.bevz.com/pricing
+  - https://docs.bevz.com/#tag/faq
+  generated: '2026-08-13'
+  method: searched
+  note: >-
+    Product pricing is published ($99/mo Basic, $149/mo Growth, Enterprise on request, with a one-month
+    free trial). API access is a separate partner arrangement — an Integrator account is requested by
+    email to support@bevz.com, sandbox credentials are issued by an Account Manager, and production
+    credentials only follow a collaborative test pass and sign-off.
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bevz.png
 name: Bevz
-description: Bevz is a delivery-management platform built for liquor stores and convenience retailers
-  that consolidates multiple third-party delivery apps (DoorDash, Uber Eats, GrubHub) into a single
+description: >-
+  Bevz is a delivery-management platform built for liquor stores and convenience retailers that
+  consolidates multiple third-party delivery apps (DoorDash, Uber Eats, GrubHub) into a single
   dashboard. Its products cover menu management across platforms (Connect), AI-powered marketing and
   local promotion on Yelp, Google, and Facebook (Reach), cross-platform performance analytics
   (Reporting+), and a white-label direct-delivery storefront for restricted items (Shop.Bevz). Bevz
   bundles an iPad plus software, access to a 215,000+ product catalog, barcode scanning, onboarding,
-  and training. Bevz is a Techstars-backed company; no public API, developer portal, or SDKs are
-  currently published, so this profile is identity-only pending an API surface.
+  and training. Behind the merchant product Bevz operates a real partner API: the Bevz Integrator
+  Service, a REST API documented with a published OpenAPI 3.0.3 contract covering 30 operations
+  across store provisioning, menu upload and sync, product catalog maintenance, order lifecycle
+  management, order adjustments and delivery-service onboarding for DoorDash, Grubhub and Uber Eats,
+  plus three outbound webhooks. It is aimed at POS vendors and third-party integrators, is
+  credentialed by Bevz rather than self-serve, and runs a separate sandbox environment with a formal
+  certification path to production. Bevz is a Techstars-backed company.
 url: https://raw.githubusercontent.com/api-evangelist/bevz/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - techstars
-x-tier: stub
-x-tier-reason: portfolio-lead
+x-tier: profiled
+x-tier-reason: published-openapi-contract
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-18'
+modified: '2026-08-13'
 tags:
 - Company
 - Delivery Management
@@ -39,7 +52,66 @@ tags:
 - Food Delivery
 - Retail Technology
 - Marketing
-apis: []
+- Menu Management
+- Order Management
+- Webhooks
+- Integrator API
+apis:
+- name: Bevz Integrator Service
+  description: >-
+    The Bevz Integrator Service is a partner REST API that lets POS vendors and third-party
+    integrators provision and manage stores on the Bevz platform programmatically. It covers store
+    creation, provisioning and deprovisioning; menu upload in CSV or JSON with configurable column
+    mapping and asynchronous status tracking; menu synchronization out to the connected delivery
+    services; product catalog maintenance with per-service pricing and availability; the full order
+    lifecycle from receipt through acceptance, out-for-delivery, completion, rejection and
+    cancellation; post-acceptance order adjustments; and delivery-service onboarding for DoorDash and
+    Grubhub via a single call plus a dedicated three-step OAuth handshake for Uber Eats. Three
+    outbound webhooks push order events, menu upload status and store settings changes. Authentication
+    is a bearer JWT with a 30-day lifetime, minted from Bevz-issued integrator credentials.
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bevz.png
+  tags:
+  - Store Management
+  - Menu Management
+  - Order Management
+  - Delivery Services
+  - Webhooks
+  - Point of Sale
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-integrator-service-openapi.yaml
+  - type: Overlay
+    url: overlays/bevz-integrator-service-overlay.yaml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
@@ -50,8 +122,30 @@ common:
   url: security/bevz-domain-security.yml
 - type: Website
   url: https://bevz.com/
+- type: DeveloperPortal
+  url: https://docs.bevz.com/
+- type: Documentation
+  url: https://docs.bevz.com/
+- type: APIReference
+  url: https://docs.bevz.com/
+- type: GettingStarted
+  url: https://docs.bevz.com/#tag/Getting-Started
+- type: ChangeLog
+  url: changelog/bevz-changelog.yml
+- type: MCPServer
+  url: mcp/bevz-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/bevz-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/bevz-llms.txt
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/bevz-plans-pricing.yml
 - type: Pricing
   url: https://www.bevz.com/pricing
+- type: SignUp
+  url: https://join.bevz.com/
 - type: Blog
   url: https://www.bevz.com/blog
 - type: Support
@@ -63,7 +157,13 @@ common:
 - type: PrivacyPolicy
   url: https://www.bevz.com/privacy-policy
 x-enrichment:
-  date: '2026-07-19'
-  status: backfilled
+  date: '2026-08-13'
+  status: enriched
+  artifacts_added: 24
   pass: local-v1
-  note: backfilled from .gitignore signal + verified work evidence
+  note: >-
+    Contract discovery found a full OpenAPI 3.0.3 for the Bevz Integrator Service at
+    https://docs.bevz.com/bevz-openapi.yaml (30 operations, 3 webhooks, 129 referenced files, all
+    HTTP 200) that no prior round had located, plus a live anonymous MCP endpoint and an llms.txt on
+    www.bevz.com. The previous profile stated "no public API, developer portal, or SDKs" — that was
+    wrong and is now corrected.
