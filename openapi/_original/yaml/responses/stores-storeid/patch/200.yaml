@@ -1,0 +1,9 @@
+description: Integrator store successfully updated
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Integrator store successfully updated

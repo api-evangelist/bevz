@@ -1,0 +1,55 @@
+patch:
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+  tags:
+    - Integrators
+  operationId: patchOrder
+  summary: Setup Order Notification Webhook
+  description: |
+    Configure the webhook URL to receive real-time order notifications from Bevz.
+
+    Use this endpoint to set up or update the webhook endpoint where order events (such as new orders, status updates, and cancellations) will be delivered for your integration.
+
+    #### How It Works
+
+    1. Create a webhook endpoint on your server to handle incoming order notifications.
+    2. Use this API to register your webhook URL with Bevz.
+    3. Bevz will send HTTP POST requests to your endpoint whenever relevant order events occur.
+
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - orderNotificationUrl
+          properties:
+            orderNotificationUrl:
+              type: string
+              description: Webhook URL to receive order notifications.
+              example: "https://sample_order_webhook.com"
+  responses:
+    "200":
+      $ref: "../responses/order/200.yaml"
+    "400":
+      $ref: "../responses/order/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+    "404":
+      $ref: "../responses/order/404.yaml"

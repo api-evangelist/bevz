@@ -1,0 +1,49 @@
+generated: '2026-08-13'
+method: generated
+source: openapi/bevz-integrator-service-openapi.yaml
+api: Bevz Integrator Service
+note: >-
+  Packaged Agent Skills for the Bevz Integrator Service, generated from the provider's published
+  OpenAPI 3.0.3 at https://docs.bevz.com/bevz-openapi.yaml. Every operationId referenced in these
+  skills was verified against that spec; no operation, parameter, error string or status value was
+  invented. Bevz publishes no skills, AGENTS.md or agent instructions of its own — these are API
+  Evangelist's, grounded in the provider's contract plus the runtime rules captured in
+  conventions/, errors/, authentication/ and asyncapi/.
+skill_count: 4
+operations_covered: 22
+operations_total: 30
+skills:
+  - file: bevz-onboard-store.md
+    name: bevz-onboard-store
+    summary: Register or provision a store, configure it, connect DoorDash/Grubhub, and deprovision safely.
+    operations: [createStore, postStore, getStores, getIntegratorStore, patchStore, onboard, removeStore]
+    marquee_flow: Store onboarding
+  - file: bevz-manage-menu-and-products.md
+    name: bevz-manage-menu-and-products
+    summary: Upload a CSV/JSON menu, track the async job via webhook or polling, sync to delivery services, and maintain product pricing and availability.
+    operations: [postMenu, getMenu, menuSync, getProducts, patchProduct, deleteProduct, patchMenuUpload]
+    marquee_flow: Menu and catalog management
+  - file: bevz-process-orders.md
+    name: bevz-process-orders
+    summary: Receive orders on the Order Notification Webhook, drive the per-service status machine, and apply post-acceptance adjustments.
+    operations: [patchOrder, getStoreOrders, getOrderId, patchOrderStatus, postOrderAdjustment, testStoreOrders]
+    marquee_flow: Order lifecycle
+  - file: bevz-onboard-ubereats.md
+    name: bevz-onboard-ubereats
+    summary: Run the three-step Uber Eats OAuth handshake — generate URL, exchange code, provision store.
+    operations: [generateOAuth, exchangeCode, provisionStore, onboard, patchStore]
+    marquee_flow: Uber Eats delivery onboarding
+operations_not_covered:
+  - {operationId: getUser, reason: Integrator user administration — no marquee flow.}
+  - {operationId: postUser, reason: Integrator user administration.}
+  - {operationId: putUser, reason: Integrator user administration.}
+  - {operationId: changePassword, reason: Integrator user administration.}
+  - {operationId: getLottoScratcherGames, reason: 'Standalone reference lookup (GA_LOTTERY, FL_LOTTERY scratcher catalog); no multi-step flow to package.'}
+  - {operationId: generateCheckoutLink, reason: Covered inline in bevz-onboard-store as an optional step.}
+  - {operationId: getSubscriptionLink, reason: Covered inline in bevz-onboard-store as an optional step.}
+cross_cutting_rules_embedded_in_every_skill:
+  - Bearer JWT on every request; 30-day expiry; the spec declares no securityScheme so clients must add the header themselves.
+  - No idempotency key exists anywhere in this API — retries are not safe; read back before retrying.
+  - No rate limits or 429 are published; the per-store menu-upload lock is the only backpressure signal.
+  - Errors are free-text strings with no machine-readable code, except the OAuth codes passed through from Uber Eats.
+  - Webhooks are unsigned and carry no retry/dedupe/ordering guarantee; treat them as triggers and read back.

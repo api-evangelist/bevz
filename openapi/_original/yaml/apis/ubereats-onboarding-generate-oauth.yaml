@@ -1,0 +1,55 @@
+get:
+  tags:
+    - Uber Eats Onboarding API Workflow
+  operationId: generateOAuth
+  summary: Step 1. Generate OAuth URL for Uber Eats onboarding
+  description: |
+    Use this endpoint to obtain a unique OAuth URL that will redirect the store owner to Uber Eats for authentication and authorization.  
+    
+    After successful authorization, Uber Eats will redirect the user to the specified `redirect_uri` with an authorization code, which can then be exchanged for access tokens.
+
+    #### When to Use
+
+    - Initiate the Uber Eats onboarding process for a store.
+    - Allow store owners to securely grant your integration access to their Uber Eats account.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+    - name: redirect_uri
+      in: query
+      required: true
+      schema:
+        type: string
+        format: link
+      description: Redirect URI after successful OAuth authorization. Must match the URI registered with Uber Eats.
+
+  responses:
+    "200":
+      $ref: "../responses/ubereats-onboarding-generate-oauth/post/200.yaml"
+    # "400":
+    #   $ref: "../responses/ubereats-onboarding-generate-oauth/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

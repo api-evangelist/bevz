@@ -1,0 +1,297 @@
+generated: '2026-08-13'
+method: derived
+source: mcp/bevz-mcp-tools.json + openapi/bevz-integrator-service-openapi.yaml
+api: Bevz Integrator Service
+note: 'Crosswalk between the tools the live Bevz MCP endpoint actually exposes and the operations the Bevz Integrator Service OpenAPI actually defines. The finding is total
+  divergence: the two surfaces share zero capability. Bevz has an agent-callable endpoint and a documented API, and they are disjoint — the MCP server is Wix platform tooling
+  over the marketing site, while every business operation lives in a REST API no agent can reach without a human-issued JWT.'
+surfaces:
+  openapi:
+    file: openapi/bevz-integrator-service-openapi.yaml
+    source: https://docs.bevz.com/bevz-openapi.yaml
+    operations: 30
+    gated: true
+    gating: Bearer JWT minted from Bevz-issued credentials; api.bevz.com returns 403 anonymously.
+  mcp:
+    url: https://www.bevz.com/_api/mcp
+    tools: 9
+    gated: false
+    gating: Anonymous. tools/list returns 200 with no auth.
+    platform: Wix Site MCP
+  graphql:
+    present: false
+    note: No GraphQL surface found on any Bevz host.
+crosswalk: []
+crosswalk_note: Empty by measurement, not by omission. No MCP tool binds to any OpenAPI operationId.
+mcp_only:
+- tool: ReadFullDocsArticle
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+- tool: ReadFullDocsMethodSchema
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+- tool: BrowseWixRESTDocsMenu
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+- tool: CallWixSiteAPI
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+- tool: GenerateVisitorToken
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+- tool: SearchSiteApiDocs
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+- tool: GetBusinessDetails
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+- tool: SearchInSite
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+- tool: ExecuteWixAPI
+  reason: Wix platform site tool. Operates on bevz.com marketing-site content and the Wix REST API; has no counterpart anywhere in the Bevz Integrator Service OpenAPI.
+rest_only:
+- operationId: patchOrder
+  method: PATCH
+  path: /integrators/{integrator_id}
+  summary: Setup Order Notification Webhook
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: patchMenuUpload
+  method: PATCH
+  path: /integrators/{integrator_id}ㅤ
+  summary: Setup Menu Upload Notification
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getStores
+  method: GET
+  path: /integrators/{integrator_id}/stores
+  summary: Retrieve All Provisioned Stores
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: createStore
+  method: POST
+  path: /integrators/{integrator_id}/stores
+  summary: Create a New Store
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getIntegratorStore
+  method: GET
+  path: /integrators/{integrator_id}/stores/{store_id}
+  summary: Get Store by store_id
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: patchStore
+  method: PATCH
+  path: /integrators/{integrator_id}/stores/{store_id}
+  summary: Update Store Details
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: postStore
+  method: POST
+  path: /integrators/{integrator_id}/stores/provision
+  summary: Provision  Existing Store
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: removeStore
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/deprovision
+  summary: Deprovision store
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: postMenu
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/menu
+  summary: Menu Upload
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getMenu
+  method: GET
+  path: /integrators/{integrator_id}/stores/{store_id}/menu/{menu_id}
+  summary: Retrieve the menu upload status
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: menuSync
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/menu-sync
+  summary: Menu Sync
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: generateCheckoutLink
+  method: GET
+  path: /integrators/{integrator_id}/stores/{store_id}/generate-checkout-link
+  summary: Generate Checkout Link
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getSubscriptionLink
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/subscription-link
+  summary: Get Subscription Link
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getUser
+  method: GET
+  path: /integrators/{integrator_id}/users
+  summary: Retrieve All Integrator User Access
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: postUser
+  method: POST
+  path: /integrators/{integrator_id}/users
+  summary: Create Integrator User
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: putUser
+  method: PUT
+  path: /integrators/{integrator_id}/users/{user_id}
+  summary: Update Integrator User Access
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: changePassword
+  method: POST
+  path: /integrators/{integrator_id}/users/{user_id}/change-password
+  summary: Change Integrator User Password
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getProducts
+  method: GET
+  path: /integrators/{integrator_id}/stores/{store_id}/products
+  summary: Get Store Products
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: patchProduct
+  method: PATCH
+  path: /integrators/{integrator_id}/stores/{store_id}/products/{product_id}
+  summary: Update Store Product
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: deleteProduct
+  method: DELETE
+  path: /integrators/{integrator_id}/stores/{store_id}/products/{product_id}
+  summary: Delete Store Product
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getLottoScratcherGames
+  method: GET
+  path: /integrators/{integrator_id}/lotto-scratcher-games
+  summary: Get Lotto Scratcher Games
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: testStoreOrders
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/orders
+  summary: Test Store Orders
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getStoreOrders
+  method: GET
+  path: /integrators/{integrator_id}/stores/{store_id}/orders
+  summary: Get Store Orders
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: getOrderId
+  method: GET
+  path: /integrators/{integrator_id}/stores/{store_id}/orders/{order_id}
+  summary: Get Order by OrderId
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: patchOrderStatus
+  method: PATCH
+  path: /integrators/{integrator_id}/stores/{store_id}/orders/{order_id}
+  summary: Patch Order Status
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: postOrderAdjustment
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/orders/{order_id}/adjustments
+  summary: Post Order Adjustment
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: onboard
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services
+  summary: Delivery Services Onboarding API
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: generateOAuth
+  method: GET
+  path: /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/generate-oauth
+  summary: Step 1. Generate OAuth URL for Uber Eats onboarding
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: exchangeCode
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/exchange-authorization-code
+  summary: Step 2. Exchange Authorization Code for Access Token
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+- operationId: provisionStore
+  method: POST
+  path: /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/provision-store
+  summary: Step 3. Provision Store on Uber Eats
+  reason: No MCP tool reaches the Integrator Service. The only Bevz MCP endpoint is the Wix site server, which cannot call api.bevz.com.
+coverage:
+  openapi_operations: 30
+  mcp_tools: 9
+  bound: 0
+  mcp_only: 9
+  rest_only: 30
+  operation_coverage_pct: 0.0
+  tool_coverage_pct: 0.0
+  confidence: high
+  confidence_basis: Both sides were read from live sources — a 200 tools/list response and the published spec — so the zero overlap is observed, not inferred.
+gap_analysis:
+  what_an_agent_can_do_today: 'Ask about Bevz the business: hours, contact details, site content, installed Wix solutions.'
+  what_an_agent_cannot_do: Provision a store, upload or sync a menu, read or adjust products, receive or transition an order, or onboard a delivery service — every operation
+    the Integrator Service exists to perform.
+  candidate_tools_if_bevz_shipped_an_api_mcp:
+  - tool: list_stores
+    rest:
+    - getStores
+    category: stores
+  - tool: get_store
+    rest:
+    - getIntegratorStore
+    category: stores
+  - tool: create_store
+    rest:
+    - createStore
+    category: stores
+    consequence: write
+  - tool: provision_store
+    rest:
+    - postStore
+    category: stores
+    consequence: write
+  - tool: deprovision_store
+    rest:
+    - removeStore
+    category: stores
+    consequence: destructive
+  - tool: update_store
+    rest:
+    - patchStore
+    category: stores
+    consequence: write
+  - tool: upload_menu
+    rest:
+    - postMenu
+    category: menu
+    consequence: write
+  - tool: get_menu_upload_status
+    rest:
+    - getMenu
+    category: menu
+  - tool: sync_menu
+    rest:
+    - menuSync
+    category: menu
+    consequence: write
+  - tool: list_products
+    rest:
+    - getProducts
+    category: products
+  - tool: update_product
+    rest:
+    - patchProduct
+    category: products
+    consequence: write
+  - tool: delete_product
+    rest:
+    - deleteProduct
+    category: products
+    consequence: destructive
+  - tool: list_orders
+    rest:
+    - getStoreOrders
+    category: orders
+  - tool: get_order
+    rest:
+    - getOrderId
+    category: orders
+  - tool: update_order_status
+    rest:
+    - patchOrderStatus
+    category: orders
+    consequence: write
+  - tool: adjust_order
+    rest:
+    - postOrderAdjustment
+    category: orders
+    consequence: write
+  - tool: onboard_delivery_service
+    rest:
+    - onboard
+    - generateOAuth
+    - exchangeCode
+    - provisionStore
+    category: delivery
+    consequence: write
+  - tool: list_lotto_scratcher_games
+    rest:
+    - getLottoScratcherGames
+    category: lotto
+  candidate_note: DERIVED CANDIDATES ONLY — Bevz ships none of these. Listed so the gap is legible, not as a claim of capability.

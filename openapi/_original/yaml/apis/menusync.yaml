@@ -1,0 +1,54 @@
+patch:
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+  tags:
+    - Integrators
+  operationId: patchMenuUpload
+  summary: Setup Menu Upload Notification
+  description: |
+    Configure the webhook URL to receive real-time menu upload status notifications from Bevz.
+
+    Use this endpoint to set up or update the webhook endpoint where menu upload events (such as processing, completed, or failed uploads) will be delivered for your integration.
+
+    #### How It Works
+
+    1. Create a webhook endpoint on your server to handle incoming menu upload notifications.
+    2. Use this API to register your webhook URL with Bevz.
+    3. Bevz will send HTTP POST requests to your endpoint whenever a menu upload event occurs.
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - menuUploadNotificationUrl
+          properties:
+            menuUploadNotificationUrl:
+              type: string
+              description: Webhook URL to receive menu upload status notifications.
+              example: "https://sample_menu_webhook.com"
+  responses:
+    "200":
+      $ref: "../responses/menusync/200.yaml"
+    "400":
+      $ref: "../responses/menusync/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+    "404":
+      $ref: "../responses/menusync/404.yaml"

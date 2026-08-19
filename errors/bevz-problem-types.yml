@@ -1,0 +1,389 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/bevz-integrator-service-openapi.yaml
+note: Derived from the published Bevz Integrator Service OpenAPI 3.0.3 (docs.bevz.com/bevz-openapi.yaml) plus the FAQ HTTP status reference at docs.bevz.com/#tag/faq. Bevz does NOT use RFC 9457 application/problem+json;
+  it returns a custom JSON envelope. Messages below are the provider-published response examples, verbatim.
+format: custom-json
+rfc9457: false
+envelope:
+  media_type: application/json
+  fields:
+  - name: api_version
+    type: string
+    description: API version that served the response, e.g. v1.11.3.
+  - name: status_code
+    type: integer
+    description: HTTP status code, repeated in the body.
+  - name: message
+    type: string
+    description: Human-readable outcome message.
+  - name: errors
+    type: array
+    description: Array of specific error strings; empty on success.
+  - name: data
+    type: object
+    description: Result payload; absent or empty on error.
+  source: https://docs.bevz.com/#tag/Getting-Started
+status_codes_documented:
+- status: 200
+  meaning: The request was successful.
+- status: 201
+  meaning: The request was successful and resulted in the creation of a new resource.
+- status: 204
+  meaning: The request was successful, but there is no content to return.
+- status: 400
+  meaning: The server could not process the request due to client-side input errors.
+- status: 401
+  meaning: The request lacks valid authentication credentials.
+- status: 403
+  meaning: The server understands the request but refuses to authorize it.
+- status: 404
+  meaning: The requested resource could not be found.
+- status: 500
+  meaning: Unexpected server condition; contact tech@bevz.com.
+error_count: 82
+statuses:
+- status: 400
+  title: Bad request! Please check your input.
+  condition_count: 79
+  conditions:
+  - message: '"account.emailAddress" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"account.password" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"account.password" length must be at least 8 characters long'
+    operations:
+    - createStore
+  - message: '"email" is required'
+    operations:
+    - postStore
+  - message: '"enabled" is required'
+    operations:
+    - patchStore
+  - message: '"menuUploadNotificationUrl" is required'
+    operations:
+    - patchMenuUpload
+  - message: '"menuUploadNotificationUrl" must be a string'
+    operations:
+    - patchMenuUpload
+  - message: '"operationHours[0].type" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"orderNotificationUrl" is required'
+    operations:
+    - patchOrder
+  - message: '"orderNotificationUrl" must be a string'
+    operations:
+    - patchOrder
+  - message: '"randomfield" is not allowed'
+    operations:
+    - patchProduct
+  - message: '"store.address.city" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"store.address.state" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"store.address.street1" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"store.address.zipCode" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"store.emailAddress" must be valid email'
+    operations:
+    - createStore
+  - message: '"store.name" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"store.phoneNumber" is not allowed to be empty'
+    operations:
+    - createStore
+  - message: '"testfield" is not allowed'
+    operations:
+    - postUser
+  - message: (no example published)
+    operations:
+    - getIntegratorStore
+  - message: An ongoing upload for this storeId is still in progress, please wait for upload to complete
+    operations:
+    - postMenu
+  - message: Cannot  deprovision, store is already provisioned with another Bevz Integrator
+    operations:
+    - removeStore
+  - message: Cannot deprovision, store does not exist in Bevz
+    operations:
+    - removeStore
+  - message: Cannot deprovision, store must be offline to continue deprovisioning
+    operations:
+    - removeStore
+  - message: Cannot provision, store is already provisioned with another Bevz Integrator
+    operations:
+    - postStore
+  - message: DD - Doordash Order Adjustment cannot be empty
+    operations:
+    - postOrderAdjustment
+  - message: Delivery settings not configured
+    operations:
+    - menuSync
+  - message: Different data type
+    operations:
+    - postUser
+  - message: Doordash delivery settings is currently not configured. Please contact admin to assist you with onboarding.
+    operations:
+    - patchStore
+  - message: Email already exists, please use a different email
+    operations:
+    - postUser
+  - message: Email already exists. Please use a different email
+    operations:
+    - createStore
+  - message: Empty Object for Request Body
+    operations:
+    - changePassword
+    - putUser
+  - message: Empty object
+    operations:
+    - postUser
+  - message: Failed to create a mock order, please try again later!
+    operations:
+    - testStoreOrders
+  - message: Incorrect file format! File should be in CSV or JSON format.
+    operations:
+    - postMenu
+  - message: Incorrect old password!
+    operations:
+    - changePassword
+  - message: Integrator unauthorized to perform this action!
+    operations:
+    - getMenu
+    - getStores
+    - getUser
+  - message: Invalid OAuth 2.0 credentials provided.
+    operations:
+    - provisionStore
+  - message: Invalid address. Please input a valid address
+    operations:
+    - createStore
+    - patchStore
+  - message: Invalid customerId
+    operations:
+    - getSubscriptionLink
+  - message: Invalid order status
+    operations:
+    - patchOrderStatus
+  - message: Invalid orderId!
+    operations:
+    - getOrderId
+  - message: Invalid phone number.  Please input a valid phone number
+    operations:
+    - createStore
+  - message: Invalid request
+    operations:
+    - provisionStore
+  - message: Missing or invalid source parameter
+    operations:
+    - getLottoScratcherGames
+  - message: Not authorized to use service
+    operations:
+    - menuSync
+  - message: Opening time should be before Closing time
+    operations:
+    - createStore
+    - patchStore
+  - message: Order Products cannot be empty
+    operations:
+    - postOrderAdjustment
+  - message: Order must be on Active/Accepted state
+    operations:
+    - postOrderAdjustment
+  - message: Password should be the same
+    operations:
+    - createStore
+  - message: Product ID is not found under this store
+    operations:
+    - patchProduct
+  - message: Product is not for sale
+    operations:
+    - postOrderAdjustment
+  - message: Service disabled on store
+    operations:
+    - menuSync
+  - message: Store is currently not provisioned with any Integrator
+    operations:
+    - removeStore
+  - message: Store is disabled, unable to perform this action
+    operations:
+    - patchOrderStatus
+    - postOrderAdjustment
+    - testStoreOrders
+  - message: UE - Product quantity must be less than of the current quantity
+    operations:
+    - postOrderAdjustment
+  - message: UE - UberEats Order Adjustment cannot be empty
+    operations:
+    - postOrderAdjustment
+  - message: UE - UberEats exceeded the allowed quantity
+    operations:
+    - postOrderAdjustment
+  - message: UE - UberEats only allows an item to be replaced once
+    operations:
+    - postOrderAdjustment
+  - message: Unable to access store, can only update store within the Integrator's umbrella
+    operations:
+    - getSubscriptionLink
+  - message: Unable to delete item, store product does not exist
+    operations:
+    - deleteProduct
+  - message: Unable to generate checkout link! Store status is currently active
+    operations:
+    - generateCheckoutLink
+  - message: Unable to generate checkout link! Store status is currently cancelling
+    operations:
+    - generateCheckoutLink
+  - message: Unable to generate checkout link! Store status is currently trialing
+    operations:
+    - generateCheckoutLink
+  - message: Unable to update order status from incorrect state
+    operations:
+    - patchOrderStatus
+  - message: User not allowed to access the store
+    operations:
+    - provisionStore
+  - message: access_denied
+    operations:
+    - exchangeCode
+  - message: doordash_hours
+    operations:
+    - onboard
+  - message: doordash_inventory
+    operations:
+    - onboard
+  - message: inStorePrice must be a positive number
+    operations:
+    - patchProduct
+  - message: invalid_client
+    operations:
+    - exchangeCode
+  - message: invalid_grant
+    operations:
+    - exchangeCode
+  - message: invalid_request
+    operations:
+    - exchangeCode
+  - message: invalid_scope
+    operations:
+    - exchangeCode
+  - message: operationHours must be in hh:mm A format
+    operations:
+    - createStore
+  - message: operationHours[0].days[1] must be greater than or equal to 1
+    operations:
+    - createStore
+  - message: operationHours[0].days[1] must be less than or equal to 7
+    operations:
+    - createStore
+  - message: stockCount must be greater than or equal to 0
+    operations:
+    - patchProduct
+  - message: unknown field in request body
+    operations:
+    - patchStore
+- status: 401
+  title: Unauthorized
+  condition_count: 1
+  conditions:
+  - message: Integrator unauthorized to perform this action!
+    operations:
+    - changePassword
+    - createStore
+    - deleteProduct
+    - exchangeCode
+    - generateCheckoutLink
+    - generateOAuth
+    - getIntegratorStore
+    - getLottoScratcherGames
+    - getMenu
+    - getOrderId
+    - getProducts
+    - getStoreOrders
+    - getStores
+    - getSubscriptionLink
+    - getUser
+    - menuSync
+    - onboard
+    - patchMenuUpload
+    - patchOrder
+    - patchOrderStatus
+    - patchProduct
+    - patchStore
+    - postMenu
+    - postOrderAdjustment
+    - postStore
+    - postUser
+    - provisionStore
+    - putUser
+    - removeStore
+    - testStoreOrders
+- status: 403
+  title: Forbidden
+  condition_count: 1
+  conditions:
+  - message: (no example published)
+    operations:
+    - changePassword
+    - createStore
+    - deleteProduct
+    - exchangeCode
+    - generateCheckoutLink
+    - generateOAuth
+    - getIntegratorStore
+    - getMenu
+    - getOrderId
+    - getProducts
+    - getStoreOrders
+    - getStores
+    - getSubscriptionLink
+    - getUser
+    - menuSync
+    - onboard
+    - patchMenuUpload
+    - patchOrder
+    - patchOrderStatus
+    - patchProduct
+    - patchStore
+    - postMenu
+    - postOrderAdjustment
+    - postStore
+    - postUser
+    - provisionStore
+    - putUser
+    - removeStore
+    - testStoreOrders
+- status: 404
+  title: 404 Resource is not found!
+  condition_count: 1
+  conditions:
+  - message: (no example published)
+    operations:
+    - getMenu
+    - getOrderId
+    - getSubscriptionLink
+    - getUser
+    - patchMenuUpload
+    - patchOrder
+    - postOrderAdjustment
+    - postStore
+    - putUser
+remediation:
+  '401': 'JWT missing, expired or invalid. Re-authenticate at POST {baseUrl}/integrators/login and send Authorization: Bearer <token>. Tokens expire after 30 days.'
+  '403': API Gateway authorizer denied the request (explicit deny) — the integrator identity is not entitled to this resource.
+  '400': Field-level validation failure. The message names the offending field using Joi-style validation text; correct the payload and retry.
+  '404': The addressed integrator, store, menu, order or user does not exist under this integrator.
+  '500': Report to tech@bevz.com per the published FAQ.
+gaps:
+- No machine-readable error CODE is published — errors are free-text strings only, so a client must string-match to branch.
+- No 429 / rate-limit response is documented on any of the 30 operations.
+- The shared 500 response is defined in the spec but commented out on every operation.

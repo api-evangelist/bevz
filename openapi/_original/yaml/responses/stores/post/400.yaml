@@ -1,0 +1,107 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      '"account.emailAddress" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"account.emailAddress" is not allowed to be empty'
+      "Email already exists. Please use a different email":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Email already exists. Please use a different email"
+      '"account.password" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"account.password" is not allowed to be empty'
+      '"account.password" length must be at least 8 characters long':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"account.password" length must be at least 8 characters long'
+      "Password should be the same":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Password should be the same"
+      "operationHours must be in hh:mm A format":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "operationHours[0].openTime must be in hh:mm A format"
+            - "operationHours[0].closeTime must be in hh:mm A format"
+      "Opening time should be before Closing time":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - 'Opening time should be before Closing time: [{days: [1], openTime: "07:00 PM", closeTime: "08:00 AM", type: "DAILY"}]'
+      '"operationHours[0].type" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"operationHours[0].type" is not allowed to be empty'
+      '"store.name" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"store.name" is not allowed to be empty'
+      '"store.address.street1" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"store.address.street1" is not allowed to be empty'
+      '"store.address.city" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"store.address.city" is not allowed to be empty'
+      '"store.address.state" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"store.address.state" is not allowed to be empty'
+      '"store.address.zipCode" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"store.address.zipCode" is not allowed to be empty'
+      '"store.phoneNumber" is not allowed to be empty':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"store.phoneNumber" is not allowed to be empty'
+      "Invalid phone number.  Please input a valid phone number":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Invalid phone number.  Please input a valid phone number"
+      '"store.emailAddress" must be valid email':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"store.emailAddress" must be valid email'
+      "Invalid address. Please input a valid address":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Invalid address. Please input a valid address"
+      "operationHours[0].days[1] must be greater than or equal to 1":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "operationHours[0].days[1] must be greater than or equal to 1"
+      "operationHours[0].days[1] must be less than or equal to 7":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "operationHours[0].days[1] must be less than or equal to 7"

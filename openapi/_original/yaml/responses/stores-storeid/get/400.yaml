@@ -1,0 +1,13 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+          example:
+            - Integrator unauthorized to perform this action!

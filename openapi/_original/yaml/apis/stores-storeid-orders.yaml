@@ -1,0 +1,213 @@
+post:
+  tags:
+    - Order
+  operationId: testStoreOrders
+  summary: Test Store Orders
+  description: |
+    ### Create a Test Order
+
+    Use this endpoint to simulate order creation and test your integration with the Bevz platform.  
+    This is ideal for validating your order processing logic, webhook handling, and end-to-end workflows before going live.
+
+    #### How It Works
+
+    - Submit a test order with your desired items, delivery source, and (optionally) delivery instructions and address.
+    - The system will process the order as if it were real, triggering all standard order notifications and webhooks.
+    - Use this to verify your POS or integration receives and handles order events correctly.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - delivery_source
+            - order_items
+          properties:
+            delivery_source:
+              type: string
+              description: |
+                The delivery platform for the order. Options: `DOORDASH`, `GRUBHUB`, `UBEREATS`.
+              example: DOORDASH 
+            order_items:
+              type: array
+              description: |
+                Array of items in the order. Each item requires `product_id`, `quantity`, `size`, and `item_count`.
+              items:
+                required:
+                  - orderNotificationUrl
+                  - product_id
+                  - quantity
+                  - size
+                  - item_count
+                properties:
+                  product_id:
+                    type: string (uuid | upc)
+                    description: |
+                      can either be productId (uuid format) or upc
+                      
+                      4e77f1dd-9c23-4d6f-9be1-a72c94fa8d54 | 080887493966
+                    example: dc89f739-4537-44df-8677-a805083ce2de
+                  quantity:
+                    type: string
+                    example: Single
+                  size:
+                    type: string
+                    example: 750ml
+                  item_count:
+                    type: integer
+                    example: 1
+            delivery_instructions:
+              type: string
+              description: Special instructions for the delivery (e.g., "items are fragile").
+              example: items are fragile
+            delivery_address:
+              type: object
+              description: Object containing delivery address details.
+              required:
+                - orderNotificationUrl
+              properties:
+                zip_code:
+                  type: string
+                  example: "49423"
+                city:
+                  type: string
+                  example: Holland
+                street1:
+                  type: string
+                  example: 10 E 10th St
+                street2:
+                  type: string
+                  description: optional
+                  example: ""
+                state:
+                  type: string
+                  example: MI
+            delivery_type:
+              type: string
+              description: |
+                The type of delivery for the order. Options: `PICK_UP`, `DELIVERY`.
+              example: PICK_UP
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-orders/post/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-orders/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+
+get:
+  tags:
+    - Order
+  operationId: getStoreOrders
+  summary: Get Store Orders
+  description: |
+    ### Retrieve Store Orders
+
+    Use this endpoint to fetch a list of orders for a specific store.  
+    You can filter orders by status and date range to view only the orders that are relevant to your needs.
+
+    #### How It Works
+
+    - Provide the required `integrator_id` and `store_id` in the path.
+    - Optionally, use query parameters to narrow down your results.
+    - The response will include order details such as order ID, status, items, timestamps, and delivery information.
+
+    #### Example Usage
+
+    - Retrieve all completed orders for a store in the last 7 days.
+    - Monitor new incoming orders by polling for `PENDING` or `ACCEPTED` statuses.
+
+    #### Best Practices
+
+    - Use date filters to limit the size of your response and improve performance.
+    - Combine with webhooks for real-time order updates and use this endpoint for historical or reconciliation purposes.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: status
+      in: query
+      required: false
+      description: |
+        Filter by order status. Options:
+        `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`
+      schema:
+        type: string
+    - name: start_date
+      in: query
+      required: false
+      description: Return orders created after this epoch timestamp. (e.g., 1682490064752)
+      schema:
+        type: number
+    - name: end_date
+      in: query
+      required: false
+      description: Return orders created before this epoch timestamp. (e.g., 1682490064755)
+      schema:
+        type: number
+    - name: next_page
+      in: query
+      required: false
+      description: Id for fetching the next page of results.
+      schema:
+        type: string
+    - name: limit
+      in: query
+      required: false
+      description: How many results to return. Default is 1000.
+      schema:
+        type: number
+    - name: date_field
+      in: query
+      required: false
+      description: |
+        Specify which date field to filter by. Options:
+        `updatedAt (default)`, `createdAt`
+      schema:
+        type: string
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-orders/get/200.yaml"
+    # "400":
+    #   $ref: "../responses/stores/get/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

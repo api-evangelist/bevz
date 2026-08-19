@@ -1,0 +1,9 @@
+description: Integrator status successfully updated
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Integrator status successfully updated

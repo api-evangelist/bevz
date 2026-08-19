@@ -1,0 +1,26 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+              type: string
+    examples:
+      doordash_inventory:
+        summary: DoorDash - Not enough inventory
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Store must have at least 500 items in its inventory or menu. Please add more items to proceed
+      doordash_hours:
+        summary: DoorDash - Store hours not set
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Store has no Store Hours set. Please set your hours to proceed (Settings > Store Info > Add Store Hours)
+             

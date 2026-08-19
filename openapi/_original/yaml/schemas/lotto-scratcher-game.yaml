@@ -1,0 +1,68 @@
+type: object
+properties:
+  gameId:
+    type: string
+    example: "ca_lottery_1555"
+    description: Unique identifier for the lotto scratcher game.
+  gameNumber:
+    type: string
+    example: "1555"
+    description: The game number assigned by the state lottery.
+  gameName:
+    type: string
+    example: "$5 Crossword"
+    description: Display name of the lotto scratcher game.
+  gamePrice:
+    type: integer
+    description: "Price in cents (500 = $5.00)"
+    example: 500
+  source:
+    type: string
+    enum:
+      - CA_LOTTERY
+      - MA_LOTTERY
+      - OH_LOTTERY
+      - MI_LOTTERY
+      - AZ_LOTTERY
+      - CT_LOTTERY
+      - IL_LOTTERY
+      - GA_LOTTERY
+      - FL_LOTTERY
+    example: "CA_LOTTERY"
+    description: The state lottery source this game belongs to.
+  upc:
+    type: string
+    nullable: true
+    example: "735975_1555_"
+    description: UPC barcode associated with the game, if available.
+  imageUrl:
+    type: string
+    nullable: true
+    example: "https://example.com/game-image.png"
+    description: URL of the original game image from the lottery source.
+  ticketOdds:
+    type: string
+    nullable: true
+    example: "1 in 4.23"
+    description: Overall odds of winning any prize on this game.
+  topPrize:
+    type: integer
+    nullable: true
+    description: "Top prize amount in cents (30000000 = $300,000.00)"
+    example: 30000000
+  description:
+    type: string
+    nullable: true
+    description: Description of the lotto scratcher game, if available.
+  status:
+    type: string
+    enum:
+      - ACTIVE
+      - DISCONTINUED
+    example: "ACTIVE"
+    description: Current availability status of the game.
+  cdnUrl:
+    type: string
+    nullable: true
+    example: "https://cdn.example.com/game-image.png"
+    description: CDN-hosted URL for the game image.

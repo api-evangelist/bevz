@@ -1,0 +1,35 @@
+allOf:
+  - $ref: "#/components/schemas/DeliverySettings"
+  - type: object
+    required:
+     -  isExisting
+    properties:
+      isExisting:
+        type: boolean
+        description: |
+          Indicates if the store already exists on the selected delivery service.
+      data:
+        type: object
+        required:
+          - firstName
+          - lastName
+          - salesTax
+        properties:
+          firstName:
+            type: string
+            description: Store owner's first name.
+            example: John
+          lastName:
+            type: string
+            description: Store owner's last name.
+            example: Doe
+          email:
+            type: string
+            description: Store owner's email address (optional).
+            example: john.doe@email.com
+          salesTax:
+            type: string
+            description: Sales tax rate for the store.
+            example: "8.75"
+          sentitiveData:
+            $ref: "SentitiveData.yaml"

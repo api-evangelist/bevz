@@ -1,0 +1,89 @@
+get:
+  tags:
+    - Lotto Scratcher Games
+  operationId: getLottoScratcherGames
+  summary: Get Lotto Scratcher Games
+  description: |
+    Retrieve lottery scratch-off game data from supported state lotteries.
+
+    Use this endpoint to list available lotto scratcher games by source (state lottery) or to look up a specific game by its UPC barcode. The response includes game details such as pricing, odds, top prize, and imagery.
+
+    #### Listing Games by Source
+
+    - Pass the `source` query parameter to retrieve all games from a specific state lottery.
+    - Use `limit` and `next_page` to paginate through large catalogs.
+    - Filter by `status` to retrieve only `ACTIVE` or `DISCONTINUED` games.
+
+    #### UPC Barcode Lookup
+
+    - When a customer's lottery ticket is scanned at the POS, pass the 12-digit UPC-A barcode along with the `source` to look up the specific game.
+    - The system extracts the game number from the barcode and returns the matching game details.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: source
+      in: query
+      required: true
+      schema:
+        type: string
+        enum:
+          - CA_LOTTERY
+          - MA_LOTTERY
+          - OH_LOTTERY
+          - MI_LOTTERY
+          - AZ_LOTTERY
+          - CT_LOTTERY
+          - IL_LOTTERY
+          - GA_LOTTERY
+          - FL_LOTTERY
+      description: The state lottery source to retrieve games from.
+    - name: upc
+      in: query
+      required: false
+      schema:
+        type: string
+        example: "698720254818"
+      description: A 12-digit UPC-A barcode used to look up a specific lotto scratcher game.
+    - name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - ACTIVE
+          - DISCONTINUED
+        default: ACTIVE
+      description: Filter games by status. Defaults to ACTIVE.
+    - name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        example: 100
+      description: Maximum number of games to return per page.
+    - name: next_page
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Token for fetching the next page of results.
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      $ref: "../responses/lotto-scratcher-games/get/200.yaml"
+    "400":
+      $ref: "../responses/lotto-scratcher-games/get/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"

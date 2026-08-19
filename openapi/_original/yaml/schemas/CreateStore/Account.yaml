@@ -1,0 +1,23 @@
+type: object
+description: |
+  Contains the account credentials for the store owner.
+  This information is used to create a user account associated with the new store.
+properties:
+  emailAddress:
+    type: string
+    description: |
+      Email address for the store owner's account.
+      This will be used as the username for login and for account-related notifications.
+    example: sample_email@bevz.com
+  password:
+    type: string
+    description: |
+      Password for the store owner's account.
+      Must meet security requirements as defined by the platform (e.g., minimum length, character types).
+    example: sample_password
+  confirmPassword:
+    type: string
+    description: |
+      Confirmation of the password to ensure accuracy during account creation.
+      Must match the value provided in the `password` field.
+    example: sample_password

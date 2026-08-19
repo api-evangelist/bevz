@@ -1,0 +1,24 @@
+type: object
+properties:
+  productSnapshot:
+    $ref: 'StoreOrder.yaml'
+  quantity:
+    type: number
+    description: Quantity of this product in the order.
+    example: 1
+  productId:
+    type: string
+    description: Unique identifier for the product.
+    example: a00dd3f1-dac9-4574-8e23-51a94dd7094c
+  merchantSuppliedId:
+    type: string
+    description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+    example: "507f191e810c19729de860ea"
+  selectedPrice:
+    type: number
+    description: Price of the product at the time of order.
+    example: 3.99
+  alternativeProductName:
+    type: string
+    description: Other names of the product.
+    example: "A&W Root Beer Cans (12 fl oz x 12 ct)"

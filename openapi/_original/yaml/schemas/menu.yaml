@@ -1,0 +1,46 @@
+type: object
+properties:
+  id:
+    type: integer
+    description: Auto-incrementing unique identifier for the menu upload record.
+    example: 1
+  store_id:
+    type: string
+    description: |
+      Unique identifier of the store where the uploaded menu will be used.
+      This value matches the `store_id` path parameter from the [Menu Upload](#tag/Stores/operation/postMenu) endpoint.
+    example: 6e066cfe-9122-4c30-a7fc-a8894dd72f4h
+  file_path:
+    type: string
+    description: |
+      URL or file path where the uploaded menu file (CSV or JSON) is stored.
+      This file contains the raw menu data submitted by the integrator.
+    example: https://integrator-menu-569241935122.s3.us-west-1.amazonaws.com/raw/a990fb29-3ea7-4e59-b293-a20574807927_b8c49890-67e5-42b8-aaaa-855ffbe92511.csv
+  status:
+    type: string
+    description: |
+      Current processing status of the menu upload.
+
+      - `in progress`: The [Menu Upload](#tag/Stores/operation/postMenu) is still being processed.  
+      - `completed`: The upload has finished processing.
+      - `failed`: The upload failed due to critical errors. Contact Bevz support for assistance.
+
+    example: completed
+  error_file:
+    type: string
+    description: |
+      URL or file path where unmatched or problematic products from the uploaded file are listed.
+      Download this file to review and correct any items that failed to upload or match.
+    example: https://integrator-menu-569241935122.s3.us-west-1.amazonaws.com/error/a990fb29-3ea7-4e59-b293-a20574807927_b8c49890-67e5-42b8-aaaa-855ffbe92511_error-file.csv
+  date:
+    type: string
+    format: date-time
+    description: |
+      ISO 8601 timestamp indicating when the [Menu Upload](#tag/Stores/operation/postMenu) started.
+    example: 2023-03-09T04:18:57.658Z
+  time_completed:
+    type: string
+    format: date-time
+    description: |
+      ISO 8601 timestamp indicating when the [Menu Upload](#tag/Stores/operation/postMenu) completed.
+    example: 2023-03-09T04:18:57.658Z

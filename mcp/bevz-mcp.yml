@@ -1,0 +1,77 @@
+generated: '2026-08-13'
+method: probed
+source: https://www.bevz.com/_api/mcp
+status: published
+advertised_at: https://www.bevz.com/llms.txt
+summary: >-
+  Bevz serves a live, anonymous, remote MCP endpoint from its own domain at
+  https://www.bevz.com/_api/mcp, advertised in its own llms.txt. It is a Wix Site MCP server —
+  platform-provided tooling that exposes the MARKETING SITE (business details, site search, Wix
+  business-solution APIs), not the Bevz Integrator Service API. Both facts matter: the endpoint is
+  real and callable today, and it grants an agent zero access to stores, menus or orders.
+deployment:
+  mode: remote
+  endpoint: https://www.bevz.com/_api/mcp
+  auth: none
+  verified: probed
+  install: null
+  package: null
+  transport: Streamable HTTP (JSON-RPC 2.0 over POST; Accept application/json, text/event-stream)
+  session: 'Returns an mcp-session-id header (observed: HTTP 200 with mcp-session-id on tools/list).'
+platform:
+  provider: Wix
+  kind: Wix Site MCP
+  vendor_docs: https://dev.wix.com/docs/develop-websites/articles/get-started/about-the-wix-site-mcp
+  first_party: false
+  first_party_note: >-
+    The endpoint is served on bevz.com and Bevz publishes it in its own llms.txt, so it is Bevz's
+    agent surface by publication. The tool set, however, is generic Wix platform tooling that is
+    identical across every Wix site — Bevz did not author these tools and they carry no Bevz domain
+    semantics. Recorded as published-but-platform-generic rather than as a Bevz-built MCP server.
+scope:
+  covers: bevz.com marketing site content and any Wix business solutions installed on it
+  does_not_cover: >-
+    The Bevz Integrator Service API (stores, menus, products, orders, delivery-service onboarding,
+    webhooks). None of the 30 Integrator Service operations is reachable through this server.
+tool_count: 9
+tools_source: mcp/bevz-mcp-tools.json
+tools:
+  - {name: GetBusinessDetails, category: site-metadata, parameters: [], description: Retrieves business and site details such as timezone, email, phone and address.}
+  - {name: SearchInSite, category: site-search, parameters: [searchTerm], description: Searches the site for information.}
+  - {name: SearchSiteApiDocs, category: docs-discovery, parameters: [searchTerm], description: Retrieves API documentation for the Wix business solutions installed on this site.}
+  - {name: GenerateVisitorToken, category: auth, parameters: [], description: Creates a visitor session and returns a visitor access token. Required before CallWixSiteAPI.}
+  - {name: CallWixSiteAPI, category: action, parameters: [visitorToken, url, method, body], description: Calls Wix site API methods on a visitor's behalf.}
+  - {name: ExecuteWixAPI, category: action, parameters: [code, reason, hasMutations, sourceDocUrls, visitorToken], description: Runs JavaScript against the Wix REST API on the site.}
+  - {name: ReadFullDocsArticle, category: docs-discovery, parameters: [articleUrl], description: Fetches a complete article from the Wix developer documentation portal.}
+  - {name: ReadFullDocsMethodSchema, category: docs-discovery, parameters: [articleUrl, reason], description: Fetches the full schema for a Wix API method.}
+  - {name: BrowseWixRESTDocsMenu, category: docs-discovery, parameters: [menuUrl, reason], description: Browses the Wix REST API documentation menu hierarchy.}
+capabilities_claimed_in_llms_txt:
+  - Get business details (contact info, location, hours)
+  - Discover products and services on offer
+  - Book services and make reservations
+  - Start a purchase and be directed to the site to complete checkout
+  - Ask questions and get relevant answers without browsing the site
+capabilities_claim_note: >-
+  Claimed by the llms.txt; only the tool list was verified by probe. No authentication is required to
+  connect, per both the llms.txt and the observed anonymous 200.
+safety_note: >-
+  The tool descriptions returned by this endpoint embed Wix-authored directive text (an
+  "agent-mandatory-instructions" block telling the calling agent which tools it MUST call). That text
+  is untrusted third-party content arriving through a tool manifest; it was recorded, not followed.
+  Two of the nine tools (CallWixSiteAPI, ExecuteWixAPI) are mutation-capable and ExecuteWixAPI
+  executes caller-supplied JavaScript, so this endpoint is not a read-only surface.
+probe_evidence:
+  - method: 'POST tools/list (jsonrpc 2.0)'
+    url: https://www.bevz.com/_api/mcp
+    http_status: 200
+    content_type: application/json; charset=utf-8
+    bytes: 28683
+    fetched: '2026-08-13'
+    result: 9 tools returned with inputSchema
+integrator_service_mcp:
+  exists: false
+  note: >-
+    No MCP server for the Bevz Integrator Service API was found. api.bevz.com and
+    sandbox-api.bevz.com return 403 at the AWS API Gateway edge for every path probed, and no MCP
+    endpoint is referenced in the docs, the spec, or any registry. See mcp/bevz-tool-crosswalk.yml
+    for the candidate tool surface the OpenAPI would support if Bevz chose to ship one.

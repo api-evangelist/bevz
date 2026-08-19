@@ -1,0 +1,161 @@
+|
+  # Development Phase
+
+  Before going live, Bevz will provide you with sandbox credentials to help you implement and test your App integration. You’ll also receive a checklist outlining the minimum required APIs that must be integrated before moving to production.  
+  
+  As a POS integrator, it’s essential to ensure all required APIs are implemented and tested to meet the criteria for a successful integration.
+
+  ## Quickstart
+  Use the following cURL command to test your sandbox credentials and obtain a JWT token for authentication.
+
+  **Sample cURL Request:**
+  ```json
+  curl --location 'https://sandbox-api.bevz.com/integrator-service/integrators/login' \
+  --header 'Content-Type: application/json' \
+  --data-raw '{
+      "email": "sample_email@bevz.com",
+      "password" : "sample_password"
+  }'
+  ```
+  **Sample Response:**
+  ```json
+  {
+      "api_version": "v1.11.3",
+      "status_code": 200,
+      "message": "Login successful",
+      "errors": [],
+      "data": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdhYjIwNGJiLTRhOGEtNGMwMS1iNDUwLTAzZjgzYmY1ZTk0NCIsImVtYWlsIjoiaGFubmFoQGJldnouY29tIiwiY2xpZW50IjoiSU5URUdSQVRPUiIsInNjb3BlIjoiKiIsInN1YiI6IjEiLCJleHAiOjE3NjA2MjUxNjEuODM0LCJpYXQiOjE3NTgwMzMxNjEuODcyLCJhdWQiOiJCZXZ6In0.32MxKENvgTWif58cRUaHIoHg2nGO8z1tP11PwHoM1"
+      }
+  }
+  ```
+  *Note: The token expires every 30 days. To generate a new token, simply log in again.*
+
+  ## Integration Checklist
+
+  ### Integrator
+  | **API Name** | **Required** |
+  |--------------|--------------|
+  | [**Setup Order Notification Webhook**](#tag/Integrators/operation/patchOrder) | Yes |
+  | [**Setup Menu Upload Notification**](#tag/Integrators/operation/patchMenuUpload) | Yes |
+
+  ### Integrator User
+  | **API Name** | **Required** |
+  |--------------|--------------|
+  | [**Retrieve All Integrator User Access**](#tag/integrator_users/operation/getUser) | No |
+  | [**Create Integrator User**](#tag/integrator_users/operation/postUser) | No |
+  | [**Update Integrator User Access**](#tag/integrator_users/operation/putUser) | No |
+  | [**Change Integrator User Password**](#tag/integrator_users/operation/changePassword) | No |
+
+  ### Stores
+  | **API Name** | **Required** |
+  |--------------|--------------|
+  | [**Retrieve All Provisioned Stores**](#tag/Stores/operation/getStores) | Yes |
+  | [**Create Store**](#tag/Stores/operation/createStore) | Yes |
+  | [**Get Store by store_id**](#tag/Stores/operation/getIntegratorStore) | No |
+  | [**Patch Store**](#tag/Stores/operation/patchStore) | Yes |
+  | [**Provision Store**](#tag/Stores/operation/postStore) | Yes |
+  | [**Deprovision Store**](#tag/Stores/operation/removeStore) | Yes |
+  | [**Menu Upload**](#tag/Stores/operation/postMenu) | Yes |
+  | [**Retrieve the Menu Upload Status**](#tag/Stores/operation/getMenu) | No |
+  | [**Onboard Delivery Service**](#tag/Stores/operation/onboard) | Yes |
+  | [**Generate Checkout Link**](#tag/Stores/operation/generateCheckoutLink) | No |
+
+  ### Store Products
+  | **API Name** | **Required** |
+  |--------------|--------------|
+  | [**Get Products**](#tag/Store-Products/operation/getProducts) | No |
+  | [**Patch Product**](#tag/Store-Products/operation/patchProduct) | No |
+  | [**Delete Product**](#tag/Store-Products/operation/deleteProduct) | No |
+
+  ### Orders
+  | **API Name** | **Required** |
+  |--------------|--------------|
+  | [**Get Store Orders**](#tag/Order/operation/getStoreOrders) | Yes |
+  | [**Test Store Orders**](#tag/Order/operation/testStoreOrders) | No |
+  | [**Patch Store Orders**](#tag/Order/operation/patchOrderStatus) | Yes |
+
+  ---
+
+  # Going Live
+
+  After completing your integration build, prototyping, and testing phases, you’ll participate in a collaborative testing process.  
+  This involves executing a predefined set of test cases to validate your integration and ensure it meets all functional requirements.  
+  Upon successful completion, Bevz will grant sign-off, provide production credentials, and initiate the Pilot phase.
+
+  To support effective communication and feedback, a collaborative Q&A session will be scheduled for live discussions between your team and Bevz.
+
+  ## Procedural Breakdown
+
+  The following sections outline the specific procedures to follow:
+
+  ### 1. Menu
+  - Upload your menu
+
+  ### 2. Order Submission and Validation
+  - Create a test order
+  - Receive order notifications
+  - Accept a test order
+  - Cancel a test order
+  - Mark a test order as out for delivery
+  - Complete a test order
+
+  ### 3. Item Modifiers and Availability
+  - Update pricing
+  - Remove an item from inventory
+
+  ### 4. Store Status Updates
+  - Set restaurant hours
+  - Set store online/offline status
+  - Adjust delivery service percentages
+
+  ---
+
+  # Base URLs
+
+  - `https://sandbox-api.bevz.com/integrator-service` — Developer (Sandbox) Environment  
+  - `https://api.bevz.com/integrator-service` — Live Production Environment
+
+  ---
+
+  # Authentication
+
+  To access API endpoints, include an API key in the request header.  
+  Obtain your API key by generating a JWT token using your POS integrator user credentials.
+
+  JWT is used as an access token to protect your store resources and prevent unauthorized access.  
+  Learn more about JWT here: [JWT.io](https://jwt.io)
+
+  > **⚠️ Common Errors**  
+  > 
+  > - **401 Unauthorized:**  
+  >   - Your JWT token is missing, expired, or invalid.  
+  >   - Ensure you include the header: `Authorization: Bearer yourJWTtoken` in every request.  
+  >   - If your token is older than 30 days, log in again to obtain a new one.
+
+  ## Generating a JWT Token
+
+  1. Use your email and password to log in via POST `{BaseUrl}/integrators/login`
+      
+      **Sample Request Body:**
+      ```json
+      {
+        "email": "sample_email@bevz.com",
+        "password": "sample_password"
+      }
+      ```
+
+      **Sample Response:**
+      ```json
+      {
+        "api_version": "v1.11.3",
+        "status_code": 200,
+        "message": "Login successful",
+        "errors": [],
+        "data": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjdhYjIwNGJiLTRhOGEtNGMwMS1iNDUwLTAzZjgzYmY1ZTk0NCIsImVtYWlsIjoiaGFubmFoQGJldnouY29tIiwiY2xpZW50IjoiSU5URUdSQVRPUiIsInNjb3BlIjoiKiIsInN1YiI6IjEiLCJleHAiOjE3NjA2MjUxNjEuODM0LCJpYXQiOjE3NTgwMzMxNjEuODcyLCJhdWQiOiJCZXZ6In0.32MxKENvgTWif58cRUaHIoHg2nGO8z1tP11PwHoM1"
+        }
+      }
+      ```
+
+      *Note: The token expires every 30 days. To generate a new token, simply log in again.*

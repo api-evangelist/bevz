@@ -1,0 +1,90 @@
+parameters:
+  - name: integrator_id
+    in: path
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: Unique identifier for the integrator.
+  - name: store_id
+    in: path
+    required: true
+    schema:
+      type: string
+      format: uuid
+    description: Unique identifier for the store.
+  - name: Authorization
+    in: header
+    required: true
+    schema:
+      type: string
+    description: |
+      JWT token for authenticating API requests.  
+    example: Bearer yourJWTtoken
+    
+post:
+  tags:
+    - Stores
+  operationId: postMenu
+  summary: Menu Upload
+  description: | 
+    Upload a menu for a specific store in either JSON or CSV format.
+
+    Required fields for each product are: `upc`, `name`, and `price`.
+
+    #### Supported Formats
+
+    - **JSON:**  
+      Submit a structured array of menu items. You may customize attribute names using the `upc_column_name`, `name_column_name`, and `price_column_name` fields in the payload.
+    - **CSV:**  
+      Upload a CSV file with columns for `upc`, `name`, and `price` (additional columns such as `description`, `stock`, `quantity`, `size`, and `imageurl` are supported).
+
+    #### Example CSV Format
+
+    | merchantSuppliedId | upc         | name                                   | price | description                                                                 | stock | quantity | size         | imageurl                                                        |
+    |--------------------|-------------|----------------------------------------|-------|-----------------------------------------------------------------------------|-------|----------|--------------|-----------------------------------------------------------------|
+    | 9c5494ea34         | 00980012301 | FERRERO ROCHER                         | 1.99  | Chocolate                                                                   | 10    | single   | 12 piece box | https://bevz-media.s3-us-west-1.amazonaws.com/example.png       |
+    | fb20157d77         | 00980080005 | NUTELLA                                | 1.00  | Chocolate spread                                                            | 10    | single   | 350g         | https://bevz-media.s3-us-west-1.amazonaws.com/example.png       |
+    | ...                | ...         | ...                                    | ...   | ...                                                                         | ...   | ...      | ...          | ...                                                             |
+
+    #### Best Practices
+
+    - Ensure all required fields are present and valid for each menu item.
+    - For large menus, consider uploading in smaller batches for easier troubleshooting.
+    - Use the error file (if provided) to quickly identify and correct any issues with your menu data.
+    - After uploading, use the [Retrieve the menu upload status](#tag/Stores/operation/getMenu) endpoint to check the status and download any error reports.
+
+    For details on the menu object schema, see [Integrator Menu](#tag/models/Menu-Upload).
+  
+  requestBody:
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/integrator-menu.yaml"
+      text/csv:
+        schema:
+          type: object
+          required:
+            - upc
+            - name
+            - price
+          properties:
+            upc:
+              type: string
+              description: Universal Product Code for the product.
+            name:
+              type: string
+              description: Product name.
+            price:
+              type: string
+              description: Product price.
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-menu/post/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-menu/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

@@ -1,0 +1,130 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Bevz Integrator Service API
+  version: 1.0.0
+extends: ../openapi/bevz-integrator-service-openapi.yaml
+x-provenance:
+  generated: '2026-08-13'
+  method: generated
+  source: openapi/bevz-integrator-service-openapi.yaml
+  note: >-
+    OpenAPI Overlay 1.0.0 capturing API Evangelist's enhancements to the published Bevz Integrator
+    Service contract. The original spec at https://docs.bevz.com/bevz-openapi.yaml is never mutated.
+    The largest correction here is declaring the securitySchemes the API demonstrably requires but
+    does not declare: every operation needs "Authorization: Bearer <JWT>" per the published Getting
+    Started guide, yet the spec ships zero components.securitySchemes and zero security requirements,
+    so every generated client and every scanner reads this API as unauthenticated.
+actions:
+  - target: $.info
+    description: Record the contact and support surface Bevz publishes in its FAQ but omits from info.
+    update:
+      contact:
+        name: Bevz API Support
+        email: tech@bevz.com
+        url: https://docs.bevz.com/
+      x-support-email: support@bevz.com
+      x-onboarding: Not self-serve. Email support@bevz.com to request an Integrator account.
+
+  - target: $
+    description: Declare the bearer-JWT security scheme the API actually enforces, and apply it globally.
+    update:
+      components:
+        securitySchemes:
+          bearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+            description: >-
+              JWT minted from integrator credentials at POST {baseUrl}/integrators/login. Sent as
+              "Authorization: Bearer <token>". Expires after 30 days; re-login to renew.
+              DERIVED BY API EVANGELIST from the published Getting Started guide — the upstream spec
+              declares no securitySchemes.
+      security:
+        - bearerAuth: []
+
+  - target: $
+    description: Document the token-minting endpoint, which the docs describe in prose but the spec omits from paths.
+    update:
+      x-undocumented-operations:
+        - operationId: login
+          method: POST
+          path: /integrators/login
+          summary: Exchange integrator email and password for a JWT.
+          request_fields: [email, password]
+          response_path: data.token
+          documented_at: https://docs.bevz.com/#tag/Getting-Started
+          note: >-
+            Present in the published quickstart cURL sample and the Authentication section, absent
+            from paths[]. Recorded here rather than injected, because API Evangelist did not observe
+            the endpoint's full contract.
+
+  - target: $
+    description: Record the runtime and lifecycle semantics established by the enrichment pass.
+    update:
+      x-api-evangelist:
+        artifacts:
+          authentication: authentication/bevz-authentication.yml
+          conventions: conventions/bevz-conventions.yml
+          errors: errors/bevz-problem-types.yml
+          data_model: data-model/bevz-data-model.yml
+          webhooks: asyncapi/bevz-webhooks.yml
+          lifecycle: lifecycle/bevz-lifecycle.yml
+          changelog: changelog/bevz-changelog.yml
+          sandbox: sandbox/bevz-sandbox.yml
+          conformance: conformance/bevz-conformance.yml
+          rate_limits: rate-limits/bevz-rate-limits.yml
+          skills: skills/_index.yml
+        pagination:
+          style: cursor-token
+          request: [limit, next_page]
+          response: [next_page, data]
+          note: Applies to getProducts, getStoreOrders and getLottoScratcherGames. getStores returns a bare array with no pagination.
+        idempotency:
+          supported: false
+          note: No idempotency key on any unsafe operation across the whole contract.
+        rate_limits:
+          published: false
+        error_envelope:
+          fields: [api_version, status_code, message, errors, data]
+          rfc9457: false
+
+  - target: $.paths
+    description: Flag the invisible-character duplicate path defect so a consumer does not generate a broken client.
+    update:
+      x-defect-invisible-path-key: >-
+        The path key "/integrators/{integrator_id}ㅤ" ends in U+3164 HANGUL FILLER. It exists to
+        let two operations (patchOrder and patchMenuUpload) sit on the same real path,
+        /integrators/{integrator_id}, without colliding as duplicate YAML keys. A generated client
+        will percent-encode the filler and receive a 404. Both operations are flagged Required on
+        the Bevz integration checklist, so this defect blocks a required certification step.
+
+  - target: $.servers
+    description: Label the two published environments explicitly.
+    update:
+      x-environments:
+        production: https://api.bevz.com/integrator-service
+        sandbox: https://sandbox-api.bevz.com/integrator-service
+        note: Both are AWS API Gateway fronts and return 403 to anonymous callers.
+
+  - target: $.paths['/integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services'].post
+    description: Mark the delivery-service onboarding flow as carrying high-sensitivity merchant data.
+    update:
+      x-data-sensitivity: high
+      x-data-sensitivity-note: >-
+        The delivery-settings onboarding payloads carry bank account number, routing number, EIN, SSN
+        and legal date of birth (SensitiveData / SensitiveDataUE). Bevz publishes no field-level
+        handling, masking or retention policy for these, and no security or compliance program.
+
+  - target: $.paths['/integrators/{integrator_id}/stores/{store_id}/deprovision'].post
+    description: Mark the destructive operations so an agent can gate them.
+    update:
+      x-consequence: destructive
+      x-preconditions:
+        - The store must be offline before deprovisioning ("Cannot deprovision, store must be offline to continue deprovisioning").
+        - The store must be provisioned to THIS integrator.
+
+  - target: $.paths['/integrators/{integrator_id}/stores/{store_id}/products/{product_id}'].delete
+    description: Mark product deletion as destructive.
+    update:
+      x-consequence: destructive
+      x-note: Setting stock to 0 via patchProduct also deletes the product variant (behavior introduced in 1.10.1).

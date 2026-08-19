@@ -1,0 +1,258 @@
+type: object
+description: |
+  Represents a retail store managed on the Bevz platform.  
+  This object contains all essential information about the store, including its identity, contact details, operational hours, delivery service settings, and more.
+  Use this schema to view, create, or update store records via the API.
+properties:
+  storeId:
+    type: string
+    description: Unique identifier for the store.
+    example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+  address:
+    type: object
+    description: Physical address where the store is located.
+    properties:
+      city:
+        type: string
+        description: City where the store operates.
+        example: Santa Monica
+      latitude:
+        type: number
+        description: Latitude coordinate of the store location (positive or negative float).
+        example: 42.3456778143501
+      longtitude:
+        type: number
+        description: Longitude coordinate of the store location (positive or negative float).
+        example: -71.09837363184101
+      state:
+        type: string
+        description: State or province abbreviation.
+        example: CA
+      street1:
+        type: string
+        description: Primary street address of the store.
+        example: 123123 10th St
+      zip:
+        type: string
+        description: Postal or ZIP code.
+        example: "90401"
+  email:
+    type: string
+    description: Contact email address for the store.
+    example: developer@bevz.com
+  enabled:
+    type: boolean
+    description: Indicates whether the store is active and can operate in the app.
+    example: true
+  hours:
+    type: array
+    description: List of store operating hours for each day of the week.
+    items:
+      $ref: "hours.yaml"
+  name:
+    type: string
+    description: Display name of the store.
+    example: Bevz Test Store
+  phone:
+    type: string
+    description: Primary contact phone number for the store.
+    example: +639123456789
+  phones:
+    type: array
+    description: List of additional contacts associated with the store, each with their phone number.
+    items:
+      $ref: "phones.yaml"
+  taxRate:
+    type: string
+    description: Sales tax rate (%) applied to purchases at this store.
+    example: "9.50"
+  updatedAt:
+    type: number
+    description: Epoch timestamp (in milliseconds) of the last update to the store record.
+    example: 1677773721909
+  deliverySettings:
+    type: object
+    description: |
+      Configuration settings for each supported delivery service (e.g., DoorDash, Grubhub, Uber Eats).
+      Includes authorization status, commission rates, menu sync status, and other integration-specific options.
+    properties:
+      doordash:
+        type: object
+        description: DoorDash delivery service integration settings.
+        properties:
+          storeId:
+            type: string
+            description: DoorDash store identifier.
+            example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+          authorized:
+            type: boolean
+            description: Whether the store is authorized with DoorDash.
+            example: true
+          enabled:
+            type: boolean
+            description: Whether DoorDash integration is enabled for this store.
+            example: true
+          roundPrice:
+            type: boolean
+            description: Whether prices should be rounded for DoorDash orders.
+            example: true
+          percentToCharge:
+            type: number
+            description: Commission percentage charged for DoorDash orders.
+            example: 17
+          revSharePercentage:
+            type: number
+            description: Revenue share percentage for DoorDash.
+            example: 1.5
+          reason:
+            type: string
+            description: Reason for any status or configuration changes.
+            example: ""
+          note:
+            type: string
+            description: Additional notes regarding DoorDash integration.
+            example: ""
+          menuSync:
+            type: object
+            description: Current menu synchronization status with DoorDash.
+            properties:
+              menuSynching:
+                type: boolean
+                description: Indicates if a menu sync is currently in progress.
+                example: false
+              syncStart:
+                type: number
+                description: Epoch timestamp when menu sync started.
+                example: 0
+              syncEnd:
+                type: number
+                description: Epoch timestamp when menu sync ended.
+                example: 0
+              status:
+                type: string
+                description: Result status of the last menu sync (e.g., SUCCESS, FAILURE, IN_PROGRESS).
+                example: SUCCESS
+              menuId:
+                type: string
+                description: DoorDash menu identifier.
+                example: ""
+      grubhub:
+        type: object
+        description: Grubhub delivery service integration settings.
+        properties:
+          storeId:
+            type: string
+            description: Grubhub store identifier.
+            example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+          authorized:
+            type: boolean
+            description: Whether the store is authorized with Grubhub.
+            example: true
+          enabled:
+            type: boolean
+            description: Whether Grubhub integration is enabled for this store.
+            example: true
+          roundPrice:
+            type: boolean
+            description: Whether prices should be rounded for Grubhub orders.
+            example: true
+          percentToCharge:
+            type: number
+            description: Commission percentage charged for Grubhub orders.
+            example: 17
+          revSharePercentage:
+            type: number
+            description: Revenue share percentage for Grubhub.
+            example: 1.5
+          reason:
+            type: string
+            description: Reason for any status or configuration changes.
+            example: ""
+          note:
+            type: string
+            description: Additional notes regarding Grubhub integration.
+            example: ""
+          menuSync:
+            type: object
+            description: Current menu synchronization status with Grubhub.
+            properties:
+              menuSynching:
+                type: boolean
+                description: Indicates if a menu sync is currently in progress.
+                example: false
+              syncStart:
+                type: number
+                description: Epoch timestamp when menu sync started.
+                example: 0
+              syncEnd:
+                type: number
+                description: Epoch timestamp when menu sync ended.
+                example: 0
+              status:
+                type: string
+                description: Result status of the last menu sync (e.g., SUCCESS, FAILED).
+                example: SUCCESS
+              menuId:
+                type: string
+                description: Grubhub menu identifier.
+                example: ""
+      uberEats:
+        type: object
+        description: Uber Eats delivery service integration settings.
+        properties:
+          storeId:
+            type: string
+            description: Uber Eats store identifier.
+            example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+          authorized:
+            type: boolean
+            description: Whether the store is authorized with Uber Eats.
+            example: true
+          enabled:
+            type: boolean
+            description: Whether Uber Eats integration is enabled for this store.
+            example: true
+          roundPrice:
+            type: boolean
+            description: Whether prices should be rounded for Uber Eats orders.
+            example: true
+          percentToCharge:
+            type: number
+            description: Commission percentage charged for Uber Eats orders.
+            example: 17
+          revSharePercentage:
+            type: number
+            description: Revenue share percentage for Uber Eats.
+            example: 1.5
+          reason:
+            type: string
+            description: Reason for any status or configuration changes.
+            example: ""
+          note:
+            type: string
+            description: Additional notes regarding Uber Eats integration.
+            example: ""
+          menuSync:
+            type: object
+            description: Current menu synchronization status with Uber Eats.
+            properties:
+              menuSynching:
+                type: boolean
+                description: Indicates if a menu sync is currently in progress.
+                example: false
+              syncStart:
+                type: number
+                description: Epoch timestamp when menu sync started.
+                example: 0
+              syncEnd:
+                type: number
+                description: Epoch timestamp when menu sync ended.
+                example: 0
+              status:
+                type: string
+                description: Result status of the last menu sync (e.g., SUCCESS, FAILED).
+                example: SUCCESS
+              menuId:
+                type: string
+                description: Uber Eats menu identifier.
+                example: ""

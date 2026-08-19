@@ -1,0 +1,32 @@
+type: object
+
+properties:
+  account:
+    $ref: "Account.yaml"
+  operationHours:
+    type: array
+    description: |
+      Defines the store's operating hours for specific days of the week.
+      Each entry specifies the opening and closing times, as well as the days these hours apply.
+      Multiple entries can be used to represent different schedules (e.g., split shifts or varying hours on different days).
+    items:
+      $ref: "OperationHours.yaml"
+  store:
+    type: object
+    description: |
+      Contains essential details about the store, including its name, address, and contact information.
+    properties:
+      name:
+        type: string
+        description: The display name of the store.
+        example: "Bevz Test Store"
+      address:
+        $ref: "Address.yaml"
+      phoneNumber:
+        type: string
+        description: Primary contact phone number for the store.
+        example: "7852630348"
+      emailAddress:
+        type: string
+        description: Contact email address for the store.
+        example: bevz_test_store@bevz.com

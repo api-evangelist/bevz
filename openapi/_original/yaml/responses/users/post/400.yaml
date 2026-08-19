@@ -1,0 +1,38 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+          example:
+            - '"email" must be a string'
+    examples:
+      "Email already exists, please use a different email":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Email already exists, please use a different email"
+      '"testfield" is not allowed':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"testfield" is not allowed'
+      "Different data type":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"integrator_id" must be a number'
+            - '"email" must be a string'
+            - '"password" must be a string'
+      "Empty object":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"integrator_id" is required'
+            - '"email" is required'
+            - '"password" is required'

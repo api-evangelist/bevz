@@ -1,0 +1,25 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+          example:
+            - '"email" must be a string'
+    examples:
+      "Incorrect old password!":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - 'Incorrect old password!'
+      "Empty Object for Request Body":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"old_password" is required'
+            - '"new_password" is required'

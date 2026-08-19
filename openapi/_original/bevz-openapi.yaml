@@ -1,0 +1,625 @@
+openapi: "3.0.3"
+servers:
+  - url: https://api.bevz.com/integrator-service
+    description: Production server
+  - url: https://sandbox-api.bevz.com/integrator-service
+    description: Sandbox server
+info:
+  title: Bevz Integrator Service
+  contact:
+    name: API Support
+    email: tech@bevz.com
+  description: |
+    # Introduction
+
+    Welcome to the Bevz Integrator Service API documentation.
+
+    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
+
+    ## Who is this documentation for?
+
+    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
+
+    ## Key Features
+
+    By integrating with the Bevz platform, you gain access to:
+
+    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
+    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
+    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
+    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
+    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
+
+    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
+  version: 1.12.0
+tags:
+  # get started
+  - name: Getting Started
+    description:
+      $ref: "yaml/texts/get-started.yaml"
+  # guids
+  - name: Preparing Your Store
+    description: |
+      ## Setting Up Your Store
+
+      To fully leverage the Bevz platform, you’ll need to have an active store provisioned within our system. This store acts as the foundation for managing orders, inventory, and other operational data through our API. Below, you’ll find guidance on creating a new store, provisioning an existing one, and deprovisioning when necessary.
+
+      ### Creating a New Store
+
+      <img alt="Bevz Create Store Workflow" src="https://join-bevz.s3.us-west-1.amazonaws.com/apidocs_create_store.png" />
+
+      If you don’t already have a store on Bevz, you can easily register a new one using our API. This process allows you to provide all required details, such as the store’s name, address, and other key information.
+
+      **Steps to Create a New Store:**
+      - Submit a request to the [**Create Store**](#tag/Stores/operation/createStore) API endpoint, including all necessary store details.
+      - Receive confirmation that your store has been successfully created.
+      - After creation, you’ll receive a unique store identifier (store ID) for future API operations.
+
+      With this store ID, you’ll be able to manage inventory, process orders, and perform other store operations through the API.
+
+      ### Provisioning an Existing Store
+
+      <img alt="Bevz Create Store Workflow" src="https://join-bevz.s3.us-west-1.amazonaws.com/apidocs_provision_store.png" />
+
+      If your store already exists on Bevz but isn’t yet linked to your Integrator account, you’ll need to provision it. Provisioning connects the store to your account, granting you management access.
+
+      **When to Provision:**
+      - The store exists on Bevz but isn’t associated with your Integrator account.
+      - You want to enable management features for an existing store.
+
+      **Steps to Provision an Existing Store:**
+      - Send a request to the [**Provision Existing Store**](#tag/Stores/operation/postStore) API endpoint, specifying the store’s unique identifier.
+      - Once provisioned, the store will appear in your account’s managed stores list, and you’ll have full access to its features.
+
+      ### Deprovisioning a Store
+
+      If you no longer need to manage a store through your Integrator account, you can deprovision it. Deprovisioning disconnects the store from your account, making it available for other partners to provision if needed.
+
+      **When to Deprovision:**
+      - The store is being transferred to another partner.
+      - The store is inactive or no longer requires management.
+      - You want to clean up unused stores from your account.
+
+      **Steps to Deprovision a Store:**
+      - Initiate a request to the [**Deprovision Store**](#tag/Stores/operation/removeStore) API endpoint, specifying the store ID.
+      - Once confirmed, the store will be removed from your managed list and can be re-provisioned later if necessary.
+
+      ## Activating Your Store
+
+      To activate your store, you’ll need to set up a Stripe account using the link provided in the [**Create a New Store API**](#tag/Stores/operation/createStore) response.
+
+      ## Onboarding Your Store: Two Methods
+
+      ### 1. Onboard via Delivery Services Onboarding API
+
+      - Onboard your store to DoorDash and Grubhub delivery services using the [**Delivery Services Onboarding API**](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard).
+      - Onboard your store to Uber Eats using the three-step process outlined in the [**Uber Eats Onboarding API Workflow**](#tag/Uber-Eats-Onboarding-API-Workflow).
+
+      ### 2. Use Our Dedicated Onboarding Page
+
+      If you prefer not to collect bank information via API, we offer a secure, dedicated onboarding page for your convenience.
+
+      **Page URL:** https://sandbox-join.bevz.com/pos/delivery-services
+
+      **Features:**
+      - Onboard delivery services such as DoorDash, GrubHub, Uber Eats, and more.
+      - Responsive design for all devices.
+      - Supports both new and existing customers.
+      - Secure onboarding with required parameters.
+      - Callback mechanism to notify you upon successful onboarding.
+
+      <img alt="POS Onboarding" src="https://join-bevz.s3.us-west-1.amazonaws.com/pos_onboarding.png" />
+
+      **Onboarding Page URL Parameters:**
+
+      | Parameter         | Description                                 | Required |
+      |-------------------|---------------------------------------------|----------|
+      | `store_id`        | Unique identifier for the store             | Yes      |
+      | `pos_integrator_id` | Identifier for the POS integration        | Yes      |
+      | `token`           | Secure authentication token                 | Yes      |
+      | `callback_url`    | URL for redirect after onboarding           | Optional |
+
+      **Example URL:**
+
+      ```
+      https://sandbox-join.bevz.com/pos/delivery-services?store_id=0000000-000-0000-0000-0000000&pos_integrator_id=1&token=your_token_that_is_in_jwt&callback_url=https://sandbox-join.bevz.com
+      ```
+
+      If any required parameters are missing or invalid, an error page will be displayed.
+
+  - name: Using Webhooks
+    description: |
+      ## What Are Webhooks?
+
+      Webhooks allow your application to receive real-time notifications from Bevz whenever important events occur—such as new orders or menu upload results. Instead of polling our API, simply register your webhook endpoint and Bevz will send you event payloads as soon as they happen.
+
+      ## Supported Events
+
+      - [**Order Notification Webhook:**](#tag/Webhooks/operation/orderWebhook) Receive instant updates when new orders are placed or their status changes.
+      - [**Menu Upload Webhook:**](#tag/Webhooks/operation/menuUploadWebhook) Get notified about the status of menu uploads, including any errors or successful imports.
+      - [**Store Status Webhook:**](#tag/Webhooks/operation/storeStatusWebhook) Get notified when store settings change, such as operating hours or delivery service configurations.
+
+      ## Example Payloads
+
+      **Order Accepted Event**
+      ```json
+      {
+        type: 'order.accepted',
+        data: {
+          fees: { tipTotal: 0, taxTotal: 4.08 },
+          orderId: 'cfd2ab0f-8e28-4c50-bfc4-8b4242d8884d',
+          orderProducts: [
+            {
+              "productSnapshot": {
+                "images": [
+                  {
+                    "src": "https://bevz-media.s3-us-west-1.amazonaws.com/ef81f97b-1d8a-4f91-906d-3542427e99f2.png",
+                    "primary": true
+                  }
+                ],
+                "quantity": "6 Pack",
+                "productId": "cd017f3f-fbda-41c1-b9d9-842eab06cbea",
+                "taxable": true,
+                "description": "Enjoy the refreshing lemon-lime taste in every sip of 7UP.",
+                "upc": "078000000382",
+                "extras": {},
+                "priority": false,
+                "createdAt": "2019-08-02T15:11:28.608Z",
+                "size": "12 oz Cans",
+                "price": 4.99,
+                "name": "7 UP",
+                "disabled": false,
+                "categories": {
+                  "L1": "Soft Drinks",
+                  "L2": "Soda"
+                },
+                "updatedAt": "2019-08-02T15:11:28.608Z"
+              },
+              "quantity": 1,
+              "productId": "a00dd3f1-dac9-4574-8e23-51a94dd7094c",
+              "merchantSuppliedId": "507f191e810c19729de860ea",
+              "selectedPrice": 3.99
+            }
+          ],
+          orderStatus: 'ACCEPTED',
+          subTotal: 41.89,
+          storeId: '831fd907-b455-4e92-828b-2e5421d057d7',
+          orderTotal: 45.97,
+          createdAt: '2025-09-17T06:59:24.660Z',
+          deliveryId: 'faf5e13e',
+          deliverySource: 'DOORDASH',
+          integratorId: '230428004',
+          customerId: 'DOORDASH_CUSTOMER',
+          deliveryDetails: {
+            deliveryId: 'faf5e13e',
+            "driver": {
+              "name": "John Doe",
+              "phone": "91234567890",
+              "estimated_time_arrival": "string"
+            }
+            deliveryType: 'DELIVERY',
+            "customerDetails": {
+              "name": "Bevz Staging",
+              "phone": "(917) 123-1234",
+              "email": "string",
+              "pinCode": "555 55 555"
+            },
+            deliveryStatus: 'arriving',
+            deliveryInstructions: ''
+          },
+          updatedAt: '2025-09-17T07:06:18.534Z'
+        }
+      }
+      ```
+
+      **Menu Upload Failed Event**
+      ```json
+      {
+        "id": 1,
+        "store_id": "6e066cfe-9122-4c30-a7fc-a8894dd72f4h",
+        "file_path": "https://integrator-menu-569241935122.s3.us-west-1.amazonaws.com/raw/a990fb29-3ea7-4e59-b293-a20574807927_b8c49890-67e5-42b8-aaaa-855ffbe92511.csv",
+        "status": "failed",
+        "error_file": "https://integrator-menu-569241935122.s3.us-west-1.amazonaws.com/error/a990fb29-3ea7-4e59-b293-a20574807927_b8c49890-67e5-42b8-aaaa-855ffbe92511_error-file.csv",
+        "date": "2023-03-09T04:18:57.658Z",
+        "time_completed": ""
+      }
+      ```
+
+      **Store Settings Updated Event**
+      ```json
+      {
+        "event": "store_settings_updated",
+        "bevzStoreId": "831fd907-b455-4e92-828b-2e5421d057d7",
+        "data": {
+          "hours": [
+            {
+              "type": "DAILY_HOURS",
+              "days": [1, 2, 3, 4, 5, 6, 7],
+              "openTime": "09:00 AM",
+              "closeTime": "10:00 PM"
+            }
+          ]
+        }
+      }
+      ```
+
+      ## How to Set Up Webhooks
+
+      1. **Create Your Webhook Endpoint:**  
+         Set up a URL on your server to receive POST requests from Bevz. Your endpoint should accept JSON payloads and handle authentication if needed.
+
+      2. **Register Your Webhook with Bevz:**
+         Use the following endpoints to register your webhook URLs:
+         - [Setup Order Notification Webhook](#tag/Integrators/operation/patchOrder)
+         - [Setup Menu Upload Notification](#tag/Integrators/operation/patchMenuUpload)
+         - **Setup Store Status Webhook:** To enable store status notifications for your integration, please contact your Bevz POS integration manager.
+
+      3. **(Optional) Secure Your Webhook:**  
+         For added security, you can require a shared secret or token in the request headers or body. Contact your POS integration manager to enable this feature.
+
+      4. **Receive and Process Events:**  
+         When an event occurs, Bevz will send a POST request to your webhook URL with a JSON payload describing the event. Your system should process this data and take any necessary actions (e.g., update your database, notify staff, etc.).
+
+      ## Best Practices
+
+      - Always verify the authenticity of incoming webhook requests.
+      - Respond with a `200 OK` status to acknowledge receipt.
+      - Log webhook events for troubleshooting and auditing.
+      - Handle retries gracefully—Bevz may resend events if your endpoint does not respond successfully.
+  
+  - name: Uploading store menu
+    description: |
+      ## Uploading Your Store Menu
+
+      Bevz supports two convenient ways to upload your store's menu:
+
+      - **CSV File Upload**
+      - **JSON Payload in the Request Body**
+
+      For both formats, the following fields are **required**: `upc`, `name`, and `price`.
+
+      ### How It Works
+
+      - When you upload a menu, Bevz matches each UPC with products in our database. If a match is found, the product is enabled for your store.
+      - If any products do not match, you’ll receive a downloadable error file listing those items.
+
+      ### Sample CSV Upload
+
+      | upc           | name                       | price | description | stock | quantity | size         | imageurl                                                        |
+      |---------------|----------------------------|-------|-------------|-------|----------|--------------|-----------------------------------------------------------------|
+      | 00980012301   | FERRERO ROCHER             | 1.99  | Chocolate   | 10    | single   | 12 piece box | https://bevz-media.s3-us-west-1.amazonaws.com/example.png       |
+      | 00980080005   | NUTELLA                    | 1.0  | Chocolate spread | 10 | single | 350g | https://bevz-media.s3-us-west-1.amazonaws.com/example.png
+      | ...           | ...                        | ...   | ...         | ...   | ...      | ...          | ...                                                             |
+
+      ### Sample JSON Upload
+
+      ```json
+      {
+        "menu": [
+          {
+            "name": "Ben & Jerry's the Tonight Dough (16 oz)",
+            "upc": "76840485116",
+            "description": "Ben and Jerry's The Tonight Dough Caramel & Chocolate Ice Cream",
+            "price": "8.90",
+            "stock": "10",
+            "size": "1 Pint",
+            "quantity": "Single",
+            "imageurl": "https://bevz-media.s3-us-west-1.amazonaws.com/example.png"
+          }
+        ]
+      }
+      ```
+
+      ### Checking Upload Status
+
+      - Use [Retrieve the menu upload status](#tag/Stores/operation/getMenu) to check the status of your upload, download the error file, and see which products were successfully enabled.
+      - You can also receive real-time updates by configuring a [Menu Upload Webhook](#tag/Webhooks/operation/menuUploadWebhook).
+
+
+      > **⚠️ IMPORTANT**  
+      > - Ensure all required fields are present and valid.
+      > - Use the error file to quickly identify and correct any issues with your menu data.
+      > - For large menus, consider breaking uploads into smaller batches for easier troubleshooting.
+
+      ## Error file
+      The error file is a CSV that lists products from your upload that did not match any existing items in the Bevz database. Use this file to review and correct any discrepancies.
+
+      #### Sample Error File
+
+      | quantity | size   | price | name                | upc        | description      | stock | merchantSuppliedId | reason                                      |
+      |----------|--------|-------|---------------------|------------|------------------|-------|--------------------|----------------------------------------------|
+      | 1        | 1 item | 0.75  | SVC                 | svc1       | -SVC 1.00        | 8     | svc1               | INVALID_UPC                                 |
+      | 1        | 1 item | 3.49  | SNAK CLUB           | 8707621641 | NON-TAXABLE      | 4     | 8707621641         | UPC_NOT_FOUND                                |
+      | 1        | 1 item | -5.99 | SC LM CASHEWS 4.50Z | 8707641135 | NOTX - SNACKS    | 3     | 8707641135         | Invalid amount value, must be numbers only   |
+      | 1        | 1 item | 2.99  |                     | 8707641136 | NOTX - SNACKS    | 2     | 8707641136         | Invalid name format                          |
+      | 1        | 1 item | 3.99  | SC LM CASHEWS 4.50Z | 8707641137 | NOTX - SNACKS    | -5    | 8707641137         | Invalid stock count value, must be numbers only |
+
+      #### Error Reason Explanations
+
+      | Reason                                          | Explanation                                                                                   |
+      |-------------------------------------------------|-----------------------------------------------------------------------------------------------|
+      | INVALID_UPC                                     | The provided UPC is not in a valid format or contains invalid characters.                     |
+      | UPC_NOT_FOUND                                   | The UPC does not match any product in the Bevz database.                                      |
+      | Invalid amount value, must be numbers only      | The price field contains a non-numeric value or a negative number, which is not allowed.      |
+      | Invalid name format                             | The product name is missing or contains invalid characters.                                   |
+      | Invalid stock count value, must be numbers only | The stock field contains a non-numeric value or a negative number, which is not allowed.      |
+
+      
+  - name: Receiving and processing order
+    description: |
+      ## Receiving Orders
+
+      Bevz makes it easy to receive and process orders in real time using webhooks and our order management API.
+
+      ### 1. Receive Order Notifications
+
+      - Register your webhook endpoint using [Setup Order Notification Webhook](#tag/Integrators/operation/patchOrder).
+      - When a new order is placed or its status changes, Bevz will send a POST request to your webhook with all relevant order details.
+
+      ### 2. Accepting or Updating Orders
+
+      - Use [Patch Order Status](#tag/Order/operation/patchOrderStatus) to accept, update, or cancel orders.
+      - Update your internal systems and trigger any necessary notifications or workflows.
+
+      ### 3. Completing Orders
+
+      - When an order is fulfilled and handed over to the delivery service or courier, update its status using [Patch Order Status](#tag/Order/operation/patchOrderStatus).
+      - This will trigger notifications and update your records accordingly.
+
+      ### 4. Testing Orders
+
+      - Use [Test Order Status](#tag/Order/operation/testStoreOrders) to simulate order flows and ensure your integration is working as expected.
+      - This endpoint allows you to finalize test orders, process payments, and verify that notifications and webhooks are triggered correctly.
+
+      ## Best Practices
+
+      - Always acknowledge webhook events with a `200 OK` response.
+      - Validate and log all incoming order data.
+      - Handle order status changes promptly to ensure a smooth customer experience.
+      - Use the test endpoints to verify your integration before going live.
+
+      For more details, see the [Order API documentation](#tag/Order).
+
+  # apis
+  - name: integrators
+  - name: stores
+  - name: integrator_users
+    description: The Integrator Users API allows you to manage user accounts and access permissions for your integrator account.
+    x-displayName: Integrator Users
+  - name: Delivery Services Onboarding
+    description: The Delivery Services Onboarding API enables you to onboard your store to various delivery services partnered with Bevz.
+  - name: Uber Eats Onboarding API Workflow
+    description: |
+      The Uber Eats API allows you to onboard your store to Uber Eats and manage related operations.
+
+      Uber Eats onboarding is a three-step process:
+      1. **Generate OAuth URL:** Obtain an authorization link for the store owner to grant access.
+      2. **Exchange Authorization Code:** After authorization, exchange the received code for an access token.
+      3. **Provision Store:** Use the access token and Uber Eats store ID to complete the onboarding and enable integration features.
+
+      ### Process Flow
+      <img alt="Bevz Create Store Workflow" src="https://join-bevz.s3.us-west-1.amazonaws.com/apidocs_ubereats_pos_workflow.png" />
+
+  - name: Pick a Delivery Service for Onboarding API
+    description: |
+      This document outlines the integration flow for onboarding new DoorDash and Grubhub stores through the [Delivery Services Onboarding API](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard).
+
+      ## DoorDash Onboarding
+
+      ### Overview
+      Onboarding a store to DoorDash is an asynchronous process initiated by Bevz via a webhook. Once the POS sends a request to the [Delivery Services Onboarding API](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard), DoorDash processes the information, performs necessary checks, and notifies Bevz of the outcome through a webhook.
+
+      ### Process Flow
+      1. **Initiate Onboarding Request**
+      - The POS sends a request to the Delivery Services Onboarding API with all required store and sensitive information.
+      - Refer to the [Delivery Services Onboarding API](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard) for required fields.
+      2. **DoorDash Processing**
+      - DoorDash attempts to map the store using the provided details, requests approval from the merchant, and performs internal checks such as menu QA and business admin verification.
+      3. **Receive Webhook Notification**
+      - Once DoorDash completes processing, they send a webhook notification to Bevz indicating the onboarding status (e.g., approved, pending, rejected) and any relevant details or next steps.
+      4. **Finalize Onboarding**
+      - The integration is activated once all requirements and approvals are met. If issues arise (e.g., missing hours, menu errors, compliance problems), DoorDash notifies the merchant and Bevz for resolution.
+
+      
+      ## Grubhub Onboarding
+
+      ### Overview
+      The onboarding process enables POS systems to initiate a Grubhub store onboarding request via the [Delivery Services Onboarding API](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard). Bevz provides an auto-populated onboarding form, which the POS can present to the store. After submission, a Grubhub representative contacts the store to complete setup.
+      
+      ### Process Flow
+      1. **Initiate Onboarding Request**
+      - The POS sends a request to the Delivery Services Onboarding API.
+      - This request contains the required store information (e.g., store details, sensitive data).
+      2. **Generate Onboarding Link**
+      - Bevz responds with a unique onboarding link.
+      - This link points to a form that is pre-filled with store data provided in step 1.
+      3. **Customer Completes Form**
+      - The POS system embeds or redirects the store to the generated onboarding link.
+      - The store reviews and completes the form.
+      4. **Grubhub Representative Follows Up**
+      - Once the store submits the form, the information is sent to Grubhub.
+      - A Grubhub representative contacts the store to finalize onboarding and assist with setup.
+
+  - name: Store Products
+    description: Store Products refer to inventory items that are available in a specific store. These products can be managed, updated, and retrieved through the Store Products API.
+  - name: Lotto Scratcher Games
+    description: |
+      ## Lotto Scratcher Games
+
+      Retrieve lottery scratch-off game data from supported state lotteries. This endpoint provides game catalogs that can be used to display lotto ticket information in POS systems.
+
+      ### Supported Lotteries
+      - California (CA_LOTTERY)
+      - Massachusetts (MA_LOTTERY)
+      - Ohio (OH_LOTTERY)
+      - Michigan (MI_LOTTERY)
+      - Arizona (AZ_LOTTERY)
+      - Connecticut (CT_LOTTERY)
+      - Illinois (IL_LOTTERY)
+      - Georgia (GA_LOTTERY)
+      - Florida (FL_LOTTERY)
+
+      ### UPC Barcode Lookup
+      When a customer's lottery ticket is scanned, pass the 12-digit UPC-A barcode along with the source to look up the specific game. The system extracts the game number from the barcode and returns the matching game details.
+  # models
+  - name: models
+    x-displayName: Models
+    description: |
+      # Store
+        <SchemaDefinition schemaRef="#/components/schemas/Store" />
+
+      # User
+        <SchemaDefinition schemaRef="#/components/schemas/User" />
+
+      # Store Products
+        <SchemaDefinition schemaRef="#/components/schemas/StoreProducts" />  
+
+      # Order
+        <SchemaDefinition schemaRef="#/components/schemas/Order" />
+        
+      # Menu Upload
+        <SchemaDefinition schemaRef="#/components/schemas/IntegratorMenu" />
+
+  # FAQS
+  - name: faq
+    description:
+      $ref: "yaml/faq/faq.yaml"
+    x-displayName: FAQS
+  - name: Changelog
+    description:
+      $ref: "yaml/changelog/changelog.yaml"
+
+x-tagGroups:
+  - name: getting started
+    tags:
+      - Introduction
+      - What is this documentation for?
+      - Getting Started
+  - name: guides
+    tags:
+      - Preparing Your Store
+      - Using Webhooks
+      - Uploading store menu
+      - Receiving and processing order
+  - name: apis
+    tags:
+      - Integrators
+      - integrator_users
+      - Stores
+      - Store Products
+      - Lotto Scratcher Games
+      - Order
+  - name: Delivery Services Onboarding
+    tags:
+      - Pick a Delivery Service for Onboarding API
+      - Uber Eats Onboarding API Workflow
+  - name: webhooks
+    tags:
+      - Webhooks
+  - name: models
+    tags:
+      - models
+  - name: faqs
+    tags:
+      - faq
+  - name: changelog
+    tags:
+      - Changelog
+
+paths:
+  # integrators
+  /integrators/{integrator_id}: #order
+    $ref: "yaml/apis/order.yaml"
+  /integrators/{integrator_id}ㅤ: #menu sync
+    $ref: "yaml/apis/menusync.yaml"
+
+  # stores
+  /integrators/{integrator_id}/stores:
+    $ref: "yaml/apis/stores.yaml"
+  /integrators/{integrator_id}/stores/{store_id}:
+    $ref: "yaml/apis/stores-storeid.yaml"
+  /integrators/{integrator_id}/stores/provision:
+    $ref: "yaml/apis/stores-provision.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/deprovision:
+    $ref: "yaml/apis/stores-storeid-deprovision.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/menu:
+    $ref: "yaml/apis/stores-storeid-menu.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/menu/{menu_id}:
+    $ref: "yaml/apis/stores-storeid-menu-menuid.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/menu-sync:
+    $ref: "yaml/apis/stores-storeid-menu-sync.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/generate-checkout-link:
+    $ref: "yaml/apis/stores-storeid-generatecheckoutlink.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/subscription-link:
+    $ref: "yaml/apis/stores-storeid-subscriptionlink.yaml"
+
+  # users
+  /integrators/{integrator_id}/users:
+    $ref: "yaml/apis/users.yaml"
+  /integrators/{integrator_id}/users/{user_id}:
+    $ref: "yaml/apis/users-userid.yaml"
+  /integrators/{integrator_id}/users/{user_id}/change-password:
+    $ref: "yaml/apis/users-userid-changepassword.yaml"
+  # store products
+  /integrators/{integrator_id}/stores/{store_id}/products:
+    $ref: "yaml/apis/stores-storeid-products.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/products/{product_id}:
+    $ref: "yaml/apis/stores-storeid-products-productid.yaml"
+
+  # lotto scratcher games
+  /integrators/{integrator_id}/lotto-scratcher-games:
+    $ref: "yaml/apis/lotto-scratcher-games.yaml"
+
+  # orders
+  /integrators/{integrator_id}/stores/{store_id}/orders:
+    $ref: "yaml/apis/stores-storeid-orders.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/orders/{order_id}:
+    $ref: "yaml/apis/stores-storeid-orders-orderid.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/orders/{order_id}/adjustments:
+    $ref: "yaml/apis/stores-storeid-orders-orderid-adjust.yaml"
+
+  # delivery services onboarding 
+  /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services:
+    $ref: "yaml/apis/stores-storeid-onboard-delivery-services.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/generate-oauth:
+    $ref: "yaml/apis/ubereats-onboarding-generate-oauth.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/exchange-authorization-code:
+    $ref: "yaml/apis/ubereats-onboarding-exchange-code.yaml"
+  /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/provision-store:
+    $ref: "yaml/apis/ubereats-onboarding-provision-store.yaml"
+
+x-webhooks:
+  order:
+    $ref: "yaml/webhooks/order.yaml"
+  menusync:
+    $ref: "yaml/webhooks/menusync.yaml"
+  store-status:
+    $ref: "yaml/webhooks/store-status.yaml"
+components:
+  schemas:
+    JWT:
+      $ref: "yaml/schemas/jwt.yaml"
+    Menu:
+      $ref: "yaml/schemas/menu.yaml"
+    User:
+      $ref: "yaml/schemas/user.yaml"
+    # Hours:
+    # Phones:
+    Store:
+      $ref: "yaml/schemas/store.yaml"
+    IntegratorMenu:
+      $ref: "yaml/schemas/integrator-menu.yaml"
+    Order:
+      $ref: "yaml/schemas/Orders/order.yaml"
+    StoreProducts:
+      $ref: "yaml/schemas/store-products.yaml"
+    LottoScratcherGame:
+      $ref: "yaml/schemas/lotto-scratcher-game.yaml"
+    CreateStore:
+      $ref: "yaml/schemas/CreateStore/CreateStore.yaml"
+    DeliverySettings:
+      $ref: "yaml/schemas/DeliverySettings/DeliverySettings.yaml"
+    DeliverySettingsGH:
+      $ref: "yaml/schemas/DeliverySettings/DeliverySettingsGH.yaml"
+    DeliverySettingsDD:
+      $ref: "yaml/schemas/DeliverySettings/DeliverySettingsDD.yaml"

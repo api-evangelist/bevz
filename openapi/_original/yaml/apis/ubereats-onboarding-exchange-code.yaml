@@ -1,0 +1,67 @@
+post:
+  tags:
+    - Uber Eats Onboarding API Workflow
+  operationId: exchangeCode
+  summary: Step 2. Exchange Authorization Code for Access Token
+  description: |
+    Use this endpoint as the second step in the Uber Eats onboarding OAuth flow.  
+    
+    After the store owner authorizes your integration via the OAuth URL, Uber Eats will redirect to your specified `redirect_uri` with an `authorization_code`.  
+    
+    Submit that code here to obtain an access token, which can be used to make authenticated requests to Uber Eats APIs on behalf of the store.
+
+    #### When to Use
+
+    - Immediately after the store owner completes the OAuth authorization step and you receive the `authorization_code` in your redirect handler.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+    
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            authorization_code:
+              type: string
+              description: The authorization code received from Uber Eats after the user authorizes the application.
+              example: "crd.EA.CAESEKbPSOAMB0wtsKCg5fyADcgiATE.134ewdsasde3"
+            redirect_uri:
+              type: string
+              description: The redirect URI that was used in the initial authorization request. Must match exactly.
+              example: "https://yourapp.com/oauth/callback"
+          required:
+            - authorization_code
+            - redirect_uri
+
+  responses:
+    "200":
+      $ref: "../responses/ubereats-onboarding-exchange-code/post/200.yaml"
+    "400":
+      $ref: "../responses/ubereats-onboarding-exchange-code/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

@@ -1,0 +1,24 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+          example:
+            - '"email" must be a string'
+    examples:
+      "An ongoing upload for this storeId is still in progress, please wait for upload to complete":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - An ongoing upload for this storeId is still in progress, please wait for upload to complete.
+      "Incorrect file format! File should be in CSV or JSON format.":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Incorrect file format! File should be in CSV or JSON format.

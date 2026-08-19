@@ -1,0 +1,82 @@
+description: Successful menu sync of delivery settings
+content:
+  application/json:
+    schema:
+      type: object
+    examples:
+      DOORDASH:
+        value:
+          message: Successful menu sync of delivery settings
+          data:
+            reference: ""
+            store:
+              merchant_supplied_id: "123456"
+              provider_type: ""
+            open_hours: 
+              day_index: MON
+              start_time: "00:00"
+              end_time: "13:00"
+            special_hours: 
+              date: ""
+              start_time: "00:00"
+              end_time: "13:00"
+              closed: false
+            menu: 
+              name: "All Day Menu"
+              subtitle: ""
+              merchant_supplied_id: "123456"
+              active: true
+              categories: []
+      UBEREATS:
+        value:
+          message: Successful menu sync of delivery settings
+          data:
+            menus:
+                  id: "0362cbc6-7a7b-4831-9663-df0300bd0ec6"
+                  title:
+                    translations:
+                      en_us: "All Day Menu"
+                  service_availability:
+                      time_periods:
+                        start_time: "00:00"
+                        end_time:  "13:00"
+                        day_of_week: monday
+                  category_ids: "f3159f66-01ac-46bd-ba81-379c24f28056"
+            categories:
+              id: "f3159f66-01ac-46bd-ba81-379c24f28056"
+              title:
+                translations:
+                  en_us: "Beer"
+              entities:
+                  id: "82043a42-24cc-4043-8110-156b6087ce3e"
+                  type: "ITEM"
+            items:
+              id: "8938435b-5e2f-4ffd-828d-4eff05a0c7a1"
+              image_url: "https://bevz-media.s3-us-west-1.amazonaws.com/7c82c115-85bc-450e-b229-2ee219fa58e0.png"
+              title:
+                translations:
+                    en_us: "10th Mountain Bourbon - 750ml/Single"
+              description:
+                translations:
+                  en_us: "10th Mountain Bourbon is made with 75% corn mash. On the nose, smells of medium sweetness with hints of vanilla, oak and honey. The palate has exceptional flavors of toasted nuts with a medium body. The finish is sweet with hints of vanilla and a medium to long finish."
+              price_info:
+                price: "199"
+                overrides: []
+              tax_info:
+                tax_rate: "7"
+              dish_info: {}
+              tax_label_info: {}
+              product_info: {}
+            modifier_groups: []
+            menutype: "MENU_TYPE_FULFILLMENT_DELIVERY"
+            display_options:
+              disable_item_instructions: true
+      GRUBHUB:
+        value:
+          message: Successful menu sync of delivery settings
+          data:
+            job_id: "9be8f5db-fab8-4b07-a32c-64c0726f135g"
+            details: "Ingestion in progress."
+            merchant_statuses:
+                merchant_id: "123456"
+                status: "REQUESTED"

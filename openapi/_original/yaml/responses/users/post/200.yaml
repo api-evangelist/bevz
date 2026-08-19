@@ -1,0 +1,9 @@
+description: New Integrator User successfully added
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: New Integrator User successfully added

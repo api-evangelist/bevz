@@ -1,0 +1,25 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+    examples:
+      "Unable to update order status from incorrect state":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Unable to update Order status from COMPLETED to ACCEPTED
+      "Invalid order status":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Invalid order status!
+      "Store is disabled, unable to perform this action":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Store is disabled, unable to perform this action.

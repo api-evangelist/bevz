@@ -1,0 +1,27 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+    examples:
+      "Unable to generate checkout link! Store status is currently trialing":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Unable to generate checkout link! Store status is currently trialing"
+      "Unable to generate checkout link! Store status is currently active":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Unable to generate checkout link! Store status is currently active"
+      "Unable to generate checkout link! Store status is currently cancelling":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Unable to generate checkout link! Store status is currently cancelling"

@@ -1,0 +1,7 @@
+description: Successfuly retrieved store
+content:
+  application/json:
+    schema:
+      type: array
+      items:
+        $ref: "../../../schemas/integrator-store.yaml"

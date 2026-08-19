@@ -1,0 +1,14 @@
+description: Successfully fetched Order List
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        next_page:
+          type: string
+          description: Token for fetching the next page of results, if available.
+          example: fb867d3b-d41f-4aaf-8b70-a7ffc7614ea0
+        data:
+          type: array
+          items:
+            $ref: "../../../schemas/Orders/order.yaml"

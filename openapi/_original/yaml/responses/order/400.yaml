@@ -1,0 +1,21 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      '"orderNotificationUrl" is required':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"orderNotificationUrl" is required'
+      '"orderNotificationUrl" must be a string':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"orderNotificationUrl" must be a string'

@@ -1,0 +1,15 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+    examples:
+      "Invalid orderId!":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Invalid orderId!

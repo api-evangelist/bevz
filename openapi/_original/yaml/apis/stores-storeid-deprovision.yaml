@@ -1,0 +1,47 @@
+post:
+  tags:
+    - Stores
+  operationId: removeStore
+  summary: Deprovision store
+  description: |
+    Remove a store's integration from your integrator account.
+
+    Use this endpoint to deprovision (disconnect) a store that is currently linked to your integrator account.  
+    Deprovisioning a store revokes your management access, disables menu management and order processing for your integration, and makes the store available for other partners to provision if needed.
+
+    > **Note:**
+    This action only affects your integrator's access. The store record remains in the Bevz platform and can be re-provisioned by another partner in the future.
+  
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-deprovision/post/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-deprovision/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

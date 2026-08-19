@@ -1,0 +1,32 @@
+post:
+  summary: Store Status Webhook
+  description: |
+    This webhook is triggered by Bevz to notify your integration when store settings are updated in real time.
+
+    Whenever tracked store fields change (such as operating hours or delivery settings), Bevz will send an HTTP POST request to your configured webhook endpoint.
+
+    The request body will contain only the fields that changed, allowing you to efficiently sync your internal systems.
+
+    | **Event**                      | **Description**                                                   |
+    |--------------------------------|-------------------------------------------------------------------|
+    | `store_settings_updated`       | When a store's tracked settings (hours, delivery settings) change.|
+
+    ### Tracked Fields
+
+    The following store fields are monitored for changes:
+
+    | **Field**            | **Description**                                                        |
+    |----------------------|------------------------------------------------------------------------|
+    | `hours`              | Store operating hours for each day of the week.                        |
+    | `deliverySettings`   | Configuration settings for supported delivery services (DoorDash, Grubhub, Uber Eats). |
+
+  operationId: storeStatusWebhook
+  tags:
+    - Webhooks
+  responses:
+    200:
+      description: Success
+      content:
+        application/json:
+          schema:
+              $ref: "../schemas/store-status-webhook.yaml"

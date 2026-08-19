@@ -1,0 +1,81 @@
+type: object
+description: |
+  Represents a menu upload payload for an integrator on the Bevz platform.
+  This schema allows integrators to upload or synchronize their store menu, with support for custom column mappings and detailed product information.
+  Use this object to create or update a store's menu via the API.
+required:
+  - menu
+properties:
+  upc_column_name:
+    type: string
+    description: |
+      If the UPC attribute in your `menu` object uses a different key (e.g., `upc_code` instead of `upc`), specify the custom column name here.
+      This allows flexible mapping between your data and Bevz's expected fields.
+    example: upc_code
+  price_column_name:
+    type: string
+    description: |
+      If the price attribute in your `menu` object uses a different key (e.g., `menu_price` instead of `price`), specify the custom column name here.
+    example: menu_price
+  name_column_name:
+    type: string
+    description: |
+      If the name attribute in your `menu` object uses a different key (e.g., `item_name` instead of `name`), specify the custom column name here.
+    example: product_name
+  stockcount_column_name:
+    type: string
+    description: |
+      If the stock count attribute in your `menu` object uses a different key (e.g., `stock` instead of `stockCount`), specify the custom column name here.
+    example: stock
+  menu:
+    type: array
+    description: |
+      Array of menu items to be uploaded.  
+      Each object in the array represents a product to be added or updated in the store's menu.
+    items:
+      type: object
+      required:
+        - name
+        - upc
+        - price
+      properties:
+        name:
+          type: string
+          description: The product name.
+          example: Ben & Jerry's the Tonight Dough (16 oz)
+        upc:
+          type: string
+          description: |
+            The Universal Product Code (UPC) is a unique 12-digit number assigned to each product.
+            Used for product identification, inventory control, and price comparison.
+          example: "76840485116"
+        price:
+          type: string
+          description: The in-store price of the product.
+          example: "8.90"
+        merchantSuppliedId:
+          type: string
+          description: |
+            Optional field representing the integrator's internal product ID for improved product mapping.
+            Can be any string value.
+          example: "e3260b0aa450"
+        description:
+          type: string
+          description: Custom product description for your inventory.
+          example: "Ben and Jerry's The Tonight Dough Caramel & Chocolate Ice Cream"
+        stock:
+          type: string
+          description: Number of units available in your inventory.
+          example: "10"
+        size:
+          type: string
+          description: The product's unit size or packaging.
+          example: "1 Pint"
+        quantity:
+          type: string
+          description: The product quantity or packaging type (e.g., "Single", "Pack").
+          example: "Single"
+        imageurl:
+          type: string
+          description: URL of the product image.
+          example: https://bevz-media.s3-us-west-1.amazonaws.com/example.png

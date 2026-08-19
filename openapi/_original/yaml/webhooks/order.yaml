@@ -1,0 +1,28 @@
+post:
+  summary: Order Notification Webhook
+  description: |
+    This webhook is triggered by Bevz to notify your integration of order-related events in real time.
+
+    Whenever a relevant order event occurs (such as a new order, status update, or cancellation), Bevz will send an HTTP POST request to your configured webhook endpoint.  
+    
+    The request body will contain the full order payload, allowing you to process, acknowledge, or update your internal systems accordingly.
+
+    | **Type**                    | **Description**                                           |
+    |-----------------------------|-----------------------------------------------------------|
+    | `order.pending`             | When a new order is created and awaiting acceptance.      |
+    | `order.accepted`            | When the order has been accepted by the store.            |
+    | `order.out_for_delivery`    | When the order is out for delivery.                       |
+    | `order.completed`           | When the order has been successfully delivered/completed. |
+    | `order.rejected`            | When the order has been rejected by the store.            |
+    | `order.canceled`            | When the order has been canceled by the customer or store.|
+
+  operationId: orderWebhook
+  tags:
+    - Webhooks
+  responses:
+    200:
+      description: Success
+      content:
+        application/json:
+          schema:
+              $ref: "../schemas/order-webhook.yaml"

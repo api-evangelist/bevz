@@ -1,0 +1,92 @@
+allOf:
+  - $ref: "#/components/schemas/DeliverySettings"
+  - type: object
+    required:
+      - isExisting
+    properties:
+      isExisting:
+        type: boolean
+        description: |
+          Indicates if the store already exists on the selected delivery service.
+      data:
+        type: object
+        required:
+          - storeId
+          - firstName
+          - lastName
+          - email
+          - phone
+          - legalBusinessName
+          - entity
+          - ein
+          - routingNumber
+          - accountNumber
+          - dob
+          - ssn
+        properties:
+          storeId:
+            type: string
+            description: Unique identifier for the store.
+            example: "dc89f739-4537-44df-8677-a805083ce2de"
+          firstName:
+            type: string
+            description: Store owner's first name.
+            example: John
+          lastName:
+            type: string
+            description: Store owner's last name.
+            example: Doe
+          email:
+            type: string
+            description: Store owner's email address.
+            example: john.doe@email.com
+          phone:
+            type: string
+            description: Store owner's phone number.
+            example: "2344345435"
+          legalBusinessName:
+            type: string
+            description: Official legal name of the business entity.
+            example: "Bevz Test Business"
+          entity:
+            type: string
+            description: |
+              Type of business entity.
+              Allowed values: `sole_proprietorship`, `partnership`, `c_corporation`, `s_corporation`, `limited_liability_company`.
+            example: "sole_proprietorship"
+          ein:
+            type: string
+            description: Employer Identification Number (EIN) for the business. Must be numbers only.
+            pattern: '^[\d*]+$'
+            example: "123456789"
+          routingNumber:
+            type: string
+            description: Bank routing number for ACH transfers. Must be numbers only.
+            pattern: '^[\d*]+$'
+            example: "021000021"
+          accountNumber:
+            type: string
+            description: Bank account number for deposits and withdrawals. Must be numbers only.
+            pattern: '^[\d*]+$'
+            example: "000123456789"
+          dob:
+            type: string
+            description: Date of birth of the legal representative (MM/DD/YYYY).
+            example: "09/25/1995"
+          ssn:
+            type: string
+            description: Last 4 digits of the Social Security Number (SSN) of the legal representative. Must be 4 digits only.
+            pattern: '^\d{4}$'
+            example: "1234"
+          taxRate:
+            type: string
+            description: Sales tax rate for the store (optional).
+            example: "8.75"
+          carriesCbd:
+            type: boolean
+            description: Indicates if the store carries CBD products (optional).
+            example: false
+          carriesOralNicotine:
+            type: boolean
+            description: Indicates if the store carries oral nicotine products (optional).
+            example: false

@@ -1,0 +1,82 @@
+parameters:
+  - name: integrator_id
+    in: path
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: Unique identifier for the integrator.
+  - name: store_id
+    in: path
+    required: true
+    schema:
+      type: string
+      format: uuid
+    description: Unique identifier for the store.
+  - name: Authorization
+    in: header
+    required: true
+    schema:
+      type: string
+    description: |
+      JWT token for authenticating API requests.  
+    example: Bearer yourJWTtoken
+
+get:
+  tags:
+    - Stores
+  operationId: getIntegratorStore
+  summary: Get Store by store_id
+  description: |
+    Retrieve detailed information about a specific store using its unique `store_id`.
+
+    Use this endpoint to fetch all available data for a store, including its identity, contact information, operational status, integration settings, and delivery service configurations.
+
+    For details on the store object schema, see [Store](#tag/models/Store).
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid/get/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid/get/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+
+patch:
+  tags:
+    - Stores
+  operationId: patchStore
+  summary: Update Store Details
+  description: |
+    Update one or more fields for a specific store.
+
+    Use this endpoint to modify store attributes such as name, contact information, address, operational hours, or integration settings.
+    Only the fields provided in the request body will be updated; all other fields will remain unchanged.
+
+    > **Note:**
+    At least one field must be included in the request body to perform an update.
+
+    #### Example Usage
+
+    - Update the store's phone number or email address.
+    - Change the store's operational hours or address.
+    - Modify delivery service integration settings.
+
+  requestBody:
+    description: |
+      JSON payload containing the fields to update for the store.
+      All fields are optional, but at least one field must be provided.
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/patch-store.yaml"
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid/patch/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid/patch/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

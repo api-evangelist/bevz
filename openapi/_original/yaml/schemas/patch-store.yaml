@@ -1,0 +1,107 @@
+type: object
+description: |
+  Represents the payload for updating (patching) store details on the Bevz platform.
+  Only the fields provided in the request body will be updated; all other fields will remain unchanged.
+  Use this schema to update store information, operational hours, tax rate, and delivery service integration settings.
+
+properties:
+  name:
+    type: string
+    description: Updated display name for the store.
+    example: "Update Test Store Name"
+  phoneNumber:
+    type: string
+    description: Updated primary contact phone number for the store.
+    example: "17000000000"
+  enabled:
+    type: boolean
+    description: Indicates whether the store is active and can operate in the app.
+    example: true
+  taxRate:
+    type: string
+    description: Sales tax rate (%) to be applied to purchases at this store.
+    example: "9.5"
+  hours:
+    type: array
+    description: |
+      List of updated store operating hours for specific days of the week.
+      Each entry specifies the opening and closing times, as well as the days these hours apply.
+      Use multiple entries to represent different schedules (e.g., split shifts or varying hours).
+    items:
+      type: object
+      properties:
+        openTime:
+          type: string
+          description: Opening time in 12-hour format with AM/PM.
+          example: 03:30 AM
+        closeTime:
+          type: string
+          description: Closing time in 12-hour format with AM/PM.
+          example: 02:00 PM
+        days:
+          type: array
+          description: |
+            List of days of the week when these hours apply.
+            Use the following mapping:
+              * 1 = Sunday
+              * 2 = Monday
+              * 3 = Tuesday
+              * 4 = Wednesday
+              * 5 = Thursday
+              * 6 = Friday
+              * 7 = Saturday
+            You can specify multiple days in a single entry (e.g., `[2, 3, 4, 5, 6]` for Monday–Friday).
+          items:
+            type: integer
+            minimum: 1
+            maximum: 7
+          example: [1, 2, 3]
+  address:
+    $ref: 'CreateStore/Address.yaml'
+  deliverySettings:
+    type: object
+    description: |
+      Configuration settings for a specific delivery service integration (e.g., DoorDash, Grubhub, Uber Eats).
+      Use this object to enable/disable the service, adjust commission rates, or update integration-specific options.
+    required:
+      - type
+      - settings
+    properties:
+      type:
+        type: string
+        description: |
+          The delivery service to update. Allowed values: `doordash`, `grubhub`, `uberEats`.
+        example: doordash
+      settings:
+        type: object
+        description: Settings specific to the selected delivery service.
+        properties:
+          enabled:
+            type: boolean
+            description: Enable or disable this delivery service for the store.
+            example: true
+          percentToCharge:
+            type: number
+            description: |
+              Commission percentage to apply to all product prices for this delivery service.
+              Value must be between 1 and 100.
+            example: 1
+          roundPrice:
+            type: boolean
+            description: |
+              Set to `true` to round product prices to the nearest $x.99 for this service.
+            example: false
+          reason:
+            type: string
+            description: |
+              Reason for updating the delivery service settings.
+              **Allowed Values:**
+                - out_of_business
+                - operational_issues
+                - delete_store
+                - payment_issue
+                - store_self_disabled_in_their_POS_portal
+                - store_pos_connectivity_issues
+          notes:
+            type: string
+            description: Additional notes or comments regarding the update.

@@ -1,0 +1,60 @@
+put:
+  tags:
+    - integrator_users
+  operationId: putUser
+  summary: Update Integrator User Access
+  description: |
+    Update the access status of a user account under a specific integrator.
+
+    Use this endpoint to activate or deactivate a user's access to your integrator account.  
+    This is useful for managing team members, onboarding new users, or revoking access for users who no longer require it.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: user_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the user.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - active
+          properties:
+            active:
+              type: boolean
+              description: Set to `true` to activate the user, or `false` to deactivate.
+              example: true
+
+  responses:
+    "200":
+      $ref: "../responses/users-userid/put/200.yaml"
+    "400":
+      $ref: "../responses/users-userid/put/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+    "404":
+      $ref: "../responses/users-userid/put/404.yaml"

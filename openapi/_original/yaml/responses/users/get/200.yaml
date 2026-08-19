@@ -1,0 +1,7 @@
+description: Retrieved Integrator users
+content:
+  application/json:
+    schema:
+      type: array
+      items:
+        $ref: "../../../schemas/user.yaml"

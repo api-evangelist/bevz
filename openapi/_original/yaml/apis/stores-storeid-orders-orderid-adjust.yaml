@@ -1,0 +1,199 @@
+post:
+  tags:
+    - Order
+  operationId: postOrderAdjustment
+  summary: Post Order Adjustment
+  description: |
+
+    ### Adjust Items in an Order
+
+    Use this endpoint to update, remove, or substitute items in an existing order—especially when fulfilling orders from delivery platforms like DoorDash, Uber Eats, and GrubHub.
+    This allows you to keep the order accurate and up-to-date if items are out of stock, need to be replaced, or require quantity changes.
+
+    #### Supported Delivery Services
+
+    | Service | ITEM_UPDATE | ITEM_REMOVE | ITEM_SUBSTITUTE |
+    |---------|-------------|-------------|-----------------|
+    | DOORDASH | ✓ | ✓ | ✓ |
+    | UBEREATS | ✓ | ✓ | ✓ |
+    | GRUBHUB | ✓ | ✓ | ✗ |
+
+    > **Note:**
+    > GrubHub only supports `ITEM_UPDATE` and `ITEM_REMOVE` adjustment types. Substitutions are not available for GrubHub orders.
+
+    #### Supported Adjustment Types
+
+    - **ITEM_UPDATE**: Change the quantity of an item in the order (e.g., customer requests fewer units).
+    - **ITEM_REMOVE**: Remove an item that cannot be fulfilled from the order.
+    - **ITEM_REMOVE with turn off**: Remove an item and temporarily hide it from your menu for a specified duration.
+    - **ITEM_SUBSTITUTE** *(DoorDash & Uber Eats only)*: Replace an unavailable item with a substitute product.
+    - **ITEM_SUBSTITUTE with turn off** *(DoorDash & Uber Eats only)*: Substitute an item and also temporarily turn off the original item from your menu.
+
+    #### Turn Off Duration Options
+
+    When using `turn_off: true`, specify the duration with `turn_off_duration`:
+    - `"7d"` - Turn off for 7 days
+    - `"30d"` - Turn off for 30 days
+    - `"never"` - Turn off indefinitely (until manually re-enabled)
+
+    #### How It Works
+
+    - Specify the delivery service (`DOORDASH`, `UBEREATS`, or `GRUBHUB`) and provide an array of item adjustments.
+    - For each item, indicate the adjustment type and provide relevant details (such as new quantity, substitute item info, or turn-off duration).
+    - The system will update the order accordingly and, if requested, update menu availability for the affected items.
+    - **Important:** The order must be in `ACCEPTED` state to allow adjustments.
+
+    #### Example Scenarios
+
+    - **A customer orders two sodas, but only one is available:**
+      Use `ITEM_UPDATE` to adjust the quantity.
+    - **An item is out of stock:**
+      Use `ITEM_REMOVE` to remove it, and optionally set `turn_off` to temporarily hide it from your menu.
+    - **A product is unavailable, but you can offer a substitute (DoorDash/Uber Eats):**
+      Use `ITEM_SUBSTITUTE` and provide the substitute item details.
+
+    #### Notes
+      - For substitutions, provide the replacement item details in the `adjustments` object (requires `productId`, `name`, `quantity`, and `price`).
+      - Use `turn_off` and `turn_off_duration` to temporarily hide unavailable items from your menu.
+      - GrubHub orders only allow one adjustment per order.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: order_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the order within the store.
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/OrderAdjustment/OrderAdjustment.yaml"
+          
+        examples:
+          "Item Update":
+            value:
+              deliveryService: "DOORDASH"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_UPDATE"
+                  quantity: 1
+          "Item Remove":
+            value:
+              deliveryService: "DOORDASH"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_REMOVE"
+          "Item Remove with Turn Off":
+            value:
+              deliveryService: "DOORDASH"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_REMOVE"
+                  turn_off: true
+                  turn_off_duration: "7d"
+          "Item Substitute - DD":
+            value:
+              deliveryService: "DOORDASH"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_SUBSTITUTE"
+                  adjustments:
+                    productId: "94b653e4-e394-4330-a714-43e764abe843"
+                    name: "Coke 1.75ml"
+                    quantity: 1
+                    price: 17.99
+          "Item Substitute with Turn Off - DD":
+            value:
+              deliveryService: "DOORDASH"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_SUBSTITUTE"
+                  adjustments:
+                    productId: "94b653e4-e394-4330-a714-43e764abe843"
+                    name: "Coke 1.75ml"
+                    quantity: 1
+                    price: 17.99
+                  turn_off: true
+                  turn_off_duration: "7d"
+          "Item Substitute - UE":
+            value:
+              deliveryService: "UBEREATS"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_SUBSTITUTE"
+                  adjustments:
+                    productId: "94b653e4-e394-4330-a714-43e764abe843"
+                    name: "Pepsi 1.5L"
+                    quantity: 1
+                    price: 17.99
+          "Item Substitute with Turn Off - UE":
+            value:
+              deliveryService: "UBEREATS"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_SUBSTITUTE"
+                  adjustments:
+                    productId: "94b653e4-e394-4330-a714-43e764abe843"
+                    name: "Coke 1.75ml"
+                    quantity: 1
+                    price: 17.99
+                  turn_off: true
+                  turn_off_duration: "7d"
+          "Item Update - GH":
+            value:
+              deliveryService: "GRUBHUB"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_UPDATE"
+                  quantity: 1
+          "Item Remove - GH":
+            value:
+              deliveryService: "GRUBHUB"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_REMOVE"
+          "Item Remove with Turn Off - GH":
+            value:
+              deliveryService: "GRUBHUB"
+              items:
+                - productId: "94b653e4-e394-4330-a714-43e764abe843"
+                  adjustmentType: "ITEM_REMOVE"
+                  turn_off: true
+                  turn_off_duration: "7d"
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-orders-orderid-adjust/post/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-orders-orderid-adjust/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+    "404":
+      $ref: "../responses/stores-storeid-orders-orderid-adjust/post/404.yaml"

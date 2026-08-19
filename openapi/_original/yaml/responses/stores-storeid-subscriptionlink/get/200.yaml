@@ -1,0 +1,17 @@
+description: Sucessful
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Generated subcription management portal
+        data:
+            type: array
+            items:
+              type: object
+              properties:
+                customerPortalLink:
+                  type: string
+                  example: "https://billing.stripe.com/p/session/longstringhere"

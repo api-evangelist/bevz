@@ -1,0 +1,12 @@
+description: Successful Bevz subscription
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        storeId:
+          type: string
+          example: "831fd907-b455-4e92-828b-2e5421d057d7"
+        checkoutLink: 
+          type: string
+          example: "https://checkout.stripe.com/c/pay/longstringhere"

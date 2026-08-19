@@ -1,0 +1,5 @@
+description: Successfully provisioned store with Ubereats
+content:
+  application/json:
+    schema:
+      $ref: "../../../schemas/store.yaml"

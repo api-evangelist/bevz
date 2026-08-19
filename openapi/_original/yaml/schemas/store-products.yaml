@@ -1,0 +1,97 @@
+type: object
+description: |
+  Represents a product available for sale in a specific store on the Bevz platform.
+  This schema includes product identity, categorization, inventory, pricing, and availability details.
+  Use this object to view, create, or update store product records via the API.
+properties:
+  storeId:
+    type: string
+    description: Unique identifier for the store where this product is listed.
+    example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+  productId:
+    type: string
+    description: Unique identifier for the product within the Bevz system.
+    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+  quantity:
+    type: string
+    description: Unit quantity or packaging type for the product (e.g., "Single", "Pack", "Case").
+    example: Single
+  size:
+    type: string
+    description: Size or volume of the product, including packaging details.
+    example: 375.00 ML Glass Bottle
+  upc:
+    type: string
+    description: Universal Product Code (UPC) for the product.
+    example: "082000003809"
+  categoryL1:
+    type: string
+    description: Top-level product category (e.g., "Liquor", "Snacks").
+    example: Liquor
+  categoryL2:
+    type: string
+    description: Second-level product category (e.g., "Rum", "Chips").
+    example: Rum
+  name:
+    type: string
+    description: Display name of the product.
+    example: Captain Morgan White Rum
+  stockCount:
+    type: integer
+    description: Current inventory count for this product in the store.
+    example: 1
+  images:
+    type: array
+    description: List of image URLs representing the product.
+    items:
+      type: string
+      format: uri
+    example: []
+  forSale:
+    type: boolean
+    description: Indicates if the product is currently available for sale in the store.
+    example: true
+  inStorePrice:
+    type: number
+    format: float
+    description: Price of the product for in-store purchases (in store's currency).
+    example: 7.99
+  isAvailableOnDoorDash:
+    type: boolean
+    description: Indicates if the product is available for sale on DoorDash.
+    example: true
+  merchantSuppliedId:
+    type: string
+    description: Optional merchant-supplied identifier for the product (e.g., SKU or barcode).
+    example: "72518102101"
+  prices:
+    type: object
+    description: |
+      Channel-specific pricing for the product.
+      Use these fields to set or view prices for each supported delivery service.
+    properties:
+      doordashPrice: 
+        type: number
+        format: float
+        description: Price of the product on DoorDash.
+        example: 8.99
+      uberEatsPrice: 
+        type: number
+        format: float
+        description: Price of the product on Uber Eats.
+        example: 0
+      grubhubPrice: 
+        type: number
+        format: float
+        description: Price of the product on Grubhub.
+        example: 0
+  createdAt:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when the product was added to the store.
+    example: "2023-02-13T07:00:30.895Z"
+  updatedAt:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when the product was last updated.
+    example: "2023-02-13T07:00:30.895Z"

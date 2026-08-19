@@ -1,0 +1,15 @@
+# x-tags:
+# - menu
+type: object
+properties:
+  id:
+    type: string
+  email:
+    type: string
+    example: developer@bevz.com
+  client:
+    type: string
+    description: Integrator | Portal | Retailer
+    example: Integrator
+  scope:
+    type: string

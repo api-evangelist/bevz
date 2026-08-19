@@ -1,0 +1,34 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+          example:
+            - '"email" must be a string'
+    examples:
+      "Cannot  deprovision, store is already provisioned with another Bevz Integrator":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Cannot  deprovision, store is already provisioned with another Bevz Integrator"
+      "Cannot deprovision, store must be offline to continue deprovisioning":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Cannot deprovision, store must be offline to continue deprovisioning"
+      "Store is currently not provisioned with any Integrator":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Store is currently not provisioned with any Integrator
+      "Cannot deprovision, store does not exist in Bevz":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Cannot deprovision, store does not exist in Bevz"

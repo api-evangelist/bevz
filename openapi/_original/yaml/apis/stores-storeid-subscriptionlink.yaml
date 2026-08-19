@@ -1,0 +1,59 @@
+post:
+  tags:
+    - Stores
+  operationId: getSubscriptionLink
+  summary: Get Subscription Link
+  description: |
+    Generate a subscription management link for a specific store.
+
+    Use this endpoint to provide your customers with a convenient and user-friendly way to manage their subscriptions, such as updating payment methods, or viewing billing history.
+  
+  parameters:
+  - name: integrator_id
+    in: path
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: Unique identifier for the integrator.
+  - name: store_id
+    in: path
+    required: true
+    schema:
+      type: string
+      format: uuid
+    description: Unique identifier for the store.
+  - name: Authorization
+    in: header
+    required: true
+    schema:
+      type: string
+    description: |
+      JWT token for authenticating API requests.  
+    example: Bearer yourJWTtoken
+
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - orderNotificationUrl
+          properties:
+            callback_url:
+              type: string
+              description: URL to redirect the user after subscription management actions are completed.
+              example: "https://retailer.bevz.com"
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-subscriptionlink/get/200.yaml" 
+    "400":
+      $ref: "../responses/stores-storeid-subscriptionlink/get/400.yaml" 
+    "401":
+      $ref: "../responses/shared/401.yaml" 
+    "403":
+      $ref: "../responses/shared/403.yaml" 
+    "404":
+      $ref: "../responses/stores-storeid-subscriptionlink/get/404.yaml"
+
+  

@@ -1,0 +1,31 @@
+description: Successfully retrieved lotto scratcher games
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        api_version:
+          type: string
+          example: "1.12.0"
+        status_code:
+          type: integer
+          example: 200
+        message:
+          type: string
+          example: "Successfully retrieved lotto scratcher games"
+        next_page:
+          type: string
+          nullable: true
+          example: "eyJzb3VyY2UiOiJDVF9MT1RURVJZIiwiZ2FtZUlkIjoiY3RfbG90dGVyeV8xODUyIn0="
+        count:
+          type: integer
+          example: 42
+        errors:
+          type: array
+          items:
+            type: string
+          example: []
+        data:
+          type: array
+          items:
+            $ref: "../../../schemas/lotto-scratcher-game.yaml"

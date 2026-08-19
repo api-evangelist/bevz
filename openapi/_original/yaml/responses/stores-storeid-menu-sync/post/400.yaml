@@ -1,0 +1,32 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+          items:
+              type: string
+    examples:
+      Delivery settings not configured:
+        summary: Delivery settings not configured
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - DoorDash|Grubhub|UberEats is not configured on this store, please contact your Bevz administrator.
+      Not authorized to use service:
+        summary: Not authorized to use service
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Not authorized to use DoorDash|Grubhub|UberEats.
+      Service disabled on store:
+        summary: Service disabled on store
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - DoorDash|Grubhub|UberEats is disabled on this store, cannot proceed on syncing.
+      

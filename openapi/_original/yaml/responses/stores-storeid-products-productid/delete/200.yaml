@@ -1,0 +1,9 @@
+description: Successfully deleted store product
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Successfully deleted store product

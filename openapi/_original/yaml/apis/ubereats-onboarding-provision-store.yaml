@@ -1,0 +1,67 @@
+post:
+  tags:
+    - Uber Eats Onboarding API Workflow
+  operationId: provisionStore
+  summary: Step 3. Provision Store on Uber Eats
+  description: |
+    Use this endpoint as the final step in the Uber Eats onboarding process.
+
+    After obtaining an access token and the Uber Eats store ID, call this endpoint to link the store in your system with its Uber Eats counterpart.
+
+    This enables menu synchronization, order management, and other integration features between your platform and Uber Eats.
+
+    #### When to Use
+
+    - After successfully exchanging the authorization code for an access token and retrieving the Uber Eats store ID.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+    
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            access_token:
+              type: string
+              description: The access token received from Uber Eats after exchanging the authorization code.
+              example: "IA.AQAAAATvVfIsrU8lhn6bW4Z_vF9dft4qmTc0d3uLh6T3pQ"
+            uber_store_id:
+              type: string
+              description: The unique identifier for the store on Uber Eats platform.
+              example: "12345678-9abc-def0-1234-56789abcdef"
+          required:
+            - access_token
+            - uber_store_id
+
+  responses:
+    "200":
+      $ref: "../responses/ubereats-onboarding-provision-store/post/200.yaml"
+    "400":
+      $ref: "../responses/ubereats-onboarding-provision-store/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

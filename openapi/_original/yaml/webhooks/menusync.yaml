@@ -1,0 +1,19 @@
+post:
+  summary: Menu Upload Webhook
+  description: |
+    This webhook is triggered by Bevz to notify your integration of menu upload events in real time.
+
+    Whenever a menu upload is processed (in progress, completed, or failed), Bevz will send an HTTP POST request to your configured webhook endpoint.  
+    
+    The request body will contain details about the menu upload status, including an error file.
+
+  operationId: menuUploadWebhook
+  tags:
+    - Webhooks
+  responses:
+    200:
+      description: Success
+      content:
+        application/json:
+          schema:
+              $ref: "../schemas/menu.yaml"

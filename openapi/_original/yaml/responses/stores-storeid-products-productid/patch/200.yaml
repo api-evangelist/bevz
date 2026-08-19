@@ -1,0 +1,9 @@
+description: Successfully updated store product
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Successfuly updated store product

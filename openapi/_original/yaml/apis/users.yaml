@@ -1,0 +1,86 @@
+parameters:
+  - name: integrator_id
+    in: path
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: Unique identifier for the integrator.
+  - name: Authorization
+    in: header
+    required: true
+    schema:
+      type: string
+    description: |
+      JWT token for authenticating API requests.  
+    example: Bearer yourJWTtoken
+    
+get:
+  tags:
+    - integrator_users
+  operationId: getUser
+  summary: Retrieve All Integrator User Access
+  description: |
+    Retrieve a list of all user accounts associated with a specific integrator.
+
+    Use this endpoint to:
+    - View all users who have access to your integrator account.
+    - Audit user roles, statuses, and contact information.
+    - Manage access and permissions for your integration team.
+
+  responses:
+    "200":
+      $ref: "../responses/users/get/200.yaml"
+    "400":
+      $ref: "../responses/users/get/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+    "404":
+      $ref: "../responses/users/get/404.yaml"
+
+post:
+  tags:
+    - integrator_users
+  operationId: postUser
+  summary: Create Integrator User
+  description: |
+    Create a new user account under your integrator account.
+
+    Use this endpoint to add additional users (such as developers or admins) who require access to your integrator account.  
+    Each user will receive their own login credentials and can be managed independently.
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          # $ref: "../schemas/user.yaml"
+          type: object
+          required:
+            - integrator_id
+            - email
+            - password
+          properties:
+            integrator_id:
+              type: integer
+              description: Unique identifier of the integrator to which this user belongs.
+              example: 220510005
+            email:
+              type: string
+              description: Email address registered for the user. 
+              example: sample_email@bevz.com
+            password:
+              type: string
+              description: Password for the user account. 
+              example: sample_password
+  responses:
+    "200":
+      $ref: "../responses/users/post/200.yaml"
+    "400":
+      $ref: "../responses/users/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

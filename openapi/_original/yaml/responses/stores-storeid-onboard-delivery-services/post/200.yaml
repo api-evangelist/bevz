@@ -1,0 +1,24 @@
+description: Successful
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        data:
+          type: object
+          properties:
+            link:
+              type: string
+              description: Grubhub jotform link with prefilled store information (grubhub only).
+    examples:
+      doordash:
+        summary: DoorDash
+        value:
+          message: Successfully onboarded DoorDash delivery service
+      grubhub:
+        summary: Grubhub
+        value:
+          message: Your application to Grubhub was successfully submitted. Grubhub Representative will reach out to you to help get started with Grubhub.
+          link: https://grubhub.jotform.com/231635658468872?storeName=Bevz+Test+Store

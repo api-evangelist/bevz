@@ -1,0 +1,63 @@
+generated: '2026-08-13'
+method: probed
+source: live HTTPS probes, 2026-08-13
+note: >-
+  Every /.well-known/ path below was probed on every Bevz host. NOTHING was served. This file records
+  a measured absence — no WellKnown or SecurityTxt pointer is wired into apis.yml, because the
+  provider serves no such document.
+result: no-documents-found
+documents_found: 0
+hosts:
+  - host: https://www.bevz.com
+    role: marketing site (Wix)
+    documents:
+      - {path: /.well-known/security.txt, status: 400, file: null}
+      - {path: /.well-known/openid-configuration, status: 400, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 400, file: null}
+      - {path: /.well-known/api-catalog, status: 400, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 400, file: null}
+      - {path: /.well-known/agent-card.json, status: 400, file: null}
+      - {path: /.well-known/agent.json, status: 400, file: null}
+    note: The Wix edge answers every /.well-known/* path with HTTP 400 and an HTML error body. No document is served.
+  - host: https://api.bevz.com
+    role: production API (AWS API Gateway)
+    documents:
+      - {path: /.well-known/security.txt, status: 403, file: null}
+      - {path: /.well-known/openid-configuration, status: 403, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 403, file: null}
+      - {path: /.well-known/oauth-protected-resource, status: 403, file: null}
+      - {path: /.well-known/api-catalog, status: 403, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 403, file: null}
+      - {path: /.well-known/agent-card.json, status: 403, file: null}
+      - {path: /.well-known/agent.json, status: 403, file: null}
+    note: 'API Gateway returns {"message":"Forbidden"} for every unrouted path. Nothing is published anonymously.'
+  - host: https://sandbox-api.bevz.com
+    role: sandbox API (AWS API Gateway)
+    documents:
+      - {path: /.well-known/security.txt, status: 403, file: null}
+      - {path: /.well-known/openid-configuration, status: 403, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 403, file: null}
+      - {path: /.well-known/oauth-protected-resource, status: 403, file: null}
+      - {path: /.well-known/api-catalog, status: 403, file: null}
+      - {path: /.well-known/agent-card.json, status: 403, file: null}
+      - {path: /.well-known/agent.json, status: 403, file: null}
+    note: Same gateway posture as production.
+  - host: https://docs.bevz.com
+    role: API documentation (static Redoc site)
+    documents:
+      - {path: /.well-known/security.txt, status: 404, file: null}
+      - {path: /.well-known/openid-configuration, status: 404, file: null}
+      - {path: /.well-known/oauth-authorization-server, status: 404, file: null}
+      - {path: /.well-known/api-catalog, status: 404, file: null}
+      - {path: /.well-known/ai-plugin.json, status: 404, file: null}
+      - {path: /.well-known/agent-card.json, status: 404, file: null}
+      - {path: /.well-known/agent.json, status: 404, file: null}
+    note: Clean 404s from a static host — an honest miss, not a catch-all.
+related_findings:
+  - >-
+    Although no /.well-known/ document exists, Bevz DOES serve an llms.txt at
+    https://www.bevz.com/llms.txt (HTTP 200) — saved to llms/bevz-llms.txt — and a live MCP endpoint
+    at https://www.bevz.com/_api/mcp. Both are Wix-platform-generated and neither lives under
+    /.well-known/.
+  - No OIDC or OAuth authorization-server metadata exists because Bevz does not run OAuth; the
+    Integrator Service authenticates with a bearer JWT minted from a password login.

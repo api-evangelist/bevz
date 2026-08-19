@@ -1,0 +1,5 @@
+description: Successfully fetched Order Details
+content:
+  application/json:
+    schema:
+      $ref: "../../../schemas/Orders/order.yaml"

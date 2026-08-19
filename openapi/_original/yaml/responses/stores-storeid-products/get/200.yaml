@@ -1,0 +1,96 @@
+description: Retrieved Store products
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        next_page:
+          type: string
+          example: fb867d3b-d41f-4aaf-8b70-a7ffc7614ea0
+          description: Token for fetching the next page of results, if more products are available.
+        data:
+          type: array
+          description: List of product objects for the store.
+          items:
+            type: object
+            properties:
+              quantity:
+                type: string
+                example: Single
+                description: The quantity or packaging unit of the product (e.g., Single, 6 Pack).
+              size:
+                type: string
+                example: 375.00 ML Glass Bottle
+                description: The size and packaging type of the product.
+              upc:
+                type: string
+                example: "082000003809"
+                description: Universal Product Code (UPC) for the product.
+              categoryL1:
+                type: string
+                example: Liquor
+                description: Top-level product category (e.g., Liquor, Beer, Wine).
+              categoryL2:
+                type: string
+                example: Rum
+                description: Second-level product category (e.g., Rum, Vodka).
+              createdAt:
+                type: string
+                example: "2024-06-24T01:56:49.901Z"
+                description: ISO 8601 timestamp when the product was created in the system.
+              storeId:
+                type: string
+                example: 80c7b843-bb32-4eda-acb8-bd39a6826561
+                description: Unique identifier for the store this product belongs to.
+              name:
+                type: string
+                example: Captain Morgan White Rum
+                description: Display name of the product.
+              isAvailableOnDoorDash:
+                type: boolean
+                example: true
+                description: Indicates if the product is available for sale on DoorDash.
+              stockCount:
+                type: integer
+                example: 1
+                description: Number of units of this product currently in stock.
+              updatedAt:
+                type: string
+                example: "2024-06-24T01:56:49.901Z"
+                description: ISO 8601 timestamp when the product was last updated.
+              images:
+                type: array
+                example: []
+                description: List of image URLs or image objects associated with the product.
+              forSale:
+                type: boolean
+                example: true
+                description: Indicates if the product is currently available for sale.
+              inStorePrice:
+                type: integer
+                example: 7.99
+                description: In-store price of the product (in dollars).
+              merchantSuppliedId:
+                type: string
+                example: "72518102101"
+                description: Identifier for the product as supplied by the merchant.
+              productId:
+                type: string
+                example: 3f67bb88-b89e-4359-8b84-edfef9950b16
+                description: Unique identifier for the product in the system.
+              prices:
+                type: object
+                description: Object containing delivery service-specific prices for the product.
+                properties:
+                  doordashPrice: 
+                    type: integer
+                    example: 8.99
+                    description: Price of the product on DoorDash (in dollars).
+                  uberEatsPrice: 
+                    type: integer
+                    example: 0
+                    description: Price of the product on Uber Eats (in dollars).
+                  grubhubPrice: 
+                    type: integer
+                    example: 0
+                    description: Price of the product on Grubhub (in dollars).

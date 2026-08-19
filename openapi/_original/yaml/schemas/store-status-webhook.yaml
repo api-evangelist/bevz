@@ -1,0 +1,33 @@
+type: object
+description: |
+  Payload sent to your webhook endpoint when tracked store settings are updated.
+  Only the fields that changed are included in the `data` object.
+properties:
+  event:
+    type: string
+    description: The type of event that triggered this webhook.
+    example: store_settings_updated
+  bevzStoreId:
+    type: string
+    description: Unique identifier for the store whose settings changed.
+    example: 831fd907-b455-4e92-828b-2e5421d057d7
+  data:
+    type: object
+    description: |
+      Contains only the store fields that changed. Possible fields include `hours` and `deliverySettings`.
+    properties:
+      hours:
+        type: array
+        description: Updated store operating hours (included only if hours changed).
+        items:
+          $ref: "hours.yaml"
+      deliverySettings:
+        type: object
+        description: Updated delivery service settings (included only if delivery settings changed).
+        properties:
+          doordash:
+            $ref: "DeliverySettings/DeliverySettingsDD.yaml"
+          grubhub:
+            $ref: "DeliverySettings/DeliverySettingsGH.yaml"
+          uberEats:
+            $ref: "DeliverySettings/DeliverySettingsUE.yaml"

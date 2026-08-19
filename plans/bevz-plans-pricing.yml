@@ -1,0 +1,69 @@
+generated: '2026-08-13'
+method: searched
+source: https://www.bevz.com/pricing
+note: >-
+  Bevz publishes retail SaaS pricing for the merchant-facing product (the iPad + software bundle sold
+  to liquor and convenience stores). It publishes NO pricing, plan, quota or commercial term for the
+  Integrator Service API — API access is a partner arrangement negotiated with an Integrator Account
+  Manager, so the tiers below price the product, not the API.
+currency: USD
+billing_period: monthly
+plan_count: 3
+api_pricing_published: false
+api_pricing_note: >-
+  There is no developer/API plan page, no per-call price, and no published quota. Integrator access is
+  granted by contacting support@bevz.com; commercial terms are not disclosed publicly.
+trial:
+  offered: true
+  length: one month
+  terms: 'Published as "One month free trial", "No upfront fees" and "No contract".'
+plans:
+  - name: Basic
+    price: 99
+    currency: USD
+    period: month
+    price_display: $99/mo
+    summary: The basic essentials for your store.
+    included:
+      - Bevz iPad & Software
+      - Menu Management & Optimization
+      - Product Catalog — 215,000+ pre-loaded items
+      - Reporting+ — compare sales across each delivery service
+      - Delivery Services — connect DoorDash, GrubHub and Uber Eats on one tablet
+    api_access: not stated
+  - name: Growth
+    price: 149
+    currency: USD
+    period: month
+    price_display: $149/mo
+    summary: Enhanced tools and resources, perfect for maximizing your store's potential.
+    included:
+      - All features included in Basic
+      - Shop.Bevz — your own website-enabled delivery storefront
+      - Reach — online marketing boost
+    api_access: not stated
+  - name: Enterprise
+    price: null
+    currency: USD
+    period: month
+    price_display: contact sales
+    summary: For operators with 10+ stores.
+    onboarding: 'Schedule a call — "10+ stores? Schedule a call."'
+    api_access: not stated
+included_with_every_plan:
+  - Free iPad with integrated hardware and software
+  - Personalized onboarding
+  - Support & training
+  - Setup of multiple delivery apps
+  - Delivery app aggregation
+  - Menu optimization and management
+  - Best Seller List
+  - Built-in barcode scanner
+  - Reports & insights
+  - Extensive product catalog (215,000+ products)
+overage:
+  published: false
+limits_attached_to_tiers:
+  published: false
+  note: No per-tier API call quota, store count cap (other than the 10+ store Enterprise threshold), or rate limit is published.
+contact: support@bevz.com

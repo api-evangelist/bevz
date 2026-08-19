@@ -1,0 +1,238 @@
+|
+  ## 1.13.0 2026-04-20 (features)
+  ### features
+  - Added Georgia (`GA_LOTTERY`) and Florida (`FL_LOTTERY`) as supported sources in [**Get Lotto Scratcher Games**](#tag/Lotto-Scratcher-Games/operation/getLottoScratcherGames).
+
+  ## 1.12.0 2026-03-30 (updates)
+  ### features
+  - Added [**Store Status Webhook**](#tag/Webhooks/operation/storeStatusWebhook) to receive real-time notifications when store settings change (e.g., operating hours, delivery service configurations).
+
+  ## 1.11.3 2025-01-21 (updates)
+  ### updates
+  - Added GrubHub support for [**Post Order Adjustment API**](#tag/Order/operation/postOrderAdjustment).
+    - GrubHub now supports `ITEM_UPDATE` and `ITEM_REMOVE` adjustment types.
+    - Note: `ITEM_SUBSTITUTE` is not available for GrubHub orders.
+    - Only one adjustment per order is allowed for GrubHub.
+  - Updated `turn_off_duration` valid values to `"7d"`, `"30d"`, and `"never"` for all delivery services.
+  - Added `name` as a required field in the `adjustments` object for `ITEM_SUBSTITUTE` requests.
+  - Added GrubHub-specific schema and examples in the API documentation.
+
+  ## 1.11.2 2025-11-27 (minor updates)
+  ### updates
+  - Added delivery_type in the request body of [**Test Store Orders**](#tag/Order/operation/testStoreOrders) API for better order classification.
+
+  ## 1.11.1 2025-10-30 (minor updates)
+  ### updates
+  - Implemented [**Get Order by OrderId**](#tag/Order/operation/getOrderId) API.
+  - Added date_field in the query parameters of [**Get Store Orders**](#tag/Order/operation/getStoreOrders) API for better filtering.
+
+  ## 1.11.0 2025-10-06 (updates)
+  ### updates
+  - Added Order Adjustments workflow for DoorDash and Uber Eats in [**Post Order Adjustment API**](#tag/Order/operation/postOrderAdjustment).
+  - Updated Grubhub onboarding process in [**Delivery Services Onboarding API**](#tag/Pick-a-Delivery-Service-for-Onboarding-API/Grubhub-Onboarding).
+  - Added Uber Eats onboarding workflow in [**Uber Eats Onboarding API**](#tag/Uber-Eats-Onboarding-API-Workflow).
+
+  ## 1.10.8 2025-09-04 (minor updates)
+  ### updates
+  - Added merchantSuppliedId column in CSV example in [**Get Store Products**](#tag/Store-Products/operation/getProducts) API.
+  - Added store products description in [**Store Products**](#tag/Store-Products) API
+  - Updated wordings `Upload Menu` to `Menu Upload`.
+  - Updated `Menu Sync Webhook` to `Menu Upload Webhook`.
+
+  ## 1.10.7 2024-11-11 (updates)
+  - ### [**Upload Menu**](#tag/Stores/operation/postMenu) API Updates
+    - Added `merchantSupplied` as an Optional Field in the Payload for Upload Menu API
+       - Introduced `merchantSuppliedId` as an optional field in the payload, representing the ID of the integrator's products for better product mapping.
+    - The required fields for the [**Upload Menu**](#tag/Stores/operation/postMenu) API request have been updated. The following fields are now required:
+        - `upc`
+        - `name`
+        - `price`
+        
+        The following fields are no longer required:
+        - `size`
+        - `quantity`
+    - Added `stockcount_column_name` to [**Upload Menu**](#tag/Stores/operation/postMenu) API Payload
+      - Introduced a new field, `stockcount_column_name`, in the API payload to allow for customizable stock count column names.
+    
+  - ### [Provision Existing Store](#tag/Stores/operation/postStore) API Updates
+    - Added store data to the API response.
+    - Moved the "Cannot provision, store does not exist in Bevz" error from the 400 status code to 404.
+    - Enhanced API description for better clarity.
+  
+  - ### [Get Store Orders](#tag/Order/operation/getStoreOrders) API Updates
+    - Added `merchantSupplied` Under `OrderProducts` in Get Order API response.
+      - Introduced the `merchantSupplied` field under `OrderProducts` in the Get Order API response for better order detail tracking.
+  
+  - Added Workflow Image and Enhanced Description in [**Setup Store**](#tag/Preparing-Your-Store/Setup-Store)
+     - Included a visual workflow image in the "Setup Store" section.
+     - Expanded the description to provide clearer guidance for users during the setup process.
+
+  ## 1.10.6 2024-07-31 (updates)
+  ### updates
+  -  updated `orderProducts.$.productSnapshot` fields in [**Order Model**](#tag/models/Order).
+     
+     Affected endpoints:  [**Get Store Orders**](#tag/Order/operation/getStoreOrders) and [**Test Store Orders**](#tag/Order/operation/testStoreOrders) 200 response.
+  - Added `name` `phoneNumber` fields in payload of [**Update Store**](#tag/Stores/operation/patchStore)
+
+  ## 1.10.5 2024-07-02 (minor updates)
+  ### updates
+  - updated query parameters and `200` status response for [**Get Store Products**](#tag/Store-Products/operation/getProducts)
+  - updated payload and `200` status response for [**Patch Store Products**](#tag/Store-Products/operation/patchProduct)
+
+
+  ## 1.10.4 2024-01-11 (minor updates)
+  ### updates
+  - moved `callback_url` from Request Body to Query Parameters in [**Generate Checkout Link**](#tag/Stores/operation/generateCheckoutLink)
+  - added `upc` and `id` in `orderProducts` ➝ `productSnapshot` ➝ `pricing` in [**Order Notification Webhook**](#tag/Webhooks/operation/orderWebhook)
+  - `order_items.product_id` can now either be uuid or upc value in [**Test Store Orders**](#tag/Order/operation/testStoreOrders) Request Body
+
+  ## 1.10.3 2023-12-21 (minor updates)
+  ### updates
+  - added `callback_url` as optional request on requestBody [**Get Subscription Link**](#tag/Stores/operation/getSubscriptionLink) API
+
+  ## 1.10.2 2023-12-11 (minor updates)
+  ### updates
+  - change request method of [**Get Subscription Link**](#tag/Stores/operation/getSubscriptionLink) from **GET** to **POST**
+  - change `zip` attribute to `zipCode` in [**Patch Store**](#tag/Stores/operation/patchStore)
+  - remove `type` attribute [**Patch Store**](#tag/Stores/operation/patchStore)
+  - Updated [**Preparing Store**](#tag/Preparing-Your-Store) contents
+
+
+  ## 1.10.1 2023-10-13 (minor changes)
+  ### updates
+  - update [Patch Product](#tag/Store-Products/operation/patchProduct) where when `stock` value in `pricingOverride` is set to '0', the said product variant will be deleted
+
+  ## 1.10.0 2023-10-13 (version_update)
+  ### updates
+  - added `upc_column_name`, `price_column_name`, and `name_column_name`
+  - remove `type` attribute in JSON payload in [**Upload Menu**](#tag/Stores/operation/postMenu)
+  - `upc`, `price`, and `name` are now the only required columns/attributes in [**Upload Menu**](#tag/Stores/operation/postMenu). 
+    Remove `size` and `quantity`
+  - `uploadMenuId` in the 200 response of [**Upload Menu**](#tag/Stores/operation/postMenu) change from integer type to uuid
+  - added  [**Use Our Dedicated Onboarding Page**](#tag/Preparing-Your-Store/Use-Our-Dedicated-Onboarding-Page) Guide
+
+
+  ## 1.9.0 2023-09-25 (version_update)
+  ### features
+  - added [**Menu Sync**](#tag/Stores/operation/menuSync) API
+  - added Subscription Management API
+
+  ### updates
+  - set dynamic product item when creating a test order in [**Test Store Orders**](#tag/Order/operation/testStoreOrders)
+  - remove `testing` attributes in the payload of [**Test Store Orders**](#tag/Order/operation/testStoreOrders)
+  - added `delivery_source`, `order_items`, `delivery_instructions`, `delivery_address` in the payload of [**Test Store Orders**](#tag/Order/operation/testStoreOrders)
+
+  ## 1.8.1 2023-08-08 (minor changes)
+  ### updates
+  - added `bevzPrice`, `doordashPrice`, `grubhubPrice`, `uberEatsPrice` fields in `pricingOverride` response in [**Get Store Products**](#tag/Store-Products/operation/getProducts) API
+  - added response in [**Patch Store Products**](#tag/Store-Products/operation/patchProduct) API
+
+  ## 1.8.0 2023-07-13 (version_update)
+  ### features
+  - added **Guides**
+  - added [**Test Store Orders**](#tag/Order/operation/testStoreOrders) API
+  - added [**Generate Checkout Link**](#tag/Stores/operation/generateCheckoutLink) API
+
+  ### changes
+  - change url of [**Retrieve the menu upload status**](#tag/Stores/operation/getMenu) from `{base_url}/integrators/{integrator_id}/stores/{store_id}/menu`
+    `{base_url}/integrators/{integrator_id}/stores/{store_id}/menu/{menu_id}`
+
+  ## 1.7.0 2023-06-23 (version_update)
+  ### features
+  - added [**Get Store Orders**](#tag/Order/operation/getStoreOrders) API
+  - added [**Update Order Status**](#tag/Order/operation/patchOrderStatus) API
+  - added [**Create Store**](#tag/Stores/operation/createStore) API
+  - added [**Onboard Delivery Service**](#tag/Stores/operation/createStore) API
+  - added [**Create Store**](#tag/models/Create-Store) Model
+  - added [**Menu Sync Webhook**](#tag/Webhooks/operation/menuSyncWebhook)
+  - added [**Delivery Settings**](#tag/models/DeliverySettings) Model
+
+  ### updates
+  - update attributes in [**Order Model**](#tag/models/Order)
+
+  ### changes
+  - Users
+
+    - rename [Users](#tag/integrator_users) to [Integrator Users](#tag/integrator_users)
+      - rename **Manage users access** -> **Retrieve All Integrator User Access**
+      - rename **Update user details** -> **Update Integrator User Details**
+      - rename **Change User Password** -> **Change Integrator User Password**
+  - Webhooks
+    - rename [Order](#tag/Order/operation/patchOrder) -> [**Setup Order Notification Webhook**](#tag/Order/operation/patchOrder)
+    - rename [Menu](#tag/Order/operation/patchMenuSync) -> [**Setting Up Menu Sync Notification**](#tag/Order/operation/patchMenuSync)
+    - moved the following apis from Webhook to [Integrators](#tag/Integrators)
+      - [Setup Order Notification Webhook](#tag/Order/operation/patchOrder)
+      - [Setting Up Menu Sync Notification](#tag/Order/operation/patchMenuSync)
+  - Integrators
+    - moved the following apis from [Integrators](#tag/Integrators) to [Stores](#tag/Stores)
+      - Retrieves all provisioned store
+      - Provision store
+      - Deprovision store
+      - Get store by store_id
+
+  ## 1.5.0 2023-06-01 (version_update)
+  ### features
+  -  added [Get Integrator Store](#tag/Integrators/operation/getIntegratorStore)
+
+  ### changes
+  - change [Patch Order](#tag/Order/operation/patchOrder) and [Menu Sync](#tag/Menu-Sync/operation/patchMenuSync) url from 
+    `/integrators/{integrator_id}/update-integrator` to `/integrators/{integrator_id}`
+  - change [Patch Store](#tag/Stores/operation/patchStore) url from 
+    `/integrators/{integrator_id}/stores/{store_id}/update-status` to `/integrators/{integrator_id}/stores/{store_id}`
+  - change `price` field into `amount` in [Patch Product Store](tag/Store-Products/operation/patchProduct)
+
+  ### updates
+  - added `address` and `deliverySettings` in [Patch Store](#tag/Stores/operation/patchStore)
+  - add increment in API version on changelogs
+  - added new 400 responses messages in [Patch Store](#tag/Stores/operation/patchStore)
+
+  ## 1.5.2 2023-05-22 (minor changes)
+  ### updates 
+  - change [Patch Integrator Order](#tag/Order/operation/patchOrder) and [Patch Integrator Menu Sync](#tag/Menu-Sync/operation/patchMenuSync)  url from `/integrators/{integrator_id}/update-status` to `/integrators/{integrator_id}/update-integrator`
+  - Separate `orderNotificationUrl` and `menuSyncNotificationUrl` to each of its corresponding webhooks.
+
+  ### fixes
+  - fix sample request body for adding integrator user
+  - fix field in  [Integrator Menu](#tag/integratormenu) for `id` to `type`
+
+  ## 1.5.1 2023-05-16 (minor changes)
+  ### updates
+  - added `taxRate` and `hours` [Patch Store](#tag/Stores/operation/patchStore)
+  - added descriptions in entity fields
+
+  ## 1.5.0 2023-05-04 (version_update)
+  ### fixes
+  - fix sample request body for adding integrator user
+  - fix field in  [Integrator Menu](#tag/integratormenu) for `id` to `type`
+
+  ### changes
+  - changed description for [Retrieve Upload Menu Status](#tag/Stores/operation/getMenu) API
+  - added `price`, `size`, `quantity`, and as required field
+    in [Upload Menu](#tag/Stores/operation/postMenu) API
+  - update and added fields in response in [Get Products](#tag/Store-Products/operation/getProducts)
+  - update datatype and remove `upc` field for updating in [Patch Product](#tag/Store-Products/operation/patchProduct) API
+
+  ## 1.4.0 2023-04-27 (version_update)
+  ### changes
+  - Changed development base url from `https://sandbox-api.bevz.com/microservices` to `https://sandbox-api.bevz.com/integrator-service`
+  - Added changelogs
+
+  ## 1.3.0 2023-04-24 (version_update)
+  ### feature
+  - added [Update Status](#tag/Integrators/operation/patchStatus) API for integrator
+  - added [Order Webhook](#tag/Order) event
+
+  ## 1.2.1 2023-04-19 (minor changes)
+  ### changes
+  - update requestbody in [Patch Store Products](#tag/Store-Products/operation/patchProduct)
+
+  ## 1.2.0 2023-04-18 (version_update)
+  ### feature *store product*
+  - added [Get Products](#tag/Store-Products/operation/getProducts) API
+  - added [Patch Product](#tag/Store-Products/operation/patchProduct) API
+  - added [Delete Product](#tag/Store-Products/operation/deleteProduct) API
+  - added [Integrator Menu](#tag/integratormenu) Entity
+
+  ## 1.1.0 2023-03-31 (version_update)
+  ### feature
+  - added CSV as payload for upload menu API

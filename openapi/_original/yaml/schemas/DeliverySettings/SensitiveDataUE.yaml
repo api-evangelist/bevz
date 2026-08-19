@@ -1,0 +1,55 @@
+type: object
+required:
+  - bankName
+  - routingNumber
+  - bankAccountNumber
+  - ein
+  - legalBusinessName
+  - legalRepName
+  - legalDOB
+  - legalEmail
+  - ssn
+  - typeOfEntity
+properties:
+  bankName:
+    type: string
+    description: Name of the bank where the business account is held.
+    example: Bevz Test Bank
+  routingNumber:
+    type: string
+    description: Bank routing number for ACH or wire transfers.
+    example: "12345"
+  bankAccountNumber:
+    type: string
+    description: Bank account number for deposits and withdrawals.
+    example: "000000"
+  ein:
+    type: string
+    description: Employer Identification Number (EIN) for the business.
+    example: "12345"
+  legalBusinessName:
+    type: string
+    description: Official legal name of the business entity.
+    example: "Bevz Test Business"
+  legalRepName:
+    type: string
+    description: Full name of the legal representative for the business.
+    example: "John Doe"
+  legalDOB:
+    type: string
+    description: Date of birth of the legal representative (MM/DD/YYYY).
+    example: "09/25/1995"
+  legalEmail:
+    type: string
+    description: Email address of the legal representative.
+    example: "bevz_legal@bevz.com"
+  ssn:
+    type: string
+    description: Social Security Number (SSN) of the legal representative.
+    example: "12345"
+  typeOfEntity:
+    type: string
+    description: |
+      Type of business entity.  
+      Allowed values: `sole_proprietorship`, `partnership`, `c_corporation`, `s_corporation`, `limited_liability_company`.
+    example: "sole_proprietorship"

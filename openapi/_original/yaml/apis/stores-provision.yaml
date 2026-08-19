@@ -1,0 +1,57 @@
+post:
+  tags:
+    - Stores
+  operationId: postStore
+  summary: Provision  Existing Store
+  description: |
+    Provision an existing store to your integrator account.
+
+    If you already have a store associated with Bevz but it’s not currently integrated with your account, you’ll need to provision it.  
+    Provisioning an existing store allows you to connect it with your integrator account, giving you management access to its data and operations.
+
+    #### When to Use
+
+    - The store exists on Bevz but is not yet linked to your integrator account.
+    - You want to enable menu management, order processing, and delivery service integration for an existing store.
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - email
+          properties:
+            email:
+              type: string
+              description: Email address associated with the store to be provisioned.
+              example: test_email@bevz.com
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+
+  responses:
+    "200":
+      $ref: "../responses/stores-provision/post/200.yaml"
+    "400":
+      $ref: "../responses/stores-provision/post/400.yaml"
+    "404":
+      $ref: "../responses/stores-provision/post/404.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

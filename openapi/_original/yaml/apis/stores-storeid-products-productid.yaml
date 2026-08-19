@@ -1,0 +1,106 @@
+parameters:
+  - name: integrator_id
+    in: path
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: Unique identifier for the integrator.
+  - name: store_id
+    in: path
+    required: true
+    schema:
+      type: string
+      format: uuid
+    description: Unique identifier for the store.
+  - name: product_id
+    in: path
+    required: true
+    schema:
+      type: string
+      format: uuid
+    description: Unique identifier for the product within the store.
+  - name: Authorization
+    in: header
+    description: |
+      JWT token for authenticating API requests.  
+    example: Bearer yourJWTtoken
+    required: true
+    schema:
+      type: string
+
+patch:
+  tags:
+    - Store Products
+  operationId: patchProduct
+  summary: Update Store Product
+  description: |
+    Update the details of a specific product in a store.
+
+    Use this endpoint to modify product attributes such as price, stock count, sale status, display name, or merchant-supplied ID.
+    Only the fields provided in the request body will be updated; all other fields will remain unchanged.
+
+    Typical use cases include:
+    - Adjusting inventory levels after a sale or restock.
+    - Updating the product's in-store price.
+    - Changing the product's display name or marking it as unavailable for sale.
+
+  requestBody:
+    description: |
+      JSON payload specifying the product fields to update.
+      Only include the fields you wish to modify.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            inStorePrice:
+              type: number
+              format: float
+              description: Updated in-store price for the product.
+              example: 8.99
+            stockCount:
+              type: number
+              description: Updated inventory count for the product.
+              example: 5
+            forSale:
+              type: boolean
+              description: |
+                Set to `false` to mark the product as unavailable for sale.
+              example: false
+            name:
+              type: string
+              description: Updated display name for the product.
+              example: Product Test Name
+            merchantSuppliedId:
+              type: string
+              description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+              example: "72518102101"
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-products-productid/patch/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-products-productid/patch/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+
+delete:
+  tags:
+    - Store Products
+  operationId: deleteProduct
+  summary: Delete Store Product
+  description: |
+    Use this endpoint to remove a specific product from a store's catalog.
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-products-productid/delete/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-products-productid/delete/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

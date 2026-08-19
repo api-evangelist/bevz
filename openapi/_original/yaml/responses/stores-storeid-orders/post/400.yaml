@@ -1,0 +1,21 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      "Failed to create a mock order, please try again later!":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Failed to create a mock order, please try again later!
+      "Store is disabled, unable to perform this action":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Store is disabled, unable to perform this action.

@@ -1,0 +1,48 @@
+type: object
+description: |
+  Represents an integrator user account on the Bevz platform.
+  This object contains all essential information about the user, including identity, authentication credentials, status, and timestamps.
+  Use this schema to view, create, or update integrator user records via the API.
+properties:
+  id:
+    type: number
+    description: Unique identifier for the user.
+    example: f92b15e2-116b-4503-a25c-347295494136
+  integrator_id:
+    type: number
+    description: Unique identifier of the integrator to which this user belongs.
+    example: "220510005"
+  email:
+    type: string
+    description: | 
+      Email address registered for the user.  
+      This is provided during [Create Integrator User](#tag/integrator_users/operation/postUser) and is used for [Generating a JWT token](#tag/Getting-Started/Authentication/Generating-a-JWT-Token).
+    example: sample_email@bevz.com
+  password:
+    type: string
+    description: | 
+      Hashed password for the user account.  
+      Set during [Create Integrator User](#tag/integrator_users/operation/postUser) and used for authentication when [Generating a JWT token](#tag/Getting-Started/Authentication/Generating-a-JWT-Token).
+      Passwords are always returned as a hash for security.
+    example: "$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lT"
+  active:
+    type: boolean
+    description: |
+      Indicates whether the user account is active.  
+      Active users can be managed via [Update Integrator Users Access](#tag/integrator_users/operation/putUser) and are permitted to access the API.
+    example: true
+  created_at:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp indicating when the user account was created.
+    example: "2023-02-13T07:00:30.895Z"
+  updated_at:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp indicating when the user account was last updated.
+    example: "2023-02-13T07:00:30.895Z"
+  deleted_at:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp indicating when the user account was deleted (if applicable).
+    example: null

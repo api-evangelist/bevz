@@ -1,0 +1,16 @@
+description: Unauthorized
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      "Integrator unauthorized to perform this action!":
+        value:
+          message: Unauthorized request! Please check your permission.
+          errors:
+            - Integrator unauthorized to perform this action!

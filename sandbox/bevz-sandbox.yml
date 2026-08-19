@@ -1,0 +1,87 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.bevz.com/#tag/Getting-Started
+api: Bevz Integrator Service
+summary: >-
+  Bevz runs a real, separately-hosted sandbox environment for the Integrator Service and gates the
+  path to production behind it. Sandbox access is credentialed and issued by Bevz — there is no
+  self-serve signup and no published test-key prefix or shared test credential.
+environments:
+  - name: sandbox
+    base_url: https://sandbox-api.bevz.com/integrator-service
+    label: Developer (Sandbox) Environment
+    self_serve: false
+    access: Bevz provides sandbox credentials at the start of the development phase, together with a checklist of the minimum required APIs.
+  - name: production
+    base_url: https://api.bevz.com/integrator-service
+    label: Live Production Environment
+    self_serve: false
+    access: Production credentials are issued only after collaborative testing and Bevz sign-off.
+credentials:
+  model: issued-per-integrator
+  key_prefixes_published: false
+  shared_test_credentials_published: false
+  note: >-
+    Bevz publishes no test-vs-live key PREFIX convention (no "sk_test_"-style marker). The two
+    environments are separated by hostname and by separately-issued email/password credentials that
+    mint a JWT at POST {baseUrl}/integrators/login. A client cannot tell from a token alone which
+    environment it addresses.
+  published_placeholder_values:
+    - {field: email, value: sample_email@bevz.com, note: Documentation placeholder in the quickstart cURL sample, not a working credential.}
+    - {field: password, value: sample_password, note: Documentation placeholder, not a working credential.}
+test_tooling:
+  - name: Test Store Orders
+    operation: testStoreOrders
+    method: POST
+    path: /integrators/{integrator_id}/stores/{store_id}/orders
+    description: >-
+      First-class order simulation. Creates a mock order against a provisioned store so an integrator
+      can exercise the full order lifecycle without a live delivery-app order. Accepts delivery_source,
+      delivery_type, order_items, delivery_address and delivery_instructions.
+    note: 'Since 1.9.0 the mock order uses a dynamic product item; the 400 path is "Failed to create a mock order, please try again later!".'
+  - name: Menu upload status polling
+    operation: getMenu
+    description: Retrieve the processing status of a menu upload, including the generated error file, so a menu ingest can be validated end to end in sandbox.
+  - name: Order status transitions
+    operation: patchOrderStatus
+    description: Drive a test order through accepted / out for delivery / completed / rejected / canceled to validate webhook handling.
+test_data:
+  test_cards: null
+  test_bank_accounts: null
+  magic_identifiers: null
+  note: >-
+    Bevz publishes no test card numbers, test bank accounts, or magic identifier ranges. Bevz is not
+    a payment processor — money movement happens inside DoorDash, Grubhub, Uber Eats and the Bevz
+    subscription checkout link, none of which this API exposes as a chargeable primitive.
+time_simulation:
+  supported: false
+  note: No test clock or time-travel facility is published.
+certification_path:
+  documented: true
+  source: https://docs.bevz.com/#tag/Getting-Started
+  phases:
+    - {phase: 1, name: Development, detail: 'Implement against sandbox credentials; satisfy the required-API checklist (14 operations flagged Required).'}
+    - {phase: 2, name: Collaborative testing, detail: 'Execute a predefined set of test cases with Bevz; a Q&A session is scheduled for live discussion.'}
+    - {phase: 3, name: Sign-off, detail: Bevz grants sign-off and issues production credentials.}
+    - {phase: 4, name: Pilot, detail: Pilot phase begins on production credentials.}
+  required_test_procedures:
+    - Upload your menu
+    - Create a test order
+    - Receive order notifications
+    - Accept a test order
+    - Cancel a test order
+    - Mark a test order as out for delivery
+    - Complete a test order
+    - Update pricing
+    - Remove an item from inventory
+    - Set restaurant hours
+    - Set store online/offline status
+    - Adjust delivery service percentages
+console:
+  interactive_try_it: false
+  note: >-
+    docs.bevz.com renders the spec with Redoc, which is read-only — there is no in-browser "try it"
+    console, and Redoc is initialised with hideDownloadButton, so the spec download link is
+    suppressed in the UI even though bevz-openapi.yaml is served publicly.
+probe_evidence:
+  - {url: 'https://sandbox-api.bevz.com/integrator-service', status: 403, body: '{"message":"Missing Authentication Token"}', note: 'Sandbox host is live and reachable; it rejects anonymous calls at the AWS API Gateway edge, confirming the environment exists and is credential-gated.'}

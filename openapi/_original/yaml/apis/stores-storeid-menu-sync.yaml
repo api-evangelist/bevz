@@ -1,0 +1,61 @@
+parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+
+post:
+  tags:
+    - Stores
+  operationId: menuSync
+  summary: Menu Sync
+  description: |
+    Trigger a manual menu synchronization for a specific store across supported delivery services (such as DoorDash, Grubhub, Uber Eats, and more).
+
+    Use this endpoint to ensure that your latest menu updates are reflected on third-party delivery platforms.  
+    
+    This is especially useful after making changes to your menu, such as adding new products, updating prices, or modifying availability.
+
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - service
+          properties:
+            service:
+              type: string
+              description: |
+                The delivery service to synchronize the menu with.
+                Allowed values: `DOORDASH`, `GRUBHUB`, `UBEREATS`.
+              example: "DOORDASH"
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-menu-sync/post/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-menu-sync/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

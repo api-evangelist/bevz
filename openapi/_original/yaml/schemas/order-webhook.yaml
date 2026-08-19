@@ -1,0 +1,99 @@
+type: object
+description: |
+  Represents a customer order placed through the Bevz platform.
+  This schema includes all relevant details about the order, such as products, delivery information, fees, status, and timestamps.
+  Use this object to view, create, or update order records via the API.
+properties:
+  type:
+    type: string
+    description: Type of the object, always "order".
+    example: order.accepted
+  data:
+    type: object
+    description: Details of the order.
+    properties:
+      orderId:
+        type: string
+        description: Unique identifier for the order.
+        example: bj1B0tzQEe2B0ysLv-VTcg-test
+      integratorId:
+        type: string
+        description: Unique identifier for the integrator associated with this order.
+        example: "220510005"
+      ownerId: 
+        type: string
+        description: Unique identifier for the owner of the order (typically the store owner).
+        example: "fa44331d-1143-4d03-b1fd-f0a61a11db29"
+      storeId:
+        type: string
+        description: Unique identifier for the store where the order was placed.
+        example: 831fd907-b455-4e92-828b-2e5421d057d7
+      customerId:
+        type: string
+        description: Identifier for the customer placing the order (may be a platform-specific value).
+        example: DOORDASH_CUSTOMER
+      orderProducts:
+        type: array
+        items:
+          $ref: 'Orders/OrderProducts.yaml'
+      deliveryDetails:
+        $ref: 'Orders/DeliveryDetails.yaml'
+      fees:
+        type: object
+        description: Breakdown of fees applied to the order.
+        properties:
+          shippingTotal:
+            type: number
+            description: Total shipping fee for the order.
+          tipTotal:
+            type: string
+            description: Total tip amount for the order.
+            example: "0"
+          serviceFeeTotal:
+            type: number
+            description: Total service fee for the order.
+            example: 148
+          taxTotal:
+            type: number
+            description: Total tax applied to the order.
+            example: 28
+          savedTotal:
+            type: number
+            description: Total amount saved (e.g., discounts).
+          rebateTotal:
+            type: number
+            description: Total rebate applied to the order.
+      orderStatus:
+        type: string
+        description: |
+          Current status of the order.  
+          Possible values: `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`
+        example: ACCEPTED
+      orderTotal:
+        type: number
+        description: Total amount for the order, including all fees and taxes.
+        example: 408    
+      deliverySource:
+        type: string
+        description: | 
+          The delivery platform through which the order was placed.  
+          Possible values: `DOORDASH`, `UBEREATS`, `GRUBHUB`
+        example: DOORDASH
+      subTotal: 
+        type: number
+        description: Subtotal amount for the order (before fees and taxes).
+        example: 5.34
+      createdAt:
+        type: string
+        format: date-time
+        description: ISO 8601 timestamp when the order was created.
+        example: "2023-04-17T12:32:27.304Z"
+      updatedAt:
+        type: string
+        format: date-time
+        description: ISO 8601 timestamp when the order was last updated.
+        example: "2023-04-17T12:34:40.376Z"
+      test: 
+        type: boolean
+        description: Indicates if this order is a test order.
+        example: true

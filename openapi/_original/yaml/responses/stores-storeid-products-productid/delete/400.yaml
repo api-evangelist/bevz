@@ -1,0 +1,16 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      "Unable to delete item, store product does not exist":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Unable to delete item, store product does not exist

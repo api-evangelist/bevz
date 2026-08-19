@@ -1,0 +1,31 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      "Product ID is not found under this store":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - 'Product ID is not found under this store.'  
+      "stockCount must be greater than or equal to 0":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"stockCount" must be greater than or equal to 0'
+      "inStorePrice must be a positive number":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"inStorePrice" must be a positive number'
+      '"randomfield" is not allowed':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"randomfield" is not allowed'

@@ -1,0 +1,144 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.bevz.com/#tag/Changelog
+raw_source: https://docs.bevz.com/yaml/changelog/changelog.yaml
+api: Bevz Integrator Service
+note: Bevz publishes a dated, versioned changelog as a first-class tag inside its own OpenAPI document. Entries below are parsed verbatim from that published file;
+  markdown deep-links to operations have been flattened to their labels.
+scheme:
+  style: semver
+  granularity: document-level
+  labels:
+  - features
+  - updates
+  - changes
+  - fixes
+  - version_update
+  - minor updates
+  - minor changes
+  breaking_change_marking: none
+  breaking_note: Bevz publishes no "breaking" label. Breaking changes are visible only by reading the prose — e.g. 1.10.2 changed getSubscriptionLink from GET to
+    POST and renamed zip to zipCode, and 1.10.7 moved an error from 400 to 404, none of them flagged as breaking.
+current_version_in_spec: 1.12.0
+latest_version_in_changelog: 1.13.0
+latest_date: '2026-04-20'
+first_entry_date: '2023-03-31'
+entry_count: 28
+drift: The spec document declares info.version 1.12.0 while its own changelog top entry is 1.13.0 (2026-04-20), so the published contract trails its published changelog
+  by one release.
+entries:
+- version: 1.13.0
+  date: '2026-04-20'
+  kind: features
+  sections:
+  - features
+  highlights:
+  - Added Georgia (GA_LOTTERY) and Florida (FL_LOTTERY) as supported sources in Get Lotto Scratcher Games.
+  change_count: 1
+- version: 1.12.0
+  date: '2026-03-30'
+  kind: updates
+  sections:
+  - features
+  highlights:
+  - Added Store Status Webhook to receive real-time notifications when store settings change (e.g., operating hours, delivery service configurations).
+  change_count: 1
+- version: 1.11.2
+  date: '2025-11-27'
+  kind: minor updates
+  sections:
+  - updates
+  highlights:
+  - Added delivery_type in the request body of Test Store Orders API for better order classification.
+  change_count: 1
+- version: 1.11.1
+  date: '2025-10-30'
+  kind: minor updates
+  sections:
+  - updates
+  highlights:
+  - Implemented Get Order by OrderId API.
+  - Added date_field in the query parameters of Get Store Orders API for better filtering.
+  change_count: 2
+- version: 1.11.0
+  date: '2025-10-06'
+  kind: updates
+  sections:
+  - updates
+  highlights:
+  - Added Order Adjustments workflow for DoorDash and Uber Eats in Post Order Adjustment API.
+  - Updated Grubhub onboarding process in Delivery Services Onboarding API.
+  - Added Uber Eats onboarding workflow in Uber Eats Onboarding API.
+  change_count: 3
+- version: 1.10.8
+  date: '2025-09-04'
+  kind: minor updates
+  sections:
+  - updates
+  highlights:
+  - Added merchantSuppliedId column in CSV example in Get Store Products API.
+  - Added store products description in Store Products API
+  - Updated wordings Upload Menu to Menu Upload.
+  - Updated Menu Sync Webhook to Menu Upload Webhook.
+  change_count: 4
+- version: 1.11.3
+  date: '2025-01-21'
+  kind: updates
+  sections:
+  - updates
+  highlights:
+  - Added GrubHub support for Post Order Adjustment API.
+  - GrubHub now supports ITEM_UPDATE and ITEM_REMOVE adjustment types.
+  - 'Note: ITEM_SUBSTITUTE is not available for GrubHub orders.'
+  - Only one adjustment per order is allowed for GrubHub.
+  - Updated turn_off_duration valid values to "7d", "30d", and "never" for all delivery services.
+  - Added name as a required field in the adjustments object for ITEM_SUBSTITUTE requests.
+  change_count: 7
+- version: 1.10.7
+  date: '2024-11-11'
+  kind: updates
+  sections: []
+  highlights:
+  - '### Upload Menu API Updates'
+  - Added merchantSupplied as an Optional Field in the Payload for Upload Menu API
+  - Introduced merchantSuppliedId as an optional field in the payload, representing the ID of the integrator's products for better product mapping.
+  - 'The required fields for the Upload Menu API request have been updated. The following fields are now required:'
+  - upc
+  - name
+  change_count: 21
+- version: 1.10.6
+  date: '2024-07-31'
+  kind: updates
+  sections:
+  - updates
+  highlights:
+  - updated orderProducts.$.productSnapshot fields in Order Model.
+  - Added name phoneNumber fields in payload of Update Store
+  change_count: 2
+- version: 1.10.5
+  date: '2024-07-02'
+  kind: minor updates
+  sections:
+  - updates
+  highlights:
+  - updated query parameters and 200 status response for Get Store Products
+  - updated payload and 200 status response for Patch Store Products
+  change_count: 2
+- version: 1.10.4
+  date: '2024-01-11'
+  kind: minor updates
+  sections:
+  - updates
+  highlights:
+  - moved callback_url from Request Body to Query Parameters in Generate Checkout Link
+  - added upc and id in orderProducts ➝ productSnapshot ➝ pricing in Order Notification Webhook
+  - order_items.product_id can now either be uuid or upc value in Test Store Orders Request Body
+  change_count: 3
+- version: 1.10.3
+  date: '2023-12-21'
+  kind: minor updates
+  sections:
+  - updates
+  highlights:
+  - added callback_url as optional request on requestBody Get Subscription Link API
+  change_count: 1

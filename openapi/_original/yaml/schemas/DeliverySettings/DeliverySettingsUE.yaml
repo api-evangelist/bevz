@@ -1,0 +1,72 @@
+allOf:
+  - $ref: "#/components/schemas/DeliverySettings"
+  - type: object
+    required:
+     -  isExisting
+    properties:
+      isExisting:
+        type: boolean
+        description: |
+          Indicates if the store already exists on the selected delivery service.
+      data:
+        type: object
+        required:
+          - firstName
+          - lastName
+          - phone
+          - title
+          - street
+          - city
+          - state
+          - zipCode
+          - storeName
+          - storePhone
+          - liquorLicense
+        properties:
+          firstName:
+            type: string
+            description: First name of the store owner or legal representative.
+            example: John
+          lastName:
+            type: string
+            description: Last name of the store owner or legal representative.
+            example: Doe
+          email:
+            type: string
+            description: Email address of the store owner or legal representative.
+          phone:
+            type: string
+            description: Contact phone number of the store owner or legal representative.
+            example: "9171168545"
+          title:
+            type: string
+            description: Title or position of the store owner or legal representative (e.g., Owner, Manager).
+            example: "Test Title"
+          street:
+            type: string
+            description: Street address of the store.
+            example: 123123 10th St
+          city:
+            type: string
+            description: City where the store is located.
+            example: Santa Monica
+          state:
+            type: string
+            description: State or province abbreviation where the store is located.
+            example: CA
+          zipCode:
+            type: string
+            description: Postal or ZIP code of the store location.
+            example: "90401"
+          storeName:
+            type: string
+            description: Legal or display name of the store.
+            example: Bevz Store
+          storePhone:
+            type: string
+            description: Primary contact phone number for the store.
+          liquorLicense:
+            type: string
+            description: Liquor license number for the store, if applicable.
+          sentitiveData:
+            $ref: "SensitiveDataUE.yaml"

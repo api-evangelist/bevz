@@ -1,0 +1,52 @@
+description: Successfully retrieved stores from Ubereats
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: The access token received from UberEats after exchanging the authorization code.
+          example: "IA.AQAAAATvVfIsrU8lhn6bW4Z_vF9dft4qmTc0d3uLh6T3pQ"
+        stores:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: The unique identifier for the store on UberEats platform.
+                example: "12345678-9abc-def0-1234-56789abcdef"
+              name:
+                type: string
+                description: The name of the store as registered on UberEats.
+                example: "Sample Restaurant"
+              location:
+                type: object
+                properties:
+                  latitude:
+                    type: number
+                    format: string
+                    description: The latitude coordinate of the store's location.
+                    example: "37.7749"
+                  longitude:
+                    type: number
+                    format: string
+                    description: The longitude coordinate of the store's location.
+                    example: "-122.4194"
+                  street_address_line_one:
+                    type: string
+                    description: The physical address of the store.
+                    example: "123 Main St, City, State, ZIP"
+                  city:
+                    type: string
+                    description: The city where the store is located.
+                    example: "San Francisco"
+                  country_code:
+                    type: string
+                    description: The country code of the store's location.
+                    example: "US"
+                  postal_code:
+                    type: string
+                    description: The postal code of the store's location.
+                    example: "94103"

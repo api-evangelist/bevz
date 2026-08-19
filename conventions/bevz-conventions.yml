@@ -1,0 +1,119 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/bevz-integrator-service-openapi.yaml
+docs: https://docs.bevz.com/
+api: Bevz Integrator Service
+note: >-
+  Cross-cutting runtime semantics derived from the published OpenAPI 3.0.3 and the docs prose
+  (Getting Started, FAQ, Changelog) at docs.bevz.com. Where Bevz publishes no rule, this file says so
+  rather than inferring one.
+base_urls:
+  production: https://api.bevz.com/integrator-service
+  sandbox: https://sandbox-api.bevz.com/integrator-service
+  source: https://docs.bevz.com/#tag/Getting-Started
+transport:
+  protocol: https
+  style: REST
+  media_type: application/json
+  additional_request_media_types: [text/csv]
+  csv_note: Menu upload (postMenu) accepts a CSV payload as well as JSON, with configurable column-name mapping.
+authentication:
+  style: bearer-jwt
+  header: 'Authorization: Bearer <token>'
+  detail: authentication/bevz-authentication.yml
+idempotency:
+  supported: false
+  header: null
+  evidence: >-
+    No idempotency key, request-id replay key, or safe-retry semantics appear anywhere in the 129
+    published spec files or the docs prose (grep for "idempot" returns zero hits across the whole
+    published contract).
+  consequence: >-
+    createStore, postStore, postMenu, testStoreOrders and postOrderAdjustment are all non-idempotent
+    POSTs with no dedupe key, so a retried request after a timeout can double-create. postMenu
+    partially self-guards by rejecting a concurrent upload with "An ongoing upload for this storeId
+    is still in progress", but that is a lock, not idempotency.
+pagination:
+  style: cursor-token
+  parameters:
+    - {name: limit, in: query, description: Maximum records to return.}
+    - {name: next_page, in: query, description: Opaque token returned by the previous response; omit for the first page.}
+  response_fields:
+    - {name: next_page, description: Token for the next page. Absent or empty when the result set is exhausted.}
+    - {name: data, description: The array of records for this page.}
+  applies_to: [getProducts, getStoreOrders, getLottoScratcherGames]
+  inconsistency: >-
+    getStores returns a bare JSON ARRAY with no envelope and no pagination at all, while getProducts
+    and getStoreOrders return a {next_page, data} object. Two collection shapes coexist in one API.
+  default_page_size_published: false
+  total_count_published: false
+response_envelope:
+  consistent: false
+  documented_shape:
+    fields: [api_version, status_code, message, errors, data]
+    source: https://docs.bevz.com/#tag/Getting-Started
+  reality: >-
+    The five-field envelope is shown in the docs quickstart (the login response) and is the shape
+    error bodies broadly follow, but the spec's own 200 schemas do NOT declare it uniformly — some
+    return a bare array (getStores), some return {next_page, data} (getProducts), some return
+    {message} only. An agent cannot rely on one success shape.
+  version_echo: api_version is echoed in the body (e.g. "v1.11.3"), which is the only runtime version signal Bevz emits.
+errors:
+  format: custom-json
+  rfc9457: false
+  catalog: errors/bevz-problem-types.yml
+  machine_codes: false
+  note: Errors are free-text strings in an `errors` array; there is no stable error code to branch on.
+rate_limiting:
+  published: false
+  headers: []
+  detail: rate-limits/bevz-rate-limits.yml
+versioning:
+  style: document-version
+  current: 1.12.0
+  changelog_latest: 1.13.0
+  in_url: false
+  in_header: false
+  note: >-
+    The version lives in info.version and in the body's api_version field. There is no /v1/ path
+    segment and no version request header, so a breaking change has no client-side pin. The spec
+    document itself is one version behind its own changelog (spec 1.12.0, changelog top entry 1.13.0).
+  detail: lifecycle/bevz-lifecycle.yml
+tracing:
+  request_id_header_published: false
+  note: >-
+    AWS API Gateway returns x-amzn-RequestId and x-amz-apigw-id on error responses (observed on a
+    live 403 probe of api.bevz.com), but Bevz does not document either as a supported correlation id.
+field_conventions:
+  case: lowerCamelCase for most objects (storeId, orderProducts, deliverySettings)
+  exceptions: >-
+    snake_case appears in the Menu and IntegratorUser schemas (store_id, file_path, error_file,
+    time_completed, integrator_id, created_at) and in query parameters (next_page, date_field), and
+    integrator_id / store_id / order_id / product_id / menu_id are snake_case as PATH parameters
+    while the same ids are camelCase in bodies. Casing is not uniform across the contract.
+  timestamps: ISO 8601 UTC strings (e.g. 2024-06-24T01:56:49.901Z)
+  money: Numeric prices; no currency field is published (USD is implied by the US-only footprint).
+expansion:
+  supported: false
+  note: No expand/fields/include sparse-fieldset mechanism is published.
+metadata:
+  supported: false
+  note: >-
+    No generic metadata bag. The nearest facility is merchantSuppliedId, an optional field on menu
+    and order products that carries the integrator's own product identifier for mapping.
+filtering:
+  supported: partial
+  note: getStoreOrders accepts date_field plus date-range filtering; getLottoScratcherGames requires a `source` parameter. No general filter grammar is published.
+webhooks:
+  outbound: true
+  registration: Per-integrator URLs set via patchOrder (orderNotificationUrl) and patchMenuUpload (menuUploadNotificationUrl).
+  signing_published: false
+  retry_policy_published: false
+  detail: asyncapi/bevz-webhooks.yml
+cross_links:
+  errors: errors/bevz-problem-types.yml
+  lifecycle: lifecycle/bevz-lifecycle.yml
+  authentication: authentication/bevz-authentication.yml
+  rate_limits: rate-limits/bevz-rate-limits.yml
+  data_model: data-model/bevz-data-model.yml
+  sandbox: sandbox/bevz-sandbox.yml

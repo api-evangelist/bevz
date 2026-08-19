@@ -1,0 +1,83 @@
+type: object
+description: Snapshot of the product details at the time of ordering.
+properties:
+  images:
+    type: array
+    description: List of product images.
+    items:
+      type: object
+      properties:
+        src:
+          type: string
+          description: Image URL.
+          example: "https://bevz-media.s3-us-west-1.amazonaws.com/ef81f97b-1d8a-4f91-906d-3542427e99f2.png"
+        primary:
+          type: boolean
+          description: Indicates if this is the primary image.
+          example: true
+  quantity:
+    type: string
+    description: Quantity or packaging type (e.g., "6 Pack").
+    example: "6 Pack"
+  productId:
+    type: string
+    description: Unique identifier for the product.
+    example: "cd017f3f-fbda-41c1-b9d9-842eab06cbea"
+  taxable:
+    type: boolean
+    description: Indicates if the product is taxable.
+    example: true
+  description:
+    type: string
+    description: Product description.
+    example: "Enjoy the refreshing lemon-lime taste in every sip of 7UP. Free of caffeine and with crisp, carbonated fizz in every bottle, you can indulge in the delicious drink without feeling the effects of caffeine."
+  upc:
+    type: string
+    description: Universal Product Code for the product.
+    example: "078000000382"
+  extras:
+    type: object
+    description: Additional product options or add-ons.
+  priority:
+    type: boolean
+    description: Indicates if the product is a priority item in the order.
+    example: false
+  createdAt:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when the product was created.
+    example: "2019-08-02T15:11:28.608Z"
+  size:
+    type: string
+    description: Size or packaging of the product.
+    example: "12 oz Cans"
+  price:
+    type: number
+    format: float
+    description: Price of the product at the time of order.
+    example: 4.99
+  name: 
+    type: string
+    description: Name of the product.
+    example: "7 UP"
+  disabled:
+    type: boolean
+    description: Indicates if the product is currently disabled.
+    example: false
+  categories:
+    type: object
+    description: Product category hierarchy.
+    properties:
+      L1:
+        type: string
+        description: Top-level category.
+        example: "Soft Drinks"
+      L2:
+        type: string
+        description: Second-level category.
+        example: "Soda"
+  updatedAt:
+    type: string
+    format: date-time
+    description: ISO 8601 timestamp when the product was last updated.
+    example: "2019-08-02T15:11:28.608Z"

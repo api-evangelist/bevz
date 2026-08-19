@@ -1,0 +1,77 @@
+get:
+  tags:
+    - Store Products
+  operationId: getProducts
+  summary: Get Store Products
+  description: |
+    Retrieve a list of products available for sale in a specific store.
+
+    Use this endpoint to fetch the current product catalog for a store, including inventory, pricing, and categorization details.  
+    You can filter products by category, limit the number of results, and paginate through large catalogs.
+
+    #### Example Usage
+
+    - Retrieve all products in the "Liquor" category for a store.
+    - Paginate through a large product catalog using the `limit` and `next_page` parameters.
+
+    For details on the product object schema, see [Store Products](#tag/models/Store-Products).
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: categoryL1
+      in: query
+      required: false
+      schema:
+        type: string
+        example: Liquor
+      description: Filter products by top-level category (e.g., "Liquor").
+    - name: categoryL2
+      in: query
+      required: false
+      schema:
+        type: string
+        example: Rum
+      description: Filter products by second-level category (e.g., "Rum").
+    - name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        example: 10
+      description: Maximum number of products to return per page.
+    - name: next_page
+      in: query
+      required: false
+      schema:
+        type: string
+        example: fb867d3b-d41f-4aaf-8b70-a7ffc7614ea0
+      description: Token for fetching the next page of results.
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-products/get/200.yaml" 
+    # "400":
+    #   $ref: "../responses/stores-storeid-products/get/400.yaml" 
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

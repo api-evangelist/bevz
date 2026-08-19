@@ -1,0 +1,9 @@
+description: Successful
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        checkoutLink:
+          type: string
+          example: "https://checkout.stripe.com/c/pay/longstringhere"

@@ -1,0 +1,16 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      "Missing or invalid source parameter":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "source is required and must be one of: CA_LOTTERY, MA_LOTTERY, OH_LOTTERY, MI_LOTTERY, AZ_LOTTERY, CT_LOTTERY, IL_LOTTERY, GA_LOTTERY, FL_LOTTERY"

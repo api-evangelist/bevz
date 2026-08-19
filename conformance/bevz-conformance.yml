@@ -1,0 +1,128 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/bevz-integrator-service-openapi.yaml + https://docs.bevz.com/
+api: Bevz Integrator Service
+note: >-
+  Conformance assertions against cross-cutting industry standards, each with the evidence that
+  decided it. Derived from the published OpenAPI 3.0.3 and the docs prose; no compliance
+  certification claim was found anywhere on bevz.com or docs.bevz.com.
+standards:
+  - id: openapi
+    name: OpenAPI Specification
+    conforms: true
+    version: 3.0.3
+    evidence: >-
+      A complete OpenAPI 3.0.3 document is published at https://docs.bevz.com/bevz-openapi.yaml
+      (HTTP 200, application/yaml, 30 KB root plus 128 referenced files, all HTTP 200). It parses,
+      declares 24 paths / 30 operations, and every operation carries an operationId, a summary, a
+      description and tags.
+    caveats:
+      - No components.securitySchemes and no security requirement on any operation.
+      - One path key contains U+3164 HANGUL FILLER to work around a duplicate-path collision.
+      - The declared info.version (1.12.0) trails the document's own changelog (1.13.0).
+  - id: json-schema
+    name: JSON Schema (via OpenAPI Schema Object)
+    conforms: true
+    evidence: 27 reusable schema files are published under yaml/schemas/ and referenced by $ref across the operations, giving real component reuse rather than inline duplication.
+  - id: rfc9457
+    name: RFC 9457 Problem Details for HTTP APIs
+    conforms: false
+    evidence: >-
+      No operation returns application/problem+json. Errors use a bespoke JSON envelope
+      ({api_version, status_code, message, errors, data}) carrying free-text strings with no type
+      URI, no title/detail split and no machine-readable error code.
+  - id: rfc8594
+    name: RFC 8594 Sunset HTTP Header
+    conforms: false
+    evidence: No Sunset or Deprecation header is documented, no operation is marked deprecated, and no deprecation policy is published, despite a changelog history of breaking renames and method changes.
+  - id: rfc9116
+    name: RFC 9116 security.txt
+    conforms: false
+    evidence: /.well-known/security.txt returns 400 on www.bevz.com, 403 on api.bevz.com and sandbox-api.bevz.com, and 404 on docs.bevz.com. See well-known/bevz-well-known.yml.
+  - id: rfc6749-oauth2
+    name: OAuth 2.0
+    conforms: false
+    conforms_as_consumer: true
+    evidence: >-
+      Bevz does not expose OAuth for its own API. It does DRIVE an OAuth 2.0 authorization-code
+      handshake against Uber Eats on the store's behalf (generateOAuth, exchangeCode,
+      provisionStore), and surfaces standard OAuth error codes (invalid_client, invalid_grant,
+      invalid_request, invalid_scope, access_denied) through its 400 responses.
+  - id: oidc
+    name: OpenID Connect
+    conforms: false
+    evidence: No /.well-known/openid-configuration on any host; no JWKS endpoint; no id_token.
+  - id: rfc7519-jwt
+    name: RFC 7519 JSON Web Token
+    conforms: true
+    evidence: >-
+      Authentication is a bearer JWT obtained from POST {baseUrl}/integrators/login, carried as
+      "Authorization: Bearer <token>", with a documented 30-day expiry and a published claim set
+      (id, email, client, scope, aud, exp, iat). The published sample declares alg HS256.
+    caveats:
+      - No JWKS or key-rotation story is published, so a consumer cannot verify the token independently.
+      - The scope claim exists but no scope vocabulary is published; the documented sample carries "*".
+  - id: rfc6750-bearer
+    name: RFC 6750 Bearer Token Usage
+    conforms: partial
+    evidence: The Authorization Bearer scheme is used as specified, but 401 responses do not return a WWW-Authenticate challenge header, which RFC 6750 requires.
+  - id: idempotency
+    name: Idempotency keys for unsafe methods
+    conforms: false
+    evidence: Zero occurrences of "idempot" across all 129 published spec files and the docs prose. No dedupe key on any of the 15 POST/PATCH/PUT/DELETE operations. See conventions/bevz-conventions.yml.
+  - id: pagination
+    name: Cursor pagination
+    conforms: partial
+    evidence: >-
+      getProducts, getStoreOrders and getLottoScratcherGames implement an opaque-cursor scheme
+      (limit + next_page in, {next_page, data} out). getStores returns a bare unpaginated array, so
+      the API carries two collection shapes.
+  - id: rate-limit-headers
+    name: IETF RateLimit header fields
+    conforms: false
+    evidence: No RateLimit-*, X-RateLimit-* or Retry-After header is documented and no 429 response is declared. See rate-limits/bevz-rate-limits.yml.
+  - id: asyncapi
+    name: AsyncAPI
+    conforms: false
+    evidence: >-
+      Three real outbound webhooks are published (order, menu upload, store status) but as an
+      OpenAPI x-webhooks block, not as an AsyncAPI document. See asyncapi/bevz-webhooks.yml.
+  - id: webhook-signing
+    name: Signed webhook delivery
+    conforms: false
+    evidence: No signature header, HMAC scheme, shared secret or timestamp tolerance is published for any of the three webhooks. A receiver cannot verify origin.
+  - id: mcp
+    name: Model Context Protocol
+    conforms: true
+    scope: marketing site only
+    evidence: >-
+      https://www.bevz.com/_api/mcp answers a JSON-RPC 2.0 tools/list with HTTP 200 and 9 tools
+      (probed 2026-08-13). It is a Wix Site MCP server covering bevz.com site content, NOT the
+      Integrator Service API. See mcp/bevz-mcp.yml.
+  - id: a2a
+    name: A2A Agent Card
+    conforms: false
+    evidence: /.well-known/agent-card.json and /.well-known/agent.json probed on all four hosts — 400, 403, 403 and 404 respectively. No card is served.
+  - id: llmstxt
+    name: llms.txt
+    conforms: true
+    evidence: https://www.bevz.com/llms.txt returns HTTP 200, text/plain, 3,226 bytes. Saved verbatim to llms/bevz-llms.txt. Wix-generated.
+compliance_certifications:
+  published: false
+  searched:
+    - {url: 'https://www.bevz.com/security', status: 404}
+    - {url: 'https://trust.bevz.com/', status: 0, note: DNS does not resolve}
+    - {url: 'https://www.bevz.com/privacy-policy', status: 200, note: 'Privacy policy is published, but names no certification (no SOC 2, ISO 27001, PCI DSS, HIPAA or FedRAMP claim).'}
+    - {url: 'https://www.bevz.com/terms-of-service', status: 200, note: Terms are published; no certification claim.}
+  note: >-
+    No SOC 2, ISO 27001, PCI DSS or other certification is claimed anywhere on the Bevz web
+    properties. No Compliance pointer is wired into apis.yml, because there is nothing to point at.
+  relevance: >-
+    Worth noting given what the API carries: the delivery-service onboarding schemas transmit bank
+    account numbers, routing numbers, EIN, SSN and legal date of birth (see the SensitiveData
+    entities in data-model/bevz-data-model.yml). The absence of any published security or compliance
+    posture around that data is the most consequential gap in this profile.
+  regulatory_context: >-
+    Bevz serves alcohol retail. Age verification and restricted-item delivery obligations are handled
+    inside the delivery platforms and the Shop.Bevz storefront; the Integrator Service publishes no
+    age-verification field, flow or attestation.

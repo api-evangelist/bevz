@@ -1,0 +1,28 @@
+type: object
+required:
+  - street1
+  - state
+  - city
+  - zipCode
+description: Physical address where the store is located.
+properties:
+  city:
+    type: string
+    description: City where the store operates.
+    example: Santa Monica
+  state:
+    type: string
+    description: State or province abbreviation.
+    example: CA
+  street1:
+    type: string
+    description: Primary street address of the store.
+    example: 123123 10th St
+  street2:
+    type: string
+    description: Secondary address line (optional)
+    example: ""
+  zipCode:
+    type: string
+    description: Postal or ZIP code.
+    example: "90401"

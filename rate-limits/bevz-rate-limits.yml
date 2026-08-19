@@ -1,0 +1,39 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.bevz.com/
+api: Bevz Integrator Service
+limit_count: 0
+published: false
+note: >-
+  Bevz publishes no rate limits for the Integrator Service. This is a searched zero, not an
+  unchecked field: all 129 files of the published spec bundle plus the Getting Started, FAQ and
+  Changelog prose were searched for "rate limit", "throttle", "quota" and "429" with zero hits, and
+  no 429 response is declared on any of the 30 operations.
+limits: []
+response_headers:
+  documented: []
+  note: >-
+    No X-RateLimit-*, RateLimit-* or Retry-After header is documented. The API sits behind AWS API
+    Gateway, which can enforce account-level throttling and would return HTTP 429 with a
+    {"message":"Too Many Requests"} body, but Bevz does not publish that as a contract, so an agent
+    has no documented runtime signal to back off on.
+exhaustion_status_code: not published
+concurrency_controls_published:
+  - control: Menu upload serialization
+    operation: postMenu
+    behavior: >-
+      A second menu upload for a storeId while one is in progress is rejected with HTTP 400 and
+      "An ongoing upload for this storeId is still in progress, please wait for upload to complete".
+    note: This is a per-store mutual exclusion lock, not a rate limit, but it is the only published throttling-shaped behavior in the contract.
+  - control: Order adjustment caps
+    operation: postOrderAdjustment
+    behavior: >-
+      Grubhub orders allow only one adjustment per order; Uber Eats allows an item to be replaced
+      only once ("UE - UberEats only allows an item to be replaced once").
+    note: Downstream delivery-service business limits surfaced through the Bevz API, not Bevz rate limits.
+probe_evidence:
+  - {url: 'https://api.bevz.com/integrator-service', status: 403, note: 'Anonymous probe is rejected at the gateway before any limit headers are emitted, so limits could not be observed live.'}
+gaps:
+  - No published limit, window, burst or scope.
+  - No rate-limit response headers, so a client cannot implement adaptive backoff.
+  - No documented 429 behavior on any operation.

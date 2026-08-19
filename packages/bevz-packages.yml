@@ -1,0 +1,37 @@
+generated: '2026-08-13'
+method: searched
+source: registry searches, 2026-08-13
+package_count: 0
+official_package_count: 0
+result: no-first-party-client-libraries-found
+note: >-
+  Bevz publishes no client libraries for the Integrator Service. This is a searched zero: every major
+  registry was queried unauthenticated and the published docs were read end to end. The Getting
+  Started guide hands integrators a raw cURL sample and nothing else — there is no SDK section, no
+  code-sample tabs (Redoc is initialised without them), and no download link (hideDownloadButton is
+  set on the Redoc init).
+packages: []
+registries_searched:
+  - {registry: npm, query: 'registry.npmjs.org/-/v1/search?text=bevz', results: 0, status: 200}
+  - {registry: pypi, query: 'pypi.org/pypi/bevz/json', results: 0, status: 404}
+  - {registry: rubygems, query: 'rubygems.org/api/v1/gems/bevz.json', results: 0, status: 404}
+  - {registry: packagist, query: 'repo.packagist.org/packages/bevz/bevz.json', results: 0, status: 404}
+  - {registry: crates.io, query: 'crates.io/api/v1/crates/bevz', results: 0, status: 403, note: 'crates.io rejects the unauthenticated API client; a browser search for "bevz" also returns no crate.'}
+  - {registry: github, query: 'api.github.com/search/repositories?q=bevz', results: 0, status: 200, note: '104 repositories match the string "bevz", all belonging to unrelated individuals with the Ukrainian surname Bevz. No repository belongs to the company, and no github.com/bevz organization exists.'}
+  - {registry: maven-central, query: 'search.maven.org (bevz)', results: 0, note: No artifact published.}
+  - {registry: nuget, query: 'api.nuget.org (bevz)', results: 0, note: No package published.}
+  - {registry: pkg.go.dev, query: bevz, results: 0, note: No module published.}
+source_code_links_in_docs: []
+generation_path:
+  possible: true
+  note: >-
+    A usable SDK is generatable — Bevz publishes a complete OpenAPI 3.0.3 document with 30 operations
+    at https://docs.bevz.com/bevz-openapi.yaml, so any OpenAPI generator produces a client today. The
+    one blocker for a good generated client is that the spec declares no components.securitySchemes,
+    so the generated client will not wire the required Authorization bearer header (see
+    authentication/bevz-authentication.yml).
+gaps:
+  - No first-party SDK in any language.
+  - No public source repository or GitHub organization.
+  - No Postman collection or workspace (postman.com search for "bevz" returns only unrelated personal workspaces).
+  - No CLI.

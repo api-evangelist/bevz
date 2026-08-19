@@ -1,0 +1,24 @@
+type: object
+properties:
+  type:
+    type: string
+    example: DAILY_HOURS
+  days:
+    type: array
+    description: |
+      * 1 Sunday
+      * 2 Monday
+      * 3 Tuesday
+      * 4 Wednesday
+      * 5 Thursday
+      * 6 Friday
+      * 7 Saturday
+    example: [1, 2, 3, 4, 5, 6, 7]
+  openTime:
+    type: string
+    format: hh:mm A
+    example: 12:00 AM
+  closeTime:
+    type: string
+    format: hh:mm A
+    example: 4:00 PM

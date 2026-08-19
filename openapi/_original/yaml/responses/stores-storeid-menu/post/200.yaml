@@ -1,0 +1,16 @@
+description: Menu successfully uploaded
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Menu successfully uploaded
+        data:
+          type: object
+          properties:
+            uploadMenuId:
+              type: string
+              format: uuid
+              example: 6df29c78-1018-48a6-8215-8bfa51a2b92d

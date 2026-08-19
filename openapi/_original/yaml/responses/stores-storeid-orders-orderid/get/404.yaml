@@ -1,0 +1,13 @@
+description: 404 Resource is not found!
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: 404 Resource is not found!
+        errors:
+          type: array
+          example:
+            - "orderId not found"

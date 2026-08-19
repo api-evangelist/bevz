@@ -1,0 +1,8 @@
+type: object
+properties:
+  name:
+    type: string
+    example: John Doe
+  number:
+    type: string
+    example: +639123456789

@@ -1,0 +1,85 @@
+get:
+  tags:
+    - Stores
+  operationId: getStores
+  summary: Retrieve All Provisioned Stores
+  description: |
+    Fetch a list of all stores that have been provisioned under your integrator account.
+
+    Use this endpoint to view all stores managed by your organization, including their identifiers, contact information, operational status, and integration details.
+
+    For details on the store object schema, see [Store](#tag/models/Store).
+  
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      $ref: "../responses/stores/get/200.yaml"
+    "400":
+      $ref: "../responses/stores/get/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+    # "500":
+    #   $ref: "../responses/shared/500.yaml"
+post:
+  tags:
+    - Stores
+  operationId: createStore
+  summary: Create a New Store
+  description: |
+    Register a new store under your integrator account.
+
+    Use this endpoint to create a store by providing essential details such as name, address, contact information, and operational settings.  
+    After creation, the store will be available for menu uploads, order processing, and delivery service onboarding.
+
+    #### Example Usage
+
+    - Onboard a new retail location to the Bevz platform.
+    - Register a store for menu management and delivery service integration.
+  
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Unique identifier for the integrator.
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+  
+  requestBody:
+    description: |
+      JSON payload containing the details of the store to be created.
+    content:
+      application/json:
+        schema:
+          $ref: "../schemas/CreateStore/CreateStore.yaml"
+  responses:
+    "200":
+      $ref: "../responses/stores/post/200.yaml"
+    "400":
+      $ref: "../responses/stores/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

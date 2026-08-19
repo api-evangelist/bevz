@@ -1,0 +1,22 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+    examples:
+      "Invalid customerId":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Invalid customerId"
+      "Unable to access store, can only update store within the Integrator's umbrella":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Unable to access store, can only update store within the Integrator's umbrella"

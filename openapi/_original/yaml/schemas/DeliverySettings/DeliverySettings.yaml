@@ -1,0 +1,13 @@
+type: object
+required:
+  - deliveryService
+discriminator:
+  propertyName: deliveryService
+  mapping:
+    DOORDASH: '#/components/schemas/DeliverySettingsDD'
+    GRUBHUB: '#/components/schemas/DeliverySettingsGH'
+properties:
+  deliveryService:
+    type: string
+    description: DOORDASH | GRUBHUB
+  

@@ -1,0 +1,75 @@
+generated: '2026-08-13'
+method: searched
+source: https://docs.bevz.com/
+api: Bevz Integrator Service
+note: >-
+  Lifecycle posture read from the published Bevz Integrator Service docs (Getting Started, Changelog,
+  FAQ) and derived from the OpenAPI 3.0.3 document itself. Absences below were probed, not assumed.
+versioning:
+  scheme: semver
+  current_spec_version: 1.12.0
+  current_changelog_version: 1.13.0
+  in_url: false
+  in_header: false
+  runtime_signal: api_version field in the JSON response body (e.g. "v1.11.3")
+  policy_published: false
+  policy_note: >-
+    Bevz increments a document-level semver and labels entries version_update / minor updates, but
+    publishes no written versioning POLICY — no statement of what constitutes a breaking change, no
+    support window for older versions, and no way for a client to pin a version at call time.
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  deprecated_operations_note: >-
+    No operation in the spec carries `deprecated: true`. Removals and renames have happened
+    (getSubscriptionLink changed GET->POST in 1.10.2; `type` was removed from Patch Store and Upload
+    Menu; `size`/`quantity` stopped being required in 1.10.7) but they were shipped straight into the
+    current version with only a changelog line, with no deprecation window and no Sunset signal.
+  advance_notice: none published
+status_page:
+  present: false
+  probed:
+    - {url: 'https://status.bevz.com/', status: 0, result: DNS does not resolve}
+    - {url: 'https://bevz.statuspage.io/', status: 302, result: 'redirects to https://www.statuspage.io — the Atlassian marketing site, not a Bevz status page. A naive 200-after-redirect read of this URL is a false positive.'}
+  note: Bevz publishes no service status or uptime page for the Integrator Service.
+sla:
+  published: false
+  uptime_target: null
+  support_response_target: null
+support:
+  channels:
+    - {type: email, address: tech@bevz.com, purpose: 'Integrator Service API bugs and technical questions', source: 'https://docs.bevz.com/#tag/faq'}
+    - {type: email, address: support@bevz.com, purpose: 'Integrator account signup, onboarding and deactivation', source: 'https://docs.bevz.com/#tag/faq'}
+    - {type: web, url: 'https://www.bevz.com/support', purpose: General product support}
+    - {type: web, url: 'https://22677957.hs-sites.com/en/bevz-help', purpose: Help center}
+  developer_community: none published
+release_cadence:
+  observed_window: '2023-03-31 to 2026-04-20'
+  releases_documented: 28
+  note: >-
+    Sustained but slowing. 2023 carried the bulk of the releases; 2026 shows two (1.12.0 in March,
+    1.13.0 in April). The contract is maintained, not abandoned.
+account_lifecycle:
+  onboarding: >-
+    Not self-serve. Email support@bevz.com; an Integrator Account Manager runs onboarding, issues
+    sandbox credentials plus a required-API checklist, then production credentials after a
+    collaborative test pass and sign-off ("Going Live").
+  offboarding: Contact support@bevz.com for account deactivation.
+  store_lifecycle_operations:
+    - {operation: createStore, meaning: Register a new store under the integrator.}
+    - {operation: postStore, meaning: Provision an existing Bevz store to this integrator.}
+    - {operation: removeStore, meaning: 'Deprovision a store. Published precondition: the store must be offline first.'}
+    - {operation: getSubscriptionLink, meaning: Retrieve the store subscription management link.}
+    - {operation: generateCheckoutLink, meaning: 'Generate a subscription checkout link. Rejected when store status is active, trialing or cancelling.'}
+  subscription_states_observed: [active, trialing, cancelling]
+credential_lifecycle:
+  jwt_lifetime_days: 30
+  renewal: Re-login at POST /integrators/login. No refresh token, no revocation endpoint published.
+gaps:
+  - No status page, so an integrator has no way to distinguish a Bevz outage from its own fault.
+  - No deprecation policy and no Sunset/Deprecation headers, despite a history of shipped breaking changes.
+  - No SLA or uptime commitment.
+  - No version pinning mechanism — every client is always on the newest behavior.

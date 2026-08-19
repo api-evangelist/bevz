@@ -1,0 +1,23 @@
+type: object
+required:
+  - deliveryService
+  - items
+discriminator:
+  propertyName: deliveryService
+  mapping:
+    DOORDASH: '../../schemas/OrderAdjustment/OrderAdjustmentDD.yaml'
+    UBEREATS: '../../schemas/OrderAdjustment/OrderAdjustmentUE.yaml'
+    GRUBHUB: '../../schemas/OrderAdjustment/OrderAdjustmentGH.yaml'
+properties:
+  deliveryService:
+    type: string
+    enum:
+      - DOORDASH
+      - UBEREATS
+      - GRUBHUB
+    description: |
+      The delivery platform for which the adjustment applies.
+      Supported values are `"DOORDASH"`, `"UBEREATS"`, and `"GRUBHUB"`.
+
+      **Note:** GrubHub only supports `ITEM_UPDATE` and `ITEM_REMOVE` adjustment types.
+  

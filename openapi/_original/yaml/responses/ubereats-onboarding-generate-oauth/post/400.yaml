@@ -1,0 +1,36 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      "invalid_grant":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - invalid_grant
+      "invalid_client":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - invalid_client
+      "invalid_request":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - invalid_request
+      "invalid_scope":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - invalid_scope
+      "access_denied":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - access_denied

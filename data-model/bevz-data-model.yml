@@ -1,0 +1,132 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/bevz-integrator-service-openapi.yaml
+note: >-
+  Entity-relationship graph derived from the published Bevz Integrator Service OpenAPI 3.0.3
+  (docs.bevz.com/bevz-openapi.yaml) — its component schema files under openapi/_original/yaml/schemas/,
+  its path hierarchy, and the id-reference fields carried in each schema. Bevz publishes no separate
+  object reference, so field-level meaning is taken from the spec's own inline descriptions.
+api: Bevz Integrator Service
+entity_count: 16
+identifier_style:
+  primary: uuid
+  note: >-
+    storeId, productId, orderId, menu upload id and user id are UUIDs. integrator_id is an
+    int64 path parameter. Bevz publishes no typed id prefixes (no "st_"/"or_" convention).
+  path_scoping: >-
+    Every resource is nested under /integrators/{integrator_id}, so the integrator is the tenancy
+    root and no operation is reachable without it.
+entities:
+  - name: Integrator
+    description: The POS/third-party partner account that owns every other object. Tenancy root.
+    schema: null
+    schema_note: No standalone integrator schema is published; the entity is expressed only as the {integrator_id} path segment and its two webhook-registration fields.
+    fields: [integrator_id, orderNotificationUrl, menuUploadNotificationUrl]
+    operations: [patchOrder, patchMenuUpload]
+  - name: IntegratorUser
+    description: A developer/admin login under an integrator, used to mint the JWT.
+    schema: openapi/_original/yaml/schemas/user.yaml
+    fields: [id, integrator_id, email, password, active, created_at, updated_at, deleted_at]
+    operations: [getUser, postUser, putUser, changePassword]
+  - name: Store
+    description: A provisioned retail location — the object menus, products and orders hang off.
+    schema: openapi/_original/yaml/schemas/store.yaml
+    fields: [storeId, name, email, phone, phones, address, hours, deliverySettings, taxRate, enabled, updatedAt]
+    operations: [getStores, createStore, getIntegratorStore, patchStore, postStore, removeStore, generateCheckoutLink, getSubscriptionLink]
+  - name: IntegratorStore
+    description: The integrator-facing projection of a store, including subscription and setup state.
+    schema: openapi/_original/yaml/schemas/integrator-store.yaml
+    fields: [storeId, name, email, address, hours, deliverySettings, setup, subscriptionStatus]
+  - name: Address
+    description: Street address of a store.
+    schema: openapi/_original/yaml/schemas/CreateStore/Address.yaml
+    fields: [street1, street2, city, state, zipCode]
+  - name: OperationHours
+    description: Per-day open/close window for a store.
+    schema: openapi/_original/yaml/schemas/CreateStore/OperationHours.yaml
+    fields: [days, openTime, closeTime]
+  - name: DeliverySettings
+    description: Per-delivery-service configuration on a store. Discriminated by deliveryService.
+    schema: openapi/_original/yaml/schemas/DeliverySettings/DeliverySettings.yaml
+    variants:
+      - {name: DoorDash, schema: openapi/_original/yaml/schemas/DeliverySettings/DeliverySettingsDD.yaml}
+      - {name: Grubhub, schema: openapi/_original/yaml/schemas/DeliverySettings/DeliverySettingsGH.yaml}
+      - {name: UberEats, schema: openapi/_original/yaml/schemas/DeliverySettings/DeliverySettingsUE.yaml}
+    operations: [onboard, generateOAuth, exchangeCode, provisionStore]
+  - name: SensitiveData
+    description: >-
+      Merchant-of-record onboarding data submitted to a delivery service. Carries bank account
+      number, routing number, EIN, SSN and legal DOB.
+    schema: openapi/_original/yaml/schemas/DeliverySettings/SentitiveData.yaml
+    variants:
+      - {name: UberEats, schema: openapi/_original/yaml/schemas/DeliverySettings/SensitiveDataUE.yaml}
+    sensitivity: high
+    sensitivity_note: >-
+      This is the highest-sensitivity object in the contract — bank credentials and government
+      identifiers. Bevz publishes no field-level handling, retention or masking policy for it.
+  - name: Menu
+    description: A menu upload job and its processing status (CSV or JSON).
+    schema: openapi/_original/yaml/schemas/menu.yaml
+    fields: [id, store_id, file_path, error_file, status, date, time_completed]
+    operations: [postMenu, getMenu, menuSync]
+  - name: IntegratorMenu
+    description: Column-mapping envelope that tells Bevz how to read the integrator's menu file.
+    schema: openapi/_original/yaml/schemas/integrator-menu.yaml
+    fields: [menu, upc_column_name, price_column_name, name_column_name, stockcount_column_name]
+  - name: StoreProduct
+    description: A product on a store's online menu, with per-service pricing and availability.
+    schema: openapi/_original/yaml/schemas/store-products.yaml
+    fields: [productId, upc, merchantSuppliedId, name, size, quantity, categoryL1, categoryL2, images, prices, inStorePrice, forSale, isAvailableOnDoorDash, createdAt]
+    operations: [getProducts, patchProduct, deleteProduct]
+  - name: Order
+    description: A delivery order received from DoorDash, Grubhub or Uber Eats.
+    schema: openapi/_original/yaml/schemas/Orders/order.yaml
+    fields: [orderId, storeId, integratorId, ownerId, customerId, deliverySource, orderStatus, orderProducts, deliveryDetails, fees, orderTotal, createdAt]
+    operations: [getStoreOrders, getOrderId, patchOrderStatus, testStoreOrders]
+  - name: OrderProducts
+    description: A line item on an order, carrying a point-in-time productSnapshot.
+    schema: openapi/_original/yaml/schemas/Orders/OrderProducts.yaml
+    fields: [productId, merchantSuppliedId, alternativeProductName, quantity, selectedPrice, productSnapshot]
+  - name: DeliveryDetails
+    description: Customer, address, driver and instructions for an order.
+    schema: openapi/_original/yaml/schemas/Orders/DeliveryDetails.yaml
+    fields: [deliveryType, deliveryAddress, deliveryInstructions, customerDetails, driver]
+  - name: OrderAdjustment
+    description: A post-acceptance change to an order — item update, removal or substitution.
+    schema: openapi/_original/yaml/schemas/OrderAdjustment/OrderAdjustment.yaml
+    operations: [postOrderAdjustment]
+    adjustment_types: [ITEM_UPDATE, ITEM_REMOVE, ITEM_SUBSTITUTE]
+    constraints:
+      - Grubhub supports ITEM_UPDATE and ITEM_REMOVE only, and one adjustment per order.
+      - Uber Eats allows an item to be replaced only once.
+  - name: LottoScratcherGame
+    description: A state lottery scratcher game reference record, scoped to an integrator.
+    schema: openapi/_original/yaml/schemas/lotto-scratcher-game.yaml
+    fields: [gameId, gameName, gameNumber, gamePrice, upc, source, status, topPrize, ticketOdds, description, imageUrl, cdnUrl]
+    operations: [getLottoScratcherGames]
+    sources: [GA_LOTTERY, FL_LOTTERY]
+relationships:
+  - {from: Integrator, to: IntegratorUser, type: has_many, via: user.integrator_id}
+  - {from: Integrator, to: Store, type: has_many, via: 'path /integrators/{integrator_id}/stores'}
+  - {from: Integrator, to: LottoScratcherGame, type: has_many, via: 'path /integrators/{integrator_id}/lotto-scratcher-games'}
+  - {from: Store, to: Address, type: has_one, via: store.address}
+  - {from: Store, to: OperationHours, type: has_many, via: store.hours}
+  - {from: Store, to: DeliverySettings, type: has_many, via: store.deliverySettings}
+  - {from: DeliverySettings, to: SensitiveData, type: has_one, via: deliverySettings.sensitiveData}
+  - {from: Store, to: Menu, type: has_many, via: menu.store_id}
+  - {from: Store, to: StoreProduct, type: has_many, via: 'path /stores/{store_id}/products'}
+  - {from: Store, to: Order, type: has_many, via: order.storeId}
+  - {from: Order, to: OrderProducts, type: has_many, via: order.orderProducts}
+  - {from: Order, to: DeliveryDetails, type: has_one, via: order.deliveryDetails}
+  - {from: Order, to: OrderAdjustment, type: has_many, via: 'path /orders/{order_id}/adjustments'}
+  - {from: Order, to: Store, type: belongs_to, via: order.storeId}
+  - {from: Order, to: Integrator, type: belongs_to, via: order.integratorId}
+  - {from: Menu, to: IntegratorMenu, type: has_one, via: menu upload request body}
+webhook_projections:
+  - {schema: openapi/_original/yaml/schemas/order-webhook.yaml, wraps: Order, envelope_fields: [type, data]}
+  - {schema: openapi/_original/yaml/schemas/store-status-webhook.yaml, wraps: Store, envelope_fields: [event, bevzStoreId, data]}
+  - {schema: openapi/_original/yaml/schemas/menu.yaml, wraps: Menu, envelope_fields: [id, status, error_file]}
+gaps:
+  - No object reference page is published outside the spec; models are documented only as Redoc "models" tags.
+  - No id prefixes and no cross-entity link/HAL relations are published, so a client must reconstruct the graph from path nesting.
+  - DeliverySettingsDD, DeliverySettingsGH and DeliverySettingsUE resolve to allOf/oneOf compositions with no flat property list, so a static field inventory for the three variants is not derivable from the spec alone.

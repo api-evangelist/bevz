@@ -1,0 +1,56 @@
+get:
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: menu_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the menu.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+
+  tags:
+    - Stores
+  operationId: getMenu
+  summary: Retrieve the menu upload status
+  description: |
+    Retrieve the status and results of a specific menu upload operation for a store.
+
+    Use this endpoint to:
+    - Check if your menu upload has completed processing.
+    - View the status (e.g., pending, completed, failed) and any error messages.
+    - Download an error file listing any products that failed to upload or match.
+    - See which products were successfully enabled in the store's catalog.
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-menu/get/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-menu/get/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+    "404":
+      $ref: "../responses/stores-storeid-menu/get/404.yaml"

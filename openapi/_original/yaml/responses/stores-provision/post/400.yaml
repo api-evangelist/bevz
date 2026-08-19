@@ -1,0 +1,24 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+          example:
+            - '"email" must be a string'
+    examples:
+      "Cannot provision, store is already provisioned with another Bevz Integrator":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - "Cannot provision, store is already provisioned with another Bevz Integrator"
+      '"email" is required':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"email" is required'

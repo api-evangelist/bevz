@@ -1,0 +1,39 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Bad request! Please check your input.
+        errors:
+          type: array
+          example:
+            - '"email" must be a string'
+    examples:
+      '"enabled" is required':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"enabled" is required'
+      "unknown field in request body":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - '"field" is not allowed'
+      'Opening time should be before Closing time':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - 'Opening time should be before Closing time'
+      'Invalid address. Please input a valid address':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - 'Invalid address. Please input a valid address'
+      'Doordash delivery settings is currently not configured. Please contact admin to assist you with onboarding.':
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - 'Doordash delivery settings is currently not configured. Please contact admin to assist you with onboarding.'

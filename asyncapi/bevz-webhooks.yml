@@ -1,0 +1,107 @@
+generated: '2026-08-13'
+method: derived
+source: openapi/bevz-integrator-service-openapi.yaml
+docs: https://docs.bevz.com/#tag/Using-Webhooks
+api: Bevz Integrator Service
+asyncapi_published: false
+asyncapi_note: >-
+  Bevz publishes NO AsyncAPI document. It does publish a real, first-class outbound webhook surface,
+  declared in its OpenAPI as an `x-webhooks` block (the pre-3.1 Redoc convention) with three
+  operations and full payload schemas. This artifact captures that webhook catalog verbatim from the
+  published contract; it is not a fabricated AsyncAPI.
+transport: HTTPS POST from Bevz to an integrator-supplied URL
+registration:
+  model: per-integrator, one URL per event family
+  operations:
+    - operation: patchOrder
+      method: PATCH
+      path: /integrators/{integrator_id}
+      field: orderNotificationUrl
+      registers: Order Notification Webhook
+      required_for_certification: true
+    - operation: patchMenuUpload
+      method: PATCH
+      path: /integrators/{integrator_id}
+      field: menuUploadNotificationUrl
+      registers: Menu Upload Webhook
+      required_for_certification: true
+  note: >-
+    Both registration operations are flagged Required on the published integration checklist — an
+    integrator cannot certify without consuming webhooks. There is no registration operation for the
+    Store Status Webhook in the published spec; only the two URL fields exist.
+  path_defect: >-
+    The spec declares patchOrder at "/integrators/{integrator_id}" and patchMenuUpload at
+    "/integrators/{integrator_id}ㅤ" — the second path ends in U+3164 HANGUL FILLER, an invisible
+    character used to dodge a duplicate-key collision in the paths object. Both operations really
+    target the same path. This is a contract defect: a generated client will emit a request to a URL
+    containing a percent-encoded invisible character and receive a 404.
+webhook_count: 3
+webhooks:
+  - name: Order Notification Webhook
+    operationId: orderWebhook
+    channel: order
+    method: POST
+    direction: outbound
+    description: >-
+      Fired by Bevz on order-related events in real time. The body carries the full order payload so
+      the integrator can process, acknowledge or sync it internally.
+    envelope:
+      fields: [type, data]
+      schema: openapi/_original/yaml/schemas/order-webhook.yaml
+    events:
+      - {type: order.pending, meaning: A new order is created and awaiting acceptance.}
+      - {type: order.accepted, meaning: The order has been accepted by the store.}
+      - {type: order.out_for_delivery, meaning: The order is out for delivery.}
+      - {type: order.completed, meaning: The order has been successfully delivered/completed.}
+      - {type: order.rejected, meaning: The order has been rejected by the store.}
+      - {type: order.canceled, meaning: The order has been canceled by the customer or store.}
+    expected_response: 200
+  - name: Menu Upload Webhook
+    operationId: menuUploadWebhook
+    channel: menusync
+    method: POST
+    direction: outbound
+    description: >-
+      Fired when a menu upload is processed — in progress, completed or failed. The body carries the
+      menu upload status including a link to the generated error file.
+    envelope:
+      fields: [id, store_id, file_path, error_file, status, date, time_completed]
+      schema: openapi/_original/yaml/schemas/menu.yaml
+    events:
+      - {type: menu upload status change, meaning: 'Upload moved to in progress, completed or failed. Bevz publishes the status values only in the payload schema, not as a typed event enum.'}
+    expected_response: 200
+    history: Renamed from "Menu Sync Webhook" to "Menu Upload Webhook" in release 1.10.8.
+  - name: Store Status Webhook
+    operationId: storeStatusWebhook
+    channel: store-status
+    method: POST
+    direction: outbound
+    description: >-
+      Fired when tracked store settings change. The body carries ONLY the changed fields, so the
+      integrator can apply a delta rather than re-reading the store.
+    envelope:
+      fields: [event, bevzStoreId, data]
+      schema: openapi/_original/yaml/schemas/store-status-webhook.yaml
+    events:
+      - {type: store_settings_updated, meaning: A store's tracked settings changed.}
+    tracked_fields:
+      - {field: hours, meaning: Store operating hours for each day of the week.}
+      - {field: deliverySettings, meaning: 'Configuration for supported delivery services (DoorDash, Grubhub, Uber Eats).'}
+    expected_response: 200
+    added_in: 1.12.0 (2026-03-30)
+delivery_semantics:
+  signing_published: false
+  signing_note: >-
+    No signature header, shared secret, HMAC scheme or timestamp-tolerance is published for any of the
+    three webhooks. A receiver has no published way to verify a payload actually came from Bevz.
+  retry_policy_published: false
+  ordering_guarantee_published: false
+  deduplication_published: false
+  replay_endpoint_published: false
+  at_least_once_note: With no retry policy and no delivery id published, a consumer cannot reason about duplicates or gaps.
+gaps:
+  - No AsyncAPI document, so the event surface is not machine-consumable by event tooling.
+  - No webhook signing or verification scheme published.
+  - No retry, ordering, dedupe or replay semantics published.
+  - No registration field for the Store Status Webhook despite the webhook existing.
+  - The invisible-character duplicate path (U+3164) makes one of the two registration operations uncallable from a generated client.

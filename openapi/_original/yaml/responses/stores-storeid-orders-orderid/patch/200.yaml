@@ -1,0 +1,5 @@
+description: Order status has been updated!
+content:
+  application/json:
+    schema:
+      $ref: "../../../schemas/Orders/order.yaml"

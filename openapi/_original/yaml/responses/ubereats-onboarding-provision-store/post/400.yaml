@@ -1,0 +1,26 @@
+description: Bad request! Please check your input.
+content:
+  application/json:
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: array
+    examples:
+      "Invalid OAuth 2.0 credentials provided.":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Invalid OAuth 2.0 credentials provided.
+      "User not allowed to access the store":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - User not allowed to access the store
+      "Invalid request":
+        value:
+          message: Bad request! Please check your input.
+          errors:
+            - Invalid request

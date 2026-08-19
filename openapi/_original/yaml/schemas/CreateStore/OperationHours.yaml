@@ -1,0 +1,30 @@
+type: object
+properties:
+  openTime:
+    type: string
+    description: Opening time for the store on the specified days, in 12-hour format with AM/PM.
+    format: hh:mm A
+    example: 03:30 AM
+  closeTime:
+    type: string
+    description: Closing time for the store on the specified days, in 12-hour format with AM/PM.
+    format: hh:mm A
+    example: 02:00 PM
+  days:
+    type: array
+    description: |
+      List of days of the week when these hours apply.
+      Use the following mapping:
+        * 1 = Sunday
+        * 2 = Monday
+        * 3 = Tuesday
+        * 4 = Wednesday
+        * 5 = Thursday
+        * 6 = Friday
+        * 7 = Saturday
+      You can specify multiple days in a single entry (e.g., `[2, 3, 4, 5, 6]` for Monday–Friday).
+    items:
+      type: integer
+      minimum: 1
+      maximum: 7
+    example: [1, 2, 3]

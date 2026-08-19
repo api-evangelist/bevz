@@ -1,0 +1,201 @@
+get:
+  tags:
+    - Order
+  operationId: getOrderId
+  summary: Get Order by OrderId
+  description: |
+    ### Retrieve a specific Order by Order ID
+
+    Use this endpoint to fetch details of a specific order placed at a store.  
+    This includes information such as order status, items, timestamps, and delivery details.
+
+    #### How It Works
+
+    - Provide the required `integrator_id`, `store_id` and `order_id` in the path.
+    - The response will include order details such as order ID, status, items, timestamps, and delivery information.
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: order_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the order within the store.
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-orders-orderid/get/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-orders-orderid/get/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+    "404":
+      $ref: "../responses/stores-storeid-orders-orderid/get/404.yaml"
+
+patch:
+  tags:
+    - Order
+  operationId: patchOrderStatus
+  summary: Patch Order Status
+  description: |
+    ### Update the Status of an Order
+
+    Use this endpoint to update the status of an order as it progresses through its lifecycle.  
+    Supported statuses include: **ACCEPTED**, **OUT_FOR_DELIVERY**, **COMPLETED**, **CANCELED**, and **REJECTED**.
+
+    #### Status Definitions
+
+    - **ACCEPTED**: The store has accepted the order and is preparing it.
+    - **OUT_FOR_DELIVERY**: The order has been picked up by the courier and is on its way to the customer.
+    - **COMPLETED**: The order has been successfully delivered and the transaction is complete.
+    - **CANCELED**: The order was canceled by the store, delivery service, courier, or customer after being accepted.
+    - **REJECTED**: The store cannot fulfill the order and has rejected it.
+
+    > **Note:**  
+    > For some delivery services, order status updates may occur automatically. You will receive webhook notifications for these automatic updates via your configured "Order Webhook" endpoint.
+
+    #### Delivery Service Requirements
+
+    The following tables outline which actions require manual status updates for each delivery service, along with important notes and required fields.
+
+    ### DOORDASH
+
+    | **Action**   | **Manual Action Required** | **Description**                                                                                       |
+    |--------------|---------------------------|--------------------------------------------------------------------------------------------------------|
+    | ACCEPTED     | No                        | Confirm within 3–8 minutes to prevent expiration. Auto-accepts after 1 minute if not confirmed.        |
+    | OUT_FOR_DELIVERY | No                    | Dasher has picked up the order and is delivering it.                                                   |
+    | COMPLETED    | No                        | Order is completed.                                                                                    |
+    | REJECTED     | Yes                       | Store must reject if unable to fulfill. Reason required. Notes optional.                               |
+    | CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance. Reason required. Notes optional.              |
+
+    ### UBER EATS
+
+    | **Action**   | **Manual Action Required** | **Description**                                                                                      |
+    |--------------|---------------------------|-------------------------------------------------------------------------------------------------------|
+    | ACCEPTED     | Yes                       | Confirm within 10 minutes to prevent expiration.                                                      |
+    | OUT_FOR_DELIVERY | No                    | Driver has picked up the order and is delivering it.                                                  |
+    | COMPLETED    | No                        | Order is completed.                                                                                   |
+    | REJECTED     | Yes                       | Store must reject if unable to fulfill.                                                               |
+    | CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance.                                              |
+   
+    ### GRUBHUB
+
+    | **Action**   | **Manual Action Required** | **Description**                                                                                      |
+    |--------------|---------------------------|-------------------------------------------------------------------------------------------------------|
+    | ACCEPTED     | No                        | Confirm within 10 minutes to prevent expiration. Auto-accepts after 1 minute if not confirmed.        |
+    | OUT_FOR_DELIVERY | No                    | Driver has picked up the order and is delivering it.                                                  |
+    | COMPLETED    | No                        | Order is completed.                                                                                   |
+    | REJECTED     | Yes                       | Store must reject if unable to fulfill. Reason required. Notes optional.                              |
+    | CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance. Reason required. Notes optional.             |
+
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: order_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the order within the store.
+    - name: Authorization
+      in: header
+      description: JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+
+  requestBody:
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - status
+          properties:
+            status:
+              type: string
+              description: |
+                `ACCEPTED`, `REJECTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`
+            reason:
+              type: string
+              description: |
+                Required when the value of `status` is **CANCELED** or **REJECTED** for Grubhub and DoorDash orders.
+               
+                Valid values include:
+                - **REJECTED**: `RESTAURANT_OFFLINE`, `MENU_ITEM_NOT_FOUND`, `PRICE_MISMATCH`, `OTHER`
+                - **CANCELED**: `ITEM_OUT_OF_STOCK`, `STORE_CLOSED`, `KITCHEN_BUSY`, `OTHERS`
+
+            notes:
+              type: string
+              description:  |
+                Reason why the order has to be cancelled or rejected. Optional for Grubhub and DoorDash orders.
+        examples:
+          "Accepting Order":
+            value:
+              status: "ACCEPTED"
+          "Completing Order":
+            value:
+              status: "COMPLETED"
+          "Cancelling or Rejecting Grubhub Order":
+            value:
+              status: "CANCELED"
+              reason: "RESTAURANT_OFFLINE"
+              notes: "Re-stocking"
+          "Cancelling or Rejecting DoorDash Order":
+            value:
+              status: "CANCELED"
+              reason: "STORE_CLOSED"
+              notes: "Re-stocking"
+          "Cancelling or Rejecting Bevz Order":
+            value:
+              status: "CANCELED"
+          "Cancelling or Rejecting Uber Eats Order":
+            value:
+              status: "CANCELED"
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-orders-orderid/patch/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-orders-orderid/patch/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

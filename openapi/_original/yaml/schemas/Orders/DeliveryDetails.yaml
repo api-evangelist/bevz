@@ -1,0 +1,67 @@
+type: object
+properties:
+  customerDetails:
+    type: object
+    description: Customer contact information.
+    properties:
+      name: 
+        type: string
+        description: Customer name.
+        example: Bevz Staging
+      phone: 
+        type: string
+        description: Customer phone number.
+        example: (917) 123-1234
+      email: 
+        type: string
+        description: Customer email address.
+      pinCode:
+        type: string
+        description: The pin code to access the customer phone number (For Uber Eats only).
+        example: "555 55 555"
+  deliveryType:
+    type: string
+    description: |
+      Delivery method for the order. Possible values: `PICK_UP`, `DELIVERY`.
+    example: DELIVERY
+  deliveryInstructions:
+    type: string
+    description: Special instructions for the delivery.
+  deliveryAddress:
+    type: object
+    description: Delivery address details.
+    properties:
+      street1:
+        type: string
+        description: Primary street address.
+        example: 123123 10th St
+      street2:
+        type: string
+        description: Secondary address line (optional).
+      state:
+        type: string
+        description: State or province abbreviation.
+        example: CA
+      city:
+        type: string
+        description: City name.
+        example: Santa Monica
+      zipCode:
+        type: string
+        description: Postal or ZIP code.
+        example: "90401"
+  driver:
+    type: object
+    description: Delivery driver details.
+    properties:
+      name:
+        type: string
+        description: Driver's name.
+        example: John Doe
+      phone:
+        type: string
+        description: Driver's phone number.
+        example: 091234567890
+      estimated_time_arrival:
+        type: string
+        description: Estimated time of arrival for the delivery.

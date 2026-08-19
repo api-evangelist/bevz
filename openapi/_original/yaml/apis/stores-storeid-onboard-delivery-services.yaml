@@ -1,0 +1,50 @@
+post:
+  tags:
+    - Pick a Delivery Service for Onboarding API
+  operationId: onboard
+  summary: Delivery Services Onboarding API
+  description: |
+    The Delivery Services Onboarding API allows you to onboard your store to DoorDash or Grubhub and manage related integration operations.
+
+    Use this endpoint to configure service-specific settings, such as commission rates, menu sync options, and enable/disable status for each delivery service.
+    
+  parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: |
+        JWT token for authenticating API requests.  
+      example: Bearer yourJWTtoken
+  
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: "#/components/schemas/DeliverySettings"
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-onboard-delivery-services/post/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-onboard-delivery-services/post/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"

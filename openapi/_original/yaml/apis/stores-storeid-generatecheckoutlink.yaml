@@ -1,0 +1,45 @@
+get:
+  tags:
+    - Stores
+  operationId: generateCheckoutLink
+  summary: Generate Checkout Link
+  description: |
+    Generate a Stripe checkout link for a specific store.
+    
+    This is useful if a store needs to complete or retry payment for onboarding, subscription, or other services.
+
+    The response will include a unique Stripe checkout URL for the store.
+  parameters:
+  - name: integrator_id
+    in: path
+    required: true
+    schema:
+      type: integer
+      format: int64
+    description: Unique identifier for the integrator.
+  - name: store_id
+    in: path
+    required: true
+    schema:
+      type: string
+      format: uuid
+    description: Unique identifier for the store.
+  - name: Authorization
+    in: header
+    required: true
+    schema:
+      type: string
+    description: |
+      JWT token for authenticating API requests.  
+    example: Bearer yourJWTtoken
+
+  responses:
+    "200":
+      $ref: "../responses/stores-storeid-generatecheckoutlink/get/200.yaml"
+    "400":
+      $ref: "../responses/stores-storeid-generatecheckoutlink/get/400.yaml"
+    "401":
+      $ref: "../responses/shared/401.yaml"
+    "403":
+      $ref: "../responses/shared/403.yaml"
+   

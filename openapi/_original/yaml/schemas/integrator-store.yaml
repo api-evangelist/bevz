@@ -1,0 +1,97 @@
+type: object
+properties:
+  storeId:
+    type: string
+    example: "831fd907-b455-4e92-828b-2e5421d057d7"
+  address:
+    type: object
+    description: address where the store is located
+    properties:
+      city:
+        type: string
+        example: Santa Magdalena
+      latitude:
+        type: number
+        description: can be positive or negative float value
+        example: 42.3456778143501
+      longtitude:
+        type: number
+        description: can be positive or negative float value
+        example: -71.09837363184101
+      state:
+        type: string
+        example: CA
+      street1:
+        type: string
+        description: primary street
+        example: 123123 10th St
+      zipCode:
+        type: string
+        example: 90401
+  email:
+    type: string
+    description: email used by store for contact and business
+    example: developer@bevz.com
+  setup:
+    type: boolean
+    description: whether can store operate in the app or not
+    example: true
+  subscriptionStatus:
+    type: string
+    description: trialing | active | inactive | cancelling | canceled
+    example: "active"
+  hours:
+    type: array
+    description: list of store hours each in each specific day(s)
+    items:
+      $ref: "../schemas/hours.yaml"
+  name:
+    type: string
+    example: "Percy Store"
+  deliverySettings:
+    type: object
+    properties:
+      doordash:
+        type: object
+        properties:
+          note:
+            type: string
+            example: ""
+          reason:
+            type: string
+            example: ""
+          roundPrice:
+            type: boolean
+            example: false
+          authorized:
+            type: boolean
+            example: true
+          menuSync: 
+            type: object
+            properties:
+              menuId:
+                type: string
+                example: ""
+              menuSynching:
+                type: boolean
+                example: false
+              syncStart:
+                type: number
+                example: 0
+              syncEnd:
+                type: number
+                example: 0
+              status:
+                type: string
+                example: SUCCESS
+          storeId:
+            type: string
+            example: "831fd907-b455-4e92-828b-2e5421d057d6"
+          percentToCharge:
+            type: string
+            example: "35"
+          enabled:
+            type: boolean
+            example: false
+          
+              

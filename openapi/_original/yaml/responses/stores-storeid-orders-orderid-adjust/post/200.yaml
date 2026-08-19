@@ -1,0 +1,5 @@
+description: Order adjusment successful
+content:
+  application/json:
+    schema:
+      $ref: "../../../schemas/Orders/order.yaml"
