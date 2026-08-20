@@ -48,6 +48,19 @@ tags:
 - Delivery Management
 - Liquor Retail
 - Convenience Store
+- Point-of-Sale
+- Food Delivery
+- Retail Technology
+- Marketing
+- Menu Management
+- Order Management
+- Webhook
+- Integrator API
+tags_raw:
+- Company
+- Delivery Management
+- Liquor Retail
+- Convenience Store
 - Point of Sale
 - Food Delivery
 - Retail Technology
@@ -73,6 +86,13 @@ apis:
   baseURL: https://api.bevz.com/integrator-service
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bevz.png
   tags:
+  - Store Management
+  - Menu Management
+  - Order Management
+  - Delivery Services
+  - Webhook
+  - Point-of-Sale
+  tags_raw:
   - Store Management
   - Menu Management
   - Order Management
