@@ -70,40 +70,453 @@ tags_raw:
 - Webhooks
 - Integrator API
 apis:
-- name: Bevz Integrator Service
+- aid: bevz:bevz-integrator-users-api
+  name: Bevz Integrator Users API
   description: >-
-    The Bevz Integrator Service is a partner REST API that lets POS vendors and third-party
-    integrators provision and manage stores on the Bevz platform programmatically. It covers store
-    creation, provisioning and deprovisioning; menu upload in CSV or JSON with configurable column
-    mapping and asynchronous status tracking; menu synchronization out to the connected delivery
-    services; product catalog maintenance with per-service pricing and availability; the full order
-    lifecycle from receipt through acceptance, out-for-delivery, completion, rejection and
-    cancellation; post-acceptance order adjustments; and delivery-service onboarding for DoorDash and
-    Grubhub via a single call plus a dedicated three-step OAuth handshake for Uber Eats. Three
-    outbound webhooks push order events, menu upload status and store settings changes. Authentication
-    is a bearer JWT with a 30-day lifetime, minted from Bevz-issued integrator credentials.
+    The Integrator Users API allows you to manage user accounts and access permissions for your integrator
+    account.
   humanURL: https://docs.bevz.com/
   baseURL: https://api.bevz.com/integrator-service
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/bevz.png
   tags:
-  - Store Management
-  - Menu Management
-  - Order Management
-  - Delivery Services
-  - Webhook
-  - Point-of-Sale
-  tags_raw:
-  - Store Management
-  - Menu Management
-  - Order Management
-  - Delivery Services
-  - Webhooks
-  - Point of Sale
+  - integrator_users
   properties:
   - type: OpenAPI
-    url: openapi/bevz-integrator-service-openapi.yaml
-  - type: Overlay
-    url: overlays/bevz-integrator-service-overlay.yaml
+    url: openapi/bevz-integrator-users-api-openapi.yml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
+- aid: bevz:bevz-integrators-api
+  name: Bevz Integrators API
+  description: The Integrators API from Bevz — 2 operation(s) for integrators.
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  tags:
+  - Integrators
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-integrators-api-openapi.yml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
+- aid: bevz:bevz-lotto-scratcher-games-api
+  name: Bevz Lotto Scratcher Games API
+  description: >-
+    ## Lotto Scratcher Games
+
+
+    Retrieve lottery scratch-off game data from supported state lotteries. This endpoint provides game
+    catalogs that can be used to display lotto ticket information in POS systems.
+
+
+    ### Supported Lotteries
+
+    - California (CA_LOTTERY)
+
+    - Massachusetts (MA_LOTTERY)
+
+    - Ohio (OH_LOTTERY)
+
+    - Michigan (MI_LOTTERY)
+
+    - Arizona (AZ_LOTTERY)
+
+    - Connecticut (CT_LOTTERY)
+
+    - Illinois (IL_LOTTERY)
+
+    - Georgia (GA_LOTTERY)
+
+    - Florida (FL_LOTTERY)
+
+
+    ### UPC Barcode Lookup
+
+    When a customer's lottery ticket is scanned, pass the 12-digit UPC-A barcode along with the source
+    to look up the specific game. The system extracts the game number from the barcode and returns the
+    matching game details.
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  tags:
+  - Lotto Scratcher Games
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-lotto-scratcher-games-api-openapi.yml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
+- aid: bevz:bevz-order-api
+  name: Bevz Order API
+  description: The Order API from Bevz — 3 operation(s) for order.
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  tags:
+  - Order
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-order-api-openapi.yml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
+- aid: bevz:bevz-pick-a-delivery-service-for-onboarding-api-api
+  name: Bevz Pick a Delivery Service for Onboarding API
+  description: >-
+    This document outlines the integration flow for onboarding new DoorDash and Grubhub stores through
+    the [Delivery Services Onboarding API](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard).
+
+
+    ## DoorDash Onboarding
+
+
+    ### Overview
+
+    Onboarding a store to DoorDash is an asynchronous process initiated by Bevz via a webhook. Once the
+    POS sends a request to the [Delivery Services Onboarding API](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard),
+    DoorDash processes the information, performs necessary checks, and notifies Bevz of the outcome through
+    a webhook.
+
+
+    ### Process Flow
+
+    1. **Initiate Onboarding Request**
+
+    - The POS sends a request to the Delivery Services Onboarding API with all required store and sensitive
+    information.
+
+    - Refer to the [Delivery Services Onboarding API](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard)
+    for required fields.
+
+    2. **DoorDash Processing**
+
+    - DoorDash attempts to map the store using the provided details, requests approval from the merchant,
+    and performs internal checks such as menu QA and business admin verification.
+
+    3. **Receive Webhook Notification**
+
+    - Once DoorDash completes processing, they send a webhook notification to Bevz indicating the onboarding
+    status (e.g., approved, pending, rejected) and any relevant details or next steps.
+
+    4. **Finalize Onboarding**
+
+    - The integration is activated once all requirements and approvals are met. If issues arise (e.g.,
+    missing hours, menu errors, compliance problems), DoorDash notifies the merchant and Bevz for resolution.
+
+
+
+    ## Grubhub Onboarding
+
+
+    ### Overview
+
+    The onboarding process enables POS systems to initiate a Grubhub store onboarding request via the
+    [Delivery Services Onboarding API](#tag/Pick-a-Delivery-Service-for-Onboarding-API/operation/onboard).
+    Bevz provides an auto-populated onboarding form, which the POS can present to the store. After submission,
+    a Grubhub representative contacts the store to complete setup.
+
+
+    ### Process Flow
+
+    1. **Initiate Onboarding Request**
+
+    - The POS sends a request to the Delivery Services Onboarding API.
+
+    - This request contains the required store information (e.g., store details, sensitive data).
+
+    2. **Generate Onboarding Link**
+
+    - Bevz responds with a unique onboarding link.
+
+    - This link points to a form that is pre-filled with store data provided in step 1.
+
+    3. **Customer Completes Form**
+
+    - The POS system embeds or redirects the store to the generated onboarding link.
+
+    - The store reviews and completes the form.
+
+    4. **Grubhub Representative Follows Up**
+
+    - Once the store submits the form, the information is sent to Grubhub.
+
+    - A Grubhub representative contacts the store to finalize onboarding and assist with setup.
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  tags:
+  - Pick a Delivery Service for Onboarding API
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-pick-a-delivery-service-for-onboarding-api-api-openapi.yml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
+- aid: bevz:bevz-store-products-api
+  name: Bevz Store Products API
+  description: >-
+    Store Products refer to inventory items that are available in a specific store. These products can
+    be managed, updated, and retrieved through the Store Products API.
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  tags:
+  - Store Products
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-store-products-api-openapi.yml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
+- aid: bevz:bevz-stores-api
+  name: Bevz Stores API
+  description: The Stores API from Bevz — 9 operation(s) for stores.
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  tags:
+  - Stores
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-stores-api-openapi.yml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
+- aid: bevz:bevz-uber-eats-onboarding-api-workflow-api
+  name: Bevz Uber Eats Onboarding API Workflow API
+  description: >-
+    The Uber Eats API allows you to onboard your store to Uber Eats and manage related operations.
+
+
+    Uber Eats onboarding is a three-step process:
+
+    1. **Generate OAuth URL:** Obtain an authorization link for the store owner to grant access.
+
+    2. **Exchange Authorization Code:** After authorization, exchange the received code for an access
+    token.
+
+    3. **Provision Store:** Use the access token and Uber Eats store ID to complete the onboarding and
+    enable integration features.
+
+
+    ### Process Flow
+
+    <img alt="Bevz Create Store Workflow" src="https://join-bevz.s3.us-west-1.amazonaws.com/apidocs_ubereats_pos_workflow.png"
+    />
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  tags:
+  - Uber Eats Onboarding API Workflow
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-uber-eats-onboarding-api-workflow-api-openapi.yml
+  - type: Documentation
+    url: https://docs.bevz.com/
+  - type: APIReference
+    url: https://docs.bevz.com/
+  - type: GettingStarted
+    url: https://docs.bevz.com/#tag/Getting-Started
+  - type: Authentication
+    url: authentication/bevz-authentication.yml
+  - type: Conventions
+    url: conventions/bevz-conventions.yml
+  - type: ErrorCatalog
+    url: errors/bevz-problem-types.yml
+  - type: DataModel
+    url: data-model/bevz-data-model.yml
+  - type: Webhooks
+    url: asyncapi/bevz-webhooks.yml
+  - type: Sandbox
+    url: sandbox/bevz-sandbox.yml
+  - type: ChangeLog
+    url: changelog/bevz-changelog.yml
+  - type: Lifecycle
+    url: lifecycle/bevz-lifecycle.yml
+  - type: RateLimits
+    url: rate-limits/bevz-rate-limits.yml
+  - type: Conformance
+    url: conformance/bevz-conformance.yml
+  - type: Support
+    url: https://docs.bevz.com/#tag/faq
+- aid: bevz:bevz-webhooks-api
+  name: Bevz Webhooks API
+  description: The Webhooks API from Bevz — 0 operation(s) for webhooks.
+  humanURL: https://docs.bevz.com/
+  baseURL: https://api.bevz.com/integrator-service
+  tags:
+  - Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/bevz-webhooks-api-openapi.yml
   - type: Documentation
     url: https://docs.bevz.com/
   - type: APIReference
@@ -138,6 +551,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: Overlay
+  url: overlays/bevz-integrator-service-overlay.yaml
 - type: DomainSecurity
   url: security/bevz-domain-security.yml
 - type: Website
