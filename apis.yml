@@ -563,6 +563,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/bevz-capability-edges.yml
+  name: Bevz Business Capability Map
 - type: Overlay
   url: overlays/bevz-integrator-service-overlay.yaml
 - type: DomainSecurity
