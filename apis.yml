@@ -89,7 +89,8 @@ apis:
     account.
   humanURL: https://docs.bevz.com/
   baseURL: https://api.bevz.com/integrator-service
-  tags:
+  tags: []
+  tags_raw:
   - integrator_users
   properties:
   - type: OpenAPI
@@ -352,7 +353,8 @@ apis:
     - A Grubhub representative contacts the store to finalize onboarding and assist with setup.
   humanURL: https://docs.bevz.com/
   baseURL: https://api.bevz.com/integrator-service
-  tags:
+  tags: []
+  tags_raw:
   - Pick a Delivery Service for Onboarding API
   properties:
   - type: OpenAPI
@@ -525,6 +527,8 @@ apis:
   humanURL: https://docs.bevz.com/
   baseURL: https://api.bevz.com/integrator-service
   tags:
+  - Webhook
+  tags_raw:
   - Webhooks
   properties:
   - type: OpenAPI
