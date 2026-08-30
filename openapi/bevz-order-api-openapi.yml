@@ -1,0 +1,2173 @@
+openapi: 3.2.0
+info:
+  title: Bevz Integrator Service Order API
+  contact:
+    name: API Support
+    email: tech@bevz.com
+  description: '# Introduction
+
+
+    Welcome to the Bevz Integrator Service API documentation.
+
+
+    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
+
+
+    ## Who is this documentation for?
+
+
+    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
+
+
+    ## Key Features
+
+
+    By integrating with the Bevz platform, you gain access to:
+
+
+    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
+
+    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
+
+    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
+
+    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
+
+    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
+
+
+    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
+
+    '
+  version: 1.12.0
+servers:
+- url: https://api.bevz.com/integrator-service
+  description: Production server
+- url: https://sandbox-api.bevz.com/integrator-service
+  description: Sandbox server
+tags:
+- name: Order
+paths:
+  /integrators/{integrator_id}/stores/{store_id}/orders:
+    post:
+      tags:
+      - Order
+      operationId: testStoreOrders
+      summary: Test Store Orders
+      description: "### Create a Test Order\n\nUse this endpoint to simulate order creation and test your integration with the Bevz platform.  \nThis is ideal for validating your order processing logic, webhook handling, and end-to-end workflows before going live.\n\n#### How It Works\n\n- Submit a test order with your desired items, delivery source, and (optionally) delivery instructions and address.\n- The system will process the order as if it were real, triggering all standard order notifications and webhooks.\n- Use this to verify your POS or integration receives and handles order events correctly.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - delivery_source
+              - order_items
+              properties:
+                delivery_source:
+                  type: string
+                  description: 'The delivery platform for the order. Options: `DOORDASH`, `GRUBHUB`, `UBEREATS`.
+
+                    '
+                  example: DOORDASH
+                order_items:
+                  type: array
+                  description: 'Array of items in the order. Each item requires `product_id`, `quantity`, `size`, and `item_count`.
+
+                    '
+                  items:
+                    required:
+                    - orderNotificationUrl
+                    - product_id
+                    - quantity
+                    - size
+                    - item_count
+                    properties:
+                      product_id:
+                        type: string (uuid | upc)
+                        description: 'can either be productId (uuid format) or upc
+
+
+                          4e77f1dd-9c23-4d6f-9be1-a72c94fa8d54 | 080887493966
+
+                          '
+                        example: dc89f739-4537-44df-8677-a805083ce2de
+                      quantity:
+                        type: string
+                        example: Single
+                      size:
+                        type: string
+                        example: 750ml
+                      item_count:
+                        type: integer
+                        example: 1
+                delivery_instructions:
+                  type: string
+                  description: Special instructions for the delivery (e.g., "items are fragile").
+                  example: items are fragile
+                delivery_address:
+                  type: object
+                  description: Object containing delivery address details.
+                  required:
+                  - orderNotificationUrl
+                  properties:
+                    zip_code:
+                      type: string
+                      example: '49423'
+                    city:
+                      type: string
+                      example: Holland
+                    street1:
+                      type: string
+                      example: 10 E 10th St
+                    street2:
+                      type: string
+                      description: optional
+                      example: ''
+                    state:
+                      type: string
+                      example: MI
+                delivery_type:
+                  type: string
+                  description: 'The type of delivery for the order. Options: `PICK_UP`, `DELIVERY`.
+
+                    '
+                  example: PICK_UP
+      responses:
+        '200':
+          description: Integrator test order successfully added
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: 'Represents a customer order placed through the Bevz platform.
+
+                    This schema includes all relevant details about the order, such as products, delivery information, fees, status, and timestamps.
+
+                    Use this object to view, create, or update order records via the API.
+
+                    '
+                  properties:
+                    orderId:
+                      type: string
+                      description: Unique identifier for the order.
+                      example: bj1B0tzQEe2B0ysLv-VTcg-test
+                    integratorId:
+                      type: string
+                      description: Unique identifier for the integrator associated with this order.
+                      example: '220510005'
+                    ownerId:
+                      type: string
+                      description: Unique identifier for the owner of the order (typically the store owner).
+                      example: fa44331d-1143-4d03-b1fd-f0a61a11db29
+                    storeId:
+                      type: string
+                      description: Unique identifier for the store where the order was placed.
+                      example: 831fd907-b455-4e92-828b-2e5421d057d7
+                    customerId:
+                      type: string
+                      description: Identifier for the customer placing the order (may be a platform-specific value).
+                      example: GRUBHUB_CUSTOMER
+                    orderProducts:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          productSnapshot:
+                            type: object
+                            description: Snapshot of the product details at the time of ordering.
+                            properties:
+                              images:
+                                type: array
+                                description: List of product images.
+                                items:
+                                  type: object
+                                  properties:
+                                    src:
+                                      type: string
+                                      description: Image URL.
+                                      example: https://bevz-media.s3-us-west-1.amazonaws.com/ef81f97b-1d8a-4f91-906d-3542427e99f2.png
+                                    primary:
+                                      type: boolean
+                                      description: Indicates if this is the primary image.
+                                      example: true
+                              quantity:
+                                type: string
+                                description: Quantity or packaging type (e.g., "6 Pack").
+                                example: 6 Pack
+                              productId:
+                                type: string
+                                description: Unique identifier for the product.
+                                example: cd017f3f-fbda-41c1-b9d9-842eab06cbea
+                              taxable:
+                                type: boolean
+                                description: Indicates if the product is taxable.
+                                example: true
+                              description:
+                                type: string
+                                description: Product description.
+                                example: Enjoy the refreshing lemon-lime taste in every sip of 7UP. Free of caffeine and with crisp, carbonated fizz in every bottle, you can indulge in the delicious drink without feeling the effects of caffeine.
+                              upc:
+                                type: string
+                                description: Universal Product Code for the product.
+                                example: 078000000382
+                              extras:
+                                type: object
+                                description: Additional product options or add-ons.
+                              priority:
+                                type: boolean
+                                description: Indicates if the product is a priority item in the order.
+                                example: false
+                              createdAt:
+                                type: string
+                                format: date-time
+                                description: ISO 8601 timestamp when the product was created.
+                                example: '2019-08-02T15:11:28.608Z'
+                              size:
+                                type: string
+                                description: Size or packaging of the product.
+                                example: 12 oz Cans
+                              price:
+                                type: number
+                                format: float
+                                description: Price of the product at the time of order.
+                                example: 4.99
+                              name:
+                                type: string
+                                description: Name of the product.
+                                example: 7 UP
+                              disabled:
+                                type: boolean
+                                description: Indicates if the product is currently disabled.
+                                example: false
+                              categories:
+                                type: object
+                                description: Product category hierarchy.
+                                properties:
+                                  L1:
+                                    type: string
+                                    description: Top-level category.
+                                    example: Soft Drinks
+                                  L2:
+                                    type: string
+                                    description: Second-level category.
+                                    example: Soda
+                              updatedAt:
+                                type: string
+                                format: date-time
+                                description: ISO 8601 timestamp when the product was last updated.
+                                example: '2019-08-02T15:11:28.608Z'
+                          quantity:
+                            type: number
+                            description: Quantity of this product in the order.
+                            example: 1
+                          productId:
+                            type: string
+                            description: Unique identifier for the product.
+                            example: a00dd3f1-dac9-4574-8e23-51a94dd7094c
+                          merchantSuppliedId:
+                            type: string
+                            description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+                            example: 507f191e810c19729de860ea
+                          selectedPrice:
+                            type: number
+                            description: Price of the product at the time of order.
+                            example: 3.99
+                          alternativeProductName:
+                            type: string
+                            description: Other names of the product.
+                            example: A&W Root Beer Cans (12 fl oz x 12 ct)
+                    deliveryDetails:
+                      type: object
+                      properties:
+                        customerDetails:
+                          type: object
+                          description: Customer contact information.
+                          properties:
+                            name:
+                              type: string
+                              description: Customer name.
+                              example: Bevz Staging
+                            phone:
+                              type: string
+                              description: Customer phone number.
+                              example: (917) 123-1234
+                            email:
+                              type: string
+                              description: Customer email address.
+                            pinCode:
+                              type: string
+                              description: The pin code to access the customer phone number (For Uber Eats only).
+                              example: 555 55 555
+                        deliveryType:
+                          type: string
+                          description: 'Delivery method for the order. Possible values: `PICK_UP`, `DELIVERY`.
+
+                            '
+                          example: DELIVERY
+                        deliveryInstructions:
+                          type: string
+                          description: Special instructions for the delivery.
+                        deliveryAddress:
+                          type: object
+                          description: Delivery address details.
+                          properties:
+                            street1:
+                              type: string
+                              description: Primary street address.
+                              example: 123123 10th St
+                            street2:
+                              type: string
+                              description: Secondary address line (optional).
+                            state:
+                              type: string
+                              description: State or province abbreviation.
+                              example: CA
+                            city:
+                              type: string
+                              description: City name.
+                              example: Santa Monica
+                            zipCode:
+                              type: string
+                              description: Postal or ZIP code.
+                              example: '90401'
+                        driver:
+                          type: object
+                          description: Delivery driver details.
+                          properties:
+                            name:
+                              type: string
+                              description: Driver's name.
+                              example: John Doe
+                            phone:
+                              type: string
+                              description: Driver's phone number.
+                              example: 091234567890
+                            estimated_time_arrival:
+                              type: string
+                              description: Estimated time of arrival for the delivery.
+                    fees:
+                      type: object
+                      description: Breakdown of fees applied to the order.
+                      properties:
+                        shippingTotal:
+                          type: number
+                          description: Total shipping fee for the order.
+                        tipTotal:
+                          type: string
+                          description: Total tip amount for the order.
+                          example: '0'
+                        serviceFeeTotal:
+                          type: number
+                          description: Total service fee for the order.
+                          example: 148
+                        taxTotal:
+                          type: number
+                          description: Total tax applied to the order.
+                          example: 28
+                        savedTotal:
+                          type: number
+                          description: Total amount saved (e.g., discounts).
+                        rebateTotal:
+                          type: number
+                          description: Total rebate applied to the order.
+                    orderStatus:
+                      type: string
+                      description: "Current status of the order.  \nPossible values: `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`\n"
+                      example: COMPLETED
+                    orderTotal:
+                      type: number
+                      description: Total amount for the order, including all fees and taxes.
+                      example: 408
+                    deliverySource:
+                      type: string
+                      description: "The delivery platform through which the order was placed.  \nPossible values: `DOORDASH`, `UBEREATS`, `GRUBHUB`\n"
+                      example: DOORDASH
+                    subTotal:
+                      type: number
+                      description: Subtotal amount for the order (before fees and taxes).
+                      example: 5.34
+                    createdAt:
+                      type: string
+                      format: date-time
+                      description: ISO 8601 timestamp when the order was created.
+                      example: '2023-04-17T12:32:27.304Z'
+                    updatedAt:
+                      type: string
+                      format: date-time
+                      description: ISO 8601 timestamp when the order was last updated.
+                      example: '2023-04-17T12:34:40.376Z'
+                    test:
+                      type: boolean
+                      description: Indicates if this order is a test order.
+                      example: true
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Failed to create a mock order, please try again later!:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Failed to create a mock order, please try again later!
+                Store is disabled, unable to perform this action:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Store is disabled, unable to perform this action.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+    get:
+      tags:
+      - Order
+      operationId: getStoreOrders
+      summary: Get Store Orders
+      description: "### Retrieve Store Orders\n\nUse this endpoint to fetch a list of orders for a specific store.  \nYou can filter orders by status and date range to view only the orders that are relevant to your needs.\n\n#### How It Works\n\n- Provide the required `integrator_id` and `store_id` in the path.\n- Optionally, use query parameters to narrow down your results.\n- The response will include order details such as order ID, status, items, timestamps, and delivery information.\n\n#### Example Usage\n\n- Retrieve all completed orders for a store in the last 7 days.\n- Monitor new incoming orders by polling for `PENDING` or `ACCEPTED` statuses.\n\n#### Best Practices\n\n- Use date filters to limit the size of your response and improve performance.\n- Combine with webhooks for real-time order updates and use this endpoint for historical or reconciliation purposes.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: status
+        in: query
+        required: false
+        description: 'Filter by order status. Options:
+
+          `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`
+
+          '
+        schema:
+          type: string
+      - name: start_date
+        in: query
+        required: false
+        description: Return orders created after this epoch timestamp. (e.g., 1682490064752)
+        schema:
+          type: number
+      - name: end_date
+        in: query
+        required: false
+        description: Return orders created before this epoch timestamp. (e.g., 1682490064755)
+        schema:
+          type: number
+      - name: next_page
+        in: query
+        required: false
+        description: Id for fetching the next page of results.
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        description: How many results to return. Default is 1000.
+        schema:
+          type: number
+      - name: date_field
+        in: query
+        required: false
+        description: 'Specify which date field to filter by. Options:
+
+          `updatedAt (default)`, `createdAt`
+
+          '
+        schema:
+          type: string
+      - name: Authorization
+        in: header
+        description: JWT token for authenticating API requests.
+        example: Bearer yourJWTtoken
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Order List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next_page:
+                    type: string
+                    description: Token for fetching the next page of results, if available.
+                    example: fb867d3b-d41f-4aaf-8b70-a7ffc7614ea0
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      description: 'Represents a customer order placed through the Bevz platform.
+
+                        This schema includes all relevant details about the order, such as products, delivery information, fees, status, and timestamps.
+
+                        Use this object to view, create, or update order records via the API.
+
+                        '
+                      properties:
+                        orderId:
+                          type: string
+                          description: Unique identifier for the order.
+                          example: bj1B0tzQEe2B0ysLv-VTcg-test
+                        integratorId:
+                          type: string
+                          description: Unique identifier for the integrator associated with this order.
+                          example: '220510005'
+                        ownerId:
+                          type: string
+                          description: Unique identifier for the owner of the order (typically the store owner).
+                          example: fa44331d-1143-4d03-b1fd-f0a61a11db29
+                        storeId:
+                          type: string
+                          description: Unique identifier for the store where the order was placed.
+                          example: 831fd907-b455-4e92-828b-2e5421d057d7
+                        customerId:
+                          type: string
+                          description: Identifier for the customer placing the order (may be a platform-specific value).
+                          example: GRUBHUB_CUSTOMER
+                        orderProducts:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              productSnapshot:
+                                type: object
+                                description: Snapshot of the product details at the time of ordering.
+                                properties:
+                                  images:
+                                    type: array
+                                    description: List of product images.
+                                    items:
+                                      type: object
+                                      properties:
+                                        src:
+                                          type: string
+                                          description: Image URL.
+                                          example: https://bevz-media.s3-us-west-1.amazonaws.com/ef81f97b-1d8a-4f91-906d-3542427e99f2.png
+                                        primary:
+                                          type: boolean
+                                          description: Indicates if this is the primary image.
+                                          example: true
+                                  quantity:
+                                    type: string
+                                    description: Quantity or packaging type (e.g., "6 Pack").
+                                    example: 6 Pack
+                                  productId:
+                                    type: string
+                                    description: Unique identifier for the product.
+                                    example: cd017f3f-fbda-41c1-b9d9-842eab06cbea
+                                  taxable:
+                                    type: boolean
+                                    description: Indicates if the product is taxable.
+                                    example: true
+                                  description:
+                                    type: string
+                                    description: Product description.
+                                    example: Enjoy the refreshing lemon-lime taste in every sip of 7UP. Free of caffeine and with crisp, carbonated fizz in every bottle, you can indulge in the delicious drink without feeling the effects of caffeine.
+                                  upc:
+                                    type: string
+                                    description: Universal Product Code for the product.
+                                    example: 078000000382
+                                  extras:
+                                    type: object
+                                    description: Additional product options or add-ons.
+                                  priority:
+                                    type: boolean
+                                    description: Indicates if the product is a priority item in the order.
+                                    example: false
+                                  createdAt:
+                                    type: string
+                                    format: date-time
+                                    description: ISO 8601 timestamp when the product was created.
+                                    example: '2019-08-02T15:11:28.608Z'
+                                  size:
+                                    type: string
+                                    description: Size or packaging of the product.
+                                    example: 12 oz Cans
+                                  price:
+                                    type: number
+                                    format: float
+                                    description: Price of the product at the time of order.
+                                    example: 4.99
+                                  name:
+                                    type: string
+                                    description: Name of the product.
+                                    example: 7 UP
+                                  disabled:
+                                    type: boolean
+                                    description: Indicates if the product is currently disabled.
+                                    example: false
+                                  categories:
+                                    type: object
+                                    description: Product category hierarchy.
+                                    properties:
+                                      L1:
+                                        type: string
+                                        description: Top-level category.
+                                        example: Soft Drinks
+                                      L2:
+                                        type: string
+                                        description: Second-level category.
+                                        example: Soda
+                                  updatedAt:
+                                    type: string
+                                    format: date-time
+                                    description: ISO 8601 timestamp when the product was last updated.
+                                    example: '2019-08-02T15:11:28.608Z'
+                              quantity:
+                                type: number
+                                description: Quantity of this product in the order.
+                                example: 1
+                              productId:
+                                type: string
+                                description: Unique identifier for the product.
+                                example: a00dd3f1-dac9-4574-8e23-51a94dd7094c
+                              merchantSuppliedId:
+                                type: string
+                                description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+                                example: 507f191e810c19729de860ea
+                              selectedPrice:
+                                type: number
+                                description: Price of the product at the time of order.
+                                example: 3.99
+                              alternativeProductName:
+                                type: string
+                                description: Other names of the product.
+                                example: A&W Root Beer Cans (12 fl oz x 12 ct)
+                        deliveryDetails:
+                          type: object
+                          properties:
+                            customerDetails:
+                              type: object
+                              description: Customer contact information.
+                              properties:
+                                name:
+                                  type: string
+                                  description: Customer name.
+                                  example: Bevz Staging
+                                phone:
+                                  type: string
+                                  description: Customer phone number.
+                                  example: (917) 123-1234
+                                email:
+                                  type: string
+                                  description: Customer email address.
+                                pinCode:
+                                  type: string
+                                  description: The pin code to access the customer phone number (For Uber Eats only).
+                                  example: 555 55 555
+                            deliveryType:
+                              type: string
+                              description: 'Delivery method for the order. Possible values: `PICK_UP`, `DELIVERY`.
+
+                                '
+                              example: DELIVERY
+                            deliveryInstructions:
+                              type: string
+                              description: Special instructions for the delivery.
+                            deliveryAddress:
+                              type: object
+                              description: Delivery address details.
+                              properties:
+                                street1:
+                                  type: string
+                                  description: Primary street address.
+                                  example: 123123 10th St
+                                street2:
+                                  type: string
+                                  description: Secondary address line (optional).
+                                state:
+                                  type: string
+                                  description: State or province abbreviation.
+                                  example: CA
+                                city:
+                                  type: string
+                                  description: City name.
+                                  example: Santa Monica
+                                zipCode:
+                                  type: string
+                                  description: Postal or ZIP code.
+                                  example: '90401'
+                            driver:
+                              type: object
+                              description: Delivery driver details.
+                              properties:
+                                name:
+                                  type: string
+                                  description: Driver's name.
+                                  example: John Doe
+                                phone:
+                                  type: string
+                                  description: Driver's phone number.
+                                  example: 091234567890
+                                estimated_time_arrival:
+                                  type: string
+                                  description: Estimated time of arrival for the delivery.
+                        fees:
+                          type: object
+                          description: Breakdown of fees applied to the order.
+                          properties:
+                            shippingTotal:
+                              type: number
+                              description: Total shipping fee for the order.
+                            tipTotal:
+                              type: string
+                              description: Total tip amount for the order.
+                              example: '0'
+                            serviceFeeTotal:
+                              type: number
+                              description: Total service fee for the order.
+                              example: 148
+                            taxTotal:
+                              type: number
+                              description: Total tax applied to the order.
+                              example: 28
+                            savedTotal:
+                              type: number
+                              description: Total amount saved (e.g., discounts).
+                            rebateTotal:
+                              type: number
+                              description: Total rebate applied to the order.
+                        orderStatus:
+                          type: string
+                          description: "Current status of the order.  \nPossible values: `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`\n"
+                          example: COMPLETED
+                        orderTotal:
+                          type: number
+                          description: Total amount for the order, including all fees and taxes.
+                          example: 408
+                        deliverySource:
+                          type: string
+                          description: "The delivery platform through which the order was placed.  \nPossible values: `DOORDASH`, `UBEREATS`, `GRUBHUB`\n"
+                          example: DOORDASH
+                        subTotal:
+                          type: number
+                          description: Subtotal amount for the order (before fees and taxes).
+                          example: 5.34
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: ISO 8601 timestamp when the order was created.
+                          example: '2023-04-17T12:32:27.304Z'
+                        updatedAt:
+                          type: string
+                          format: date-time
+                          description: ISO 8601 timestamp when the order was last updated.
+                          example: '2023-04-17T12:34:40.376Z'
+                        test:
+                          type: boolean
+                          description: Indicates if this order is a test order.
+                          example: true
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/orders/{order_id}:
+    get:
+      tags:
+      - Order
+      operationId: getOrderId
+      summary: Get Order by OrderId
+      description: "### Retrieve a specific Order by Order ID\n\nUse this endpoint to fetch details of a specific order placed at a store.  \nThis includes information such as order status, items, timestamps, and delivery details.\n\n#### How It Works\n\n- Provide the required `integrator_id`, `store_id` and `order_id` in the path.\n- The response will include order details such as order ID, status, items, timestamps, and delivery information.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the order within the store.
+      - name: Authorization
+        in: header
+        description: JWT token for authenticating API requests.
+        example: Bearer yourJWTtoken
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successfully fetched Order Details
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Represents a customer order placed through the Bevz platform.
+
+                  This schema includes all relevant details about the order, such as products, delivery information, fees, status, and timestamps.
+
+                  Use this object to view, create, or update order records via the API.
+
+                  '
+                properties:
+                  orderId:
+                    type: string
+                    description: Unique identifier for the order.
+                    example: bj1B0tzQEe2B0ysLv-VTcg-test
+                  integratorId:
+                    type: string
+                    description: Unique identifier for the integrator associated with this order.
+                    example: '220510005'
+                  ownerId:
+                    type: string
+                    description: Unique identifier for the owner of the order (typically the store owner).
+                    example: fa44331d-1143-4d03-b1fd-f0a61a11db29
+                  storeId:
+                    type: string
+                    description: Unique identifier for the store where the order was placed.
+                    example: 831fd907-b455-4e92-828b-2e5421d057d7
+                  customerId:
+                    type: string
+                    description: Identifier for the customer placing the order (may be a platform-specific value).
+                    example: GRUBHUB_CUSTOMER
+                  orderProducts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productSnapshot:
+                          type: object
+                          description: Snapshot of the product details at the time of ordering.
+                          properties:
+                            images:
+                              type: array
+                              description: List of product images.
+                              items:
+                                type: object
+                                properties:
+                                  src:
+                                    type: string
+                                    description: Image URL.
+                                    example: https://bevz-media.s3-us-west-1.amazonaws.com/ef81f97b-1d8a-4f91-906d-3542427e99f2.png
+                                  primary:
+                                    type: boolean
+                                    description: Indicates if this is the primary image.
+                                    example: true
+                            quantity:
+                              type: string
+                              description: Quantity or packaging type (e.g., "6 Pack").
+                              example: 6 Pack
+                            productId:
+                              type: string
+                              description: Unique identifier for the product.
+                              example: cd017f3f-fbda-41c1-b9d9-842eab06cbea
+                            taxable:
+                              type: boolean
+                              description: Indicates if the product is taxable.
+                              example: true
+                            description:
+                              type: string
+                              description: Product description.
+                              example: Enjoy the refreshing lemon-lime taste in every sip of 7UP. Free of caffeine and with crisp, carbonated fizz in every bottle, you can indulge in the delicious drink without feeling the effects of caffeine.
+                            upc:
+                              type: string
+                              description: Universal Product Code for the product.
+                              example: 078000000382
+                            extras:
+                              type: object
+                              description: Additional product options or add-ons.
+                            priority:
+                              type: boolean
+                              description: Indicates if the product is a priority item in the order.
+                              example: false
+                            createdAt:
+                              type: string
+                              format: date-time
+                              description: ISO 8601 timestamp when the product was created.
+                              example: '2019-08-02T15:11:28.608Z'
+                            size:
+                              type: string
+                              description: Size or packaging of the product.
+                              example: 12 oz Cans
+                            price:
+                              type: number
+                              format: float
+                              description: Price of the product at the time of order.
+                              example: 4.99
+                            name:
+                              type: string
+                              description: Name of the product.
+                              example: 7 UP
+                            disabled:
+                              type: boolean
+                              description: Indicates if the product is currently disabled.
+                              example: false
+                            categories:
+                              type: object
+                              description: Product category hierarchy.
+                              properties:
+                                L1:
+                                  type: string
+                                  description: Top-level category.
+                                  example: Soft Drinks
+                                L2:
+                                  type: string
+                                  description: Second-level category.
+                                  example: Soda
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: ISO 8601 timestamp when the product was last updated.
+                              example: '2019-08-02T15:11:28.608Z'
+                        quantity:
+                          type: number
+                          description: Quantity of this product in the order.
+                          example: 1
+                        productId:
+                          type: string
+                          description: Unique identifier for the product.
+                          example: a00dd3f1-dac9-4574-8e23-51a94dd7094c
+                        merchantSuppliedId:
+                          type: string
+                          description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+                          example: 507f191e810c19729de860ea
+                        selectedPrice:
+                          type: number
+                          description: Price of the product at the time of order.
+                          example: 3.99
+                        alternativeProductName:
+                          type: string
+                          description: Other names of the product.
+                          example: A&W Root Beer Cans (12 fl oz x 12 ct)
+                  deliveryDetails:
+                    type: object
+                    properties:
+                      customerDetails:
+                        type: object
+                        description: Customer contact information.
+                        properties:
+                          name:
+                            type: string
+                            description: Customer name.
+                            example: Bevz Staging
+                          phone:
+                            type: string
+                            description: Customer phone number.
+                            example: (917) 123-1234
+                          email:
+                            type: string
+                            description: Customer email address.
+                          pinCode:
+                            type: string
+                            description: The pin code to access the customer phone number (For Uber Eats only).
+                            example: 555 55 555
+                      deliveryType:
+                        type: string
+                        description: 'Delivery method for the order. Possible values: `PICK_UP`, `DELIVERY`.
+
+                          '
+                        example: DELIVERY
+                      deliveryInstructions:
+                        type: string
+                        description: Special instructions for the delivery.
+                      deliveryAddress:
+                        type: object
+                        description: Delivery address details.
+                        properties:
+                          street1:
+                            type: string
+                            description: Primary street address.
+                            example: 123123 10th St
+                          street2:
+                            type: string
+                            description: Secondary address line (optional).
+                          state:
+                            type: string
+                            description: State or province abbreviation.
+                            example: CA
+                          city:
+                            type: string
+                            description: City name.
+                            example: Santa Monica
+                          zipCode:
+                            type: string
+                            description: Postal or ZIP code.
+                            example: '90401'
+                      driver:
+                        type: object
+                        description: Delivery driver details.
+                        properties:
+                          name:
+                            type: string
+                            description: Driver's name.
+                            example: John Doe
+                          phone:
+                            type: string
+                            description: Driver's phone number.
+                            example: 091234567890
+                          estimated_time_arrival:
+                            type: string
+                            description: Estimated time of arrival for the delivery.
+                  fees:
+                    type: object
+                    description: Breakdown of fees applied to the order.
+                    properties:
+                      shippingTotal:
+                        type: number
+                        description: Total shipping fee for the order.
+                      tipTotal:
+                        type: string
+                        description: Total tip amount for the order.
+                        example: '0'
+                      serviceFeeTotal:
+                        type: number
+                        description: Total service fee for the order.
+                        example: 148
+                      taxTotal:
+                        type: number
+                        description: Total tax applied to the order.
+                        example: 28
+                      savedTotal:
+                        type: number
+                        description: Total amount saved (e.g., discounts).
+                      rebateTotal:
+                        type: number
+                        description: Total rebate applied to the order.
+                  orderStatus:
+                    type: string
+                    description: "Current status of the order.  \nPossible values: `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`\n"
+                    example: COMPLETED
+                  orderTotal:
+                    type: number
+                    description: Total amount for the order, including all fees and taxes.
+                    example: 408
+                  deliverySource:
+                    type: string
+                    description: "The delivery platform through which the order was placed.  \nPossible values: `DOORDASH`, `UBEREATS`, `GRUBHUB`\n"
+                    example: DOORDASH
+                  subTotal:
+                    type: number
+                    description: Subtotal amount for the order (before fees and taxes).
+                    example: 5.34
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp when the order was created.
+                    example: '2023-04-17T12:32:27.304Z'
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp when the order was last updated.
+                    example: '2023-04-17T12:34:40.376Z'
+                  test:
+                    type: boolean
+                    description: Indicates if this order is a test order.
+                    example: true
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+              examples:
+                Invalid orderId!:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Invalid orderId!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - orderId not found
+    patch:
+      tags:
+      - Order
+      operationId: patchOrderStatus
+      summary: Patch Order Status
+      description: "### Update the Status of an Order\n\nUse this endpoint to update the status of an order as it progresses through its lifecycle.  \nSupported statuses include: **ACCEPTED**, **OUT_FOR_DELIVERY**, **COMPLETED**, **CANCELED**, and **REJECTED**.\n\n#### Status Definitions\n\n- **ACCEPTED**: The store has accepted the order and is preparing it.\n- **OUT_FOR_DELIVERY**: The order has been picked up by the courier and is on its way to the customer.\n- **COMPLETED**: The order has been successfully delivered and the transaction is complete.\n- **CANCELED**: The order was canceled by the store, delivery service, courier, or customer after being accepted.\n- **REJECTED**: The store cannot fulfill the order and has rejected it.\n\n> **Note:**  \n> For some delivery services, order status updates may occur automatically. You will receive webhook notifications for these automatic updates via your configured \"Order Webhook\" endpoint.\n\n#### Delivery Service Requirements\n\nThe following tables outline which actions require manual status updates for each delivery service, along with important notes and required fields.\n\n### DOORDASH\n\n| **Action**   | **Manual Action Required** | **Description**                                                                                       |\n|--------------|---------------------------|--------------------------------------------------------------------------------------------------------|\n| ACCEPTED     | No                        | Confirm within 3–8 minutes to prevent expiration. Auto-accepts after 1 minute if not confirmed.        |\n| OUT_FOR_DELIVERY | No                    | Dasher has picked up the order and is delivering it.                                                   |\n| COMPLETED    | No                        | Order is completed.                                                                                    |\n| REJECTED     | Yes                       | Store must reject if unable to fulfill. Reason required. Notes optional.                               |\n| CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance. Reason required. Notes optional.              |\n\n### UBER EATS\n\n| **Action**   | **Manual Action Required** | **Description**                                                                                      |\n|--------------|---------------------------|-------------------------------------------------------------------------------------------------------|\n| ACCEPTED     | Yes                       | Confirm within 10 minutes to prevent expiration.                                                      |\n| OUT_FOR_DELIVERY | No                    | Driver has picked up the order and is delivering it.                                                  |\n| COMPLETED    | No                        | Order is completed.                                                                                   |\n| REJECTED     | Yes                       | Store must reject if unable to fulfill.                                                               |\n| CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance.                                              |\n\n### GRUBHUB\n\n| **Action**   | **Manual Action Required** | **Description**                                                                                      |\n|--------------|---------------------------|-------------------------------------------------------------------------------------------------------|\n| ACCEPTED     | No                        | Confirm within 10 minutes to prevent expiration. Auto-accepts after 1 minute if not confirmed.        |\n| OUT_FOR_DELIVERY | No                    | Driver has picked up the order and is delivering it.                                                  |\n| COMPLETED    | No                        | Order is completed.                                                                                   |\n| REJECTED     | Yes                       | Store must reject if unable to fulfill. Reason required. Notes optional.                              |\n| CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance. Reason required. Notes optional.             |\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the order within the store.
+      - name: Authorization
+        in: header
+        description: JWT token for authenticating API requests.
+        example: Bearer yourJWTtoken
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - status
+              properties:
+                status:
+                  type: string
+                  description: '`ACCEPTED`, `REJECTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`
+
+                    '
+                reason:
+                  type: string
+                  description: 'Required when the value of `status` is **CANCELED** or **REJECTED** for Grubhub and DoorDash orders.
+
+
+                    Valid values include:
+
+                    - **REJECTED**: `RESTAURANT_OFFLINE`, `MENU_ITEM_NOT_FOUND`, `PRICE_MISMATCH`, `OTHER`
+
+                    - **CANCELED**: `ITEM_OUT_OF_STOCK`, `STORE_CLOSED`, `KITCHEN_BUSY`, `OTHERS`
+
+                    '
+                notes:
+                  type: string
+                  description: 'Reason why the order has to be cancelled or rejected. Optional for Grubhub and DoorDash orders.
+
+                    '
+            examples:
+              Accepting Order:
+                value:
+                  status: ACCEPTED
+              Completing Order:
+                value:
+                  status: COMPLETED
+              Cancelling or Rejecting Grubhub Order:
+                value:
+                  status: CANCELED
+                  reason: RESTAURANT_OFFLINE
+                  notes: Re-stocking
+              Cancelling or Rejecting DoorDash Order:
+                value:
+                  status: CANCELED
+                  reason: STORE_CLOSED
+                  notes: Re-stocking
+              Cancelling or Rejecting Bevz Order:
+                value:
+                  status: CANCELED
+              Cancelling or Rejecting Uber Eats Order:
+                value:
+                  status: CANCELED
+      responses:
+        '200':
+          description: Order status has been updated!
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Represents a customer order placed through the Bevz platform.
+
+                  This schema includes all relevant details about the order, such as products, delivery information, fees, status, and timestamps.
+
+                  Use this object to view, create, or update order records via the API.
+
+                  '
+                properties:
+                  orderId:
+                    type: string
+                    description: Unique identifier for the order.
+                    example: bj1B0tzQEe2B0ysLv-VTcg-test
+                  integratorId:
+                    type: string
+                    description: Unique identifier for the integrator associated with this order.
+                    example: '220510005'
+                  ownerId:
+                    type: string
+                    description: Unique identifier for the owner of the order (typically the store owner).
+                    example: fa44331d-1143-4d03-b1fd-f0a61a11db29
+                  storeId:
+                    type: string
+                    description: Unique identifier for the store where the order was placed.
+                    example: 831fd907-b455-4e92-828b-2e5421d057d7
+                  customerId:
+                    type: string
+                    description: Identifier for the customer placing the order (may be a platform-specific value).
+                    example: GRUBHUB_CUSTOMER
+                  orderProducts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productSnapshot:
+                          type: object
+                          description: Snapshot of the product details at the time of ordering.
+                          properties:
+                            images:
+                              type: array
+                              description: List of product images.
+                              items:
+                                type: object
+                                properties:
+                                  src:
+                                    type: string
+                                    description: Image URL.
+                                    example: https://bevz-media.s3-us-west-1.amazonaws.com/ef81f97b-1d8a-4f91-906d-3542427e99f2.png
+                                  primary:
+                                    type: boolean
+                                    description: Indicates if this is the primary image.
+                                    example: true
+                            quantity:
+                              type: string
+                              description: Quantity or packaging type (e.g., "6 Pack").
+                              example: 6 Pack
+                            productId:
+                              type: string
+                              description: Unique identifier for the product.
+                              example: cd017f3f-fbda-41c1-b9d9-842eab06cbea
+                            taxable:
+                              type: boolean
+                              description: Indicates if the product is taxable.
+                              example: true
+                            description:
+                              type: string
+                              description: Product description.
+                              example: Enjoy the refreshing lemon-lime taste in every sip of 7UP. Free of caffeine and with crisp, carbonated fizz in every bottle, you can indulge in the delicious drink without feeling the effects of caffeine.
+                            upc:
+                              type: string
+                              description: Universal Product Code for the product.
+                              example: 078000000382
+                            extras:
+                              type: object
+                              description: Additional product options or add-ons.
+                            priority:
+                              type: boolean
+                              description: Indicates if the product is a priority item in the order.
+                              example: false
+                            createdAt:
+                              type: string
+                              format: date-time
+                              description: ISO 8601 timestamp when the product was created.
+                              example: '2019-08-02T15:11:28.608Z'
+                            size:
+                              type: string
+                              description: Size or packaging of the product.
+                              example: 12 oz Cans
+                            price:
+                              type: number
+                              format: float
+                              description: Price of the product at the time of order.
+                              example: 4.99
+                            name:
+                              type: string
+                              description: Name of the product.
+                              example: 7 UP
+                            disabled:
+                              type: boolean
+                              description: Indicates if the product is currently disabled.
+                              example: false
+                            categories:
+                              type: object
+                              description: Product category hierarchy.
+                              properties:
+                                L1:
+                                  type: string
+                                  description: Top-level category.
+                                  example: Soft Drinks
+                                L2:
+                                  type: string
+                                  description: Second-level category.
+                                  example: Soda
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: ISO 8601 timestamp when the product was last updated.
+                              example: '2019-08-02T15:11:28.608Z'
+                        quantity:
+                          type: number
+                          description: Quantity of this product in the order.
+                          example: 1
+                        productId:
+                          type: string
+                          description: Unique identifier for the product.
+                          example: a00dd3f1-dac9-4574-8e23-51a94dd7094c
+                        merchantSuppliedId:
+                          type: string
+                          description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+                          example: 507f191e810c19729de860ea
+                        selectedPrice:
+                          type: number
+                          description: Price of the product at the time of order.
+                          example: 3.99
+                        alternativeProductName:
+                          type: string
+                          description: Other names of the product.
+                          example: A&W Root Beer Cans (12 fl oz x 12 ct)
+                  deliveryDetails:
+                    type: object
+                    properties:
+                      customerDetails:
+                        type: object
+                        description: Customer contact information.
+                        properties:
+                          name:
+                            type: string
+                            description: Customer name.
+                            example: Bevz Staging
+                          phone:
+                            type: string
+                            description: Customer phone number.
+                            example: (917) 123-1234
+                          email:
+                            type: string
+                            description: Customer email address.
+                          pinCode:
+                            type: string
+                            description: The pin code to access the customer phone number (For Uber Eats only).
+                            example: 555 55 555
+                      deliveryType:
+                        type: string
+                        description: 'Delivery method for the order. Possible values: `PICK_UP`, `DELIVERY`.
+
+                          '
+                        example: DELIVERY
+                      deliveryInstructions:
+                        type: string
+                        description: Special instructions for the delivery.
+                      deliveryAddress:
+                        type: object
+                        description: Delivery address details.
+                        properties:
+                          street1:
+                            type: string
+                            description: Primary street address.
+                            example: 123123 10th St
+                          street2:
+                            type: string
+                            description: Secondary address line (optional).
+                          state:
+                            type: string
+                            description: State or province abbreviation.
+                            example: CA
+                          city:
+                            type: string
+                            description: City name.
+                            example: Santa Monica
+                          zipCode:
+                            type: string
+                            description: Postal or ZIP code.
+                            example: '90401'
+                      driver:
+                        type: object
+                        description: Delivery driver details.
+                        properties:
+                          name:
+                            type: string
+                            description: Driver's name.
+                            example: John Doe
+                          phone:
+                            type: string
+                            description: Driver's phone number.
+                            example: 091234567890
+                          estimated_time_arrival:
+                            type: string
+                            description: Estimated time of arrival for the delivery.
+                  fees:
+                    type: object
+                    description: Breakdown of fees applied to the order.
+                    properties:
+                      shippingTotal:
+                        type: number
+                        description: Total shipping fee for the order.
+                      tipTotal:
+                        type: string
+                        description: Total tip amount for the order.
+                        example: '0'
+                      serviceFeeTotal:
+                        type: number
+                        description: Total service fee for the order.
+                        example: 148
+                      taxTotal:
+                        type: number
+                        description: Total tax applied to the order.
+                        example: 28
+                      savedTotal:
+                        type: number
+                        description: Total amount saved (e.g., discounts).
+                      rebateTotal:
+                        type: number
+                        description: Total rebate applied to the order.
+                  orderStatus:
+                    type: string
+                    description: "Current status of the order.  \nPossible values: `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`\n"
+                    example: COMPLETED
+                  orderTotal:
+                    type: number
+                    description: Total amount for the order, including all fees and taxes.
+                    example: 408
+                  deliverySource:
+                    type: string
+                    description: "The delivery platform through which the order was placed.  \nPossible values: `DOORDASH`, `UBEREATS`, `GRUBHUB`\n"
+                    example: DOORDASH
+                  subTotal:
+                    type: number
+                    description: Subtotal amount for the order (before fees and taxes).
+                    example: 5.34
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp when the order was created.
+                    example: '2023-04-17T12:32:27.304Z'
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp when the order was last updated.
+                    example: '2023-04-17T12:34:40.376Z'
+                  test:
+                    type: boolean
+                    description: Indicates if this order is a test order.
+                    example: true
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+              examples:
+                Unable to update order status from incorrect state:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Unable to update Order status from COMPLETED to ACCEPTED
+                Invalid order status:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Invalid order status!
+                Store is disabled, unable to perform this action:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Store is disabled, unable to perform this action.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/orders/{order_id}/adjustments:
+    post:
+      tags:
+      - Order
+      operationId: postOrderAdjustment
+      summary: Post Order Adjustment
+      description: "\n### Adjust Items in an Order\n\nUse this endpoint to update, remove, or substitute items in an existing order—especially when fulfilling orders from delivery platforms like DoorDash, Uber Eats, and GrubHub.\nThis allows you to keep the order accurate and up-to-date if items are out of stock, need to be replaced, or require quantity changes.\n\n#### Supported Delivery Services\n\n| Service | ITEM_UPDATE | ITEM_REMOVE | ITEM_SUBSTITUTE |\n|---------|-------------|-------------|-----------------|\n| DOORDASH | ✓ | ✓ | ✓ |\n| UBEREATS | ✓ | ✓ | ✓ |\n| GRUBHUB | ✓ | ✓ | ✗ |\n\n> **Note:**\n> GrubHub only supports `ITEM_UPDATE` and `ITEM_REMOVE` adjustment types. Substitutions are not available for GrubHub orders.\n\n#### Supported Adjustment Types\n\n- **ITEM_UPDATE**: Change the quantity of an item in the order (e.g., customer requests fewer units).\n- **ITEM_REMOVE**: Remove an item that cannot be fulfilled from the order.\n- **ITEM_REMOVE with turn off**: Remove an item and temporarily hide it from your menu for a specified duration.\n- **ITEM_SUBSTITUTE** *(DoorDash & Uber Eats only)*: Replace an unavailable item with a substitute product.\n- **ITEM_SUBSTITUTE with turn off** *(DoorDash & Uber Eats only)*: Substitute an item and also temporarily turn off the original item from your menu.\n\n#### Turn Off Duration Options\n\nWhen using `turn_off: true`, specify the duration with `turn_off_duration`:\n- `\"7d\"` - Turn off for 7 days\n- `\"30d\"` - Turn off for 30 days\n- `\"never\"` - Turn off indefinitely (until manually re-enabled)\n\n#### How It Works\n\n- Specify the delivery service (`DOORDASH`, `UBEREATS`, or `GRUBHUB`) and provide an array of item adjustments.\n- For each item, indicate the adjustment type and provide relevant details (such as new quantity, substitute item info, or turn-off duration).\n- The system will update the order accordingly and, if requested, update menu availability for the affected items.\n- **Important:** The order must be in `ACCEPTED` state to allow adjustments.\n\n#### Example Scenarios\n\n- **A customer orders two sodas, but only one is available:**\n  Use `ITEM_UPDATE` to adjust the quantity.\n- **An item is out of stock:**\n  Use `ITEM_REMOVE` to remove it, and optionally set `turn_off` to temporarily hide it from your menu.\n- **A product is unavailable, but you can offer a substitute (DoorDash/Uber Eats):**\n  Use `ITEM_SUBSTITUTE` and provide the substitute item details.\n\n#### Notes\n  - For substitutions, provide the replacement item details in the `adjustments` object (requires `productId`, `name`, `quantity`, and `price`).\n  - Use `turn_off` and `turn_off_duration` to temporarily hide unavailable items from your menu.\n  - GrubHub orders only allow one adjustment per order.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: order_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the order within the store.
+      - name: Authorization
+        in: header
+        description: JWT token for authenticating API requests.
+        example: Bearer yourJWTtoken
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - deliveryService
+              - items
+              discriminator:
+                propertyName: deliveryService
+                mapping:
+                  DOORDASH: ../../schemas/OrderAdjustment/OrderAdjustmentDD.yaml
+                  UBEREATS: ../../schemas/OrderAdjustment/OrderAdjustmentUE.yaml
+                  GRUBHUB: ../../schemas/OrderAdjustment/OrderAdjustmentGH.yaml
+              properties:
+                deliveryService:
+                  type: string
+                  enum:
+                  - DOORDASH
+                  - UBEREATS
+                  - GRUBHUB
+                  description: 'The delivery platform for which the adjustment applies.
+
+                    Supported values are `"DOORDASH"`, `"UBEREATS"`, and `"GRUBHUB"`.
+
+
+                    **Note:** GrubHub only supports `ITEM_UPDATE` and `ITEM_REMOVE` adjustment types.
+
+                    '
+            examples:
+              Item Update:
+                value:
+                  deliveryService: DOORDASH
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_UPDATE
+                    quantity: 1
+              Item Remove:
+                value:
+                  deliveryService: DOORDASH
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_REMOVE
+              Item Remove with Turn Off:
+                value:
+                  deliveryService: DOORDASH
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_REMOVE
+                    turn_off: true
+                    turn_off_duration: 7d
+              Item Substitute - DD:
+                value:
+                  deliveryService: DOORDASH
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_SUBSTITUTE
+                    adjustments:
+                      productId: 94b653e4-e394-4330-a714-43e764abe843
+                      name: Coke 1.75ml
+                      quantity: 1
+                      price: 17.99
+              Item Substitute with Turn Off - DD:
+                value:
+                  deliveryService: DOORDASH
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_SUBSTITUTE
+                    adjustments:
+                      productId: 94b653e4-e394-4330-a714-43e764abe843
+                      name: Coke 1.75ml
+                      quantity: 1
+                      price: 17.99
+                    turn_off: true
+                    turn_off_duration: 7d
+              Item Substitute - UE:
+                value:
+                  deliveryService: UBEREATS
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_SUBSTITUTE
+                    adjustments:
+                      productId: 94b653e4-e394-4330-a714-43e764abe843
+                      name: Pepsi 1.5L
+                      quantity: 1
+                      price: 17.99
+              Item Substitute with Turn Off - UE:
+                value:
+                  deliveryService: UBEREATS
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_SUBSTITUTE
+                    adjustments:
+                      productId: 94b653e4-e394-4330-a714-43e764abe843
+                      name: Coke 1.75ml
+                      quantity: 1
+                      price: 17.99
+                    turn_off: true
+                    turn_off_duration: 7d
+              Item Update - GH:
+                value:
+                  deliveryService: GRUBHUB
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_UPDATE
+                    quantity: 1
+              Item Remove - GH:
+                value:
+                  deliveryService: GRUBHUB
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_REMOVE
+              Item Remove with Turn Off - GH:
+                value:
+                  deliveryService: GRUBHUB
+                  items:
+                  - productId: 94b653e4-e394-4330-a714-43e764abe843
+                    adjustmentType: ITEM_REMOVE
+                    turn_off: true
+                    turn_off_duration: 7d
+      responses:
+        '200':
+          description: Order adjusment successful
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Represents a customer order placed through the Bevz platform.
+
+                  This schema includes all relevant details about the order, such as products, delivery information, fees, status, and timestamps.
+
+                  Use this object to view, create, or update order records via the API.
+
+                  '
+                properties:
+                  orderId:
+                    type: string
+                    description: Unique identifier for the order.
+                    example: bj1B0tzQEe2B0ysLv-VTcg-test
+                  integratorId:
+                    type: string
+                    description: Unique identifier for the integrator associated with this order.
+                    example: '220510005'
+                  ownerId:
+                    type: string
+                    description: Unique identifier for the owner of the order (typically the store owner).
+                    example: fa44331d-1143-4d03-b1fd-f0a61a11db29
+                  storeId:
+                    type: string
+                    description: Unique identifier for the store where the order was placed.
+                    example: 831fd907-b455-4e92-828b-2e5421d057d7
+                  customerId:
+                    type: string
+                    description: Identifier for the customer placing the order (may be a platform-specific value).
+                    example: GRUBHUB_CUSTOMER
+                  orderProducts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        productSnapshot:
+                          type: object
+                          description: Snapshot of the product details at the time of ordering.
+                          properties:
+                            images:
+                              type: array
+                              description: List of product images.
+                              items:
+                                type: object
+                                properties:
+                                  src:
+                                    type: string
+                                    description: Image URL.
+                                    example: https://bevz-media.s3-us-west-1.amazonaws.com/ef81f97b-1d8a-4f91-906d-3542427e99f2.png
+                                  primary:
+                                    type: boolean
+                                    description: Indicates if this is the primary image.
+                                    example: true
+                            quantity:
+                              type: string
+                              description: Quantity or packaging type (e.g., "6 Pack").
+                              example: 6 Pack
+                            productId:
+                              type: string
+                              description: Unique identifier for the product.
+                              example: cd017f3f-fbda-41c1-b9d9-842eab06cbea
+                            taxable:
+                              type: boolean
+                              description: Indicates if the product is taxable.
+                              example: true
+                            description:
+                              type: string
+                              description: Product description.
+                              example: Enjoy the refreshing lemon-lime taste in every sip of 7UP. Free of caffeine and with crisp, carbonated fizz in every bottle, you can indulge in the delicious drink without feeling the effects of caffeine.
+                            upc:
+                              type: string
+                              description: Universal Product Code for the product.
+                              example: 078000000382
+                            extras:
+                              type: object
+                              description: Additional product options or add-ons.
+                            priority:
+                              type: boolean
+                              description: Indicates if the product is a priority item in the order.
+                              example: false
+                            createdAt:
+                              type: string
+                              format: date-time
+                              description: ISO 8601 timestamp when the product was created.
+                              example: '2019-08-02T15:11:28.608Z'
+                            size:
+                              type: string
+                              description: Size or packaging of the product.
+                              example: 12 oz Cans
+                            price:
+                              type: number
+                              format: float
+                              description: Price of the product at the time of order.
+                              example: 4.99
+                            name:
+                              type: string
+                              description: Name of the product.
+                              example: 7 UP
+                            disabled:
+                              type: boolean
+                              description: Indicates if the product is currently disabled.
+                              example: false
+                            categories:
+                              type: object
+                              description: Product category hierarchy.
+                              properties:
+                                L1:
+                                  type: string
+                                  description: Top-level category.
+                                  example: Soft Drinks
+                                L2:
+                                  type: string
+                                  description: Second-level category.
+                                  example: Soda
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: ISO 8601 timestamp when the product was last updated.
+                              example: '2019-08-02T15:11:28.608Z'
+                        quantity:
+                          type: number
+                          description: Quantity of this product in the order.
+                          example: 1
+                        productId:
+                          type: string
+                          description: Unique identifier for the product.
+                          example: a00dd3f1-dac9-4574-8e23-51a94dd7094c
+                        merchantSuppliedId:
+                          type: string
+                          description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+                          example: 507f191e810c19729de860ea
+                        selectedPrice:
+                          type: number
+                          description: Price of the product at the time of order.
+                          example: 3.99
+                        alternativeProductName:
+                          type: string
+                          description: Other names of the product.
+                          example: A&W Root Beer Cans (12 fl oz x 12 ct)
+                  deliveryDetails:
+                    type: object
+                    properties:
+                      customerDetails:
+                        type: object
+                        description: Customer contact information.
+                        properties:
+                          name:
+                            type: string
+                            description: Customer name.
+                            example: Bevz Staging
+                          phone:
+                            type: string
+                            description: Customer phone number.
+                            example: (917) 123-1234
+                          email:
+                            type: string
+                            description: Customer email address.
+                          pinCode:
+                            type: string
+                            description: The pin code to access the customer phone number (For Uber Eats only).
+                            example: 555 55 555
+                      deliveryType:
+                        type: string
+                        description: 'Delivery method for the order. Possible values: `PICK_UP`, `DELIVERY`.
+
+                          '
+                        example: DELIVERY
+                      deliveryInstructions:
+                        type: string
+                        description: Special instructions for the delivery.
+                      deliveryAddress:
+                        type: object
+                        description: Delivery address details.
+                        properties:
+                          street1:
+                            type: string
+                            description: Primary street address.
+                            example: 123123 10th St
+                          street2:
+                            type: string
+                            description: Secondary address line (optional).
+                          state:
+                            type: string
+                            description: State or province abbreviation.
+                            example: CA
+                          city:
+                            type: string
+                            description: City name.
+                            example: Santa Monica
+                          zipCode:
+                            type: string
+                            description: Postal or ZIP code.
+                            example: '90401'
+                      driver:
+                        type: object
+                        description: Delivery driver details.
+                        properties:
+                          name:
+                            type: string
+                            description: Driver's name.
+                            example: John Doe
+                          phone:
+                            type: string
+                            description: Driver's phone number.
+                            example: 091234567890
+                          estimated_time_arrival:
+                            type: string
+                            description: Estimated time of arrival for the delivery.
+                  fees:
+                    type: object
+                    description: Breakdown of fees applied to the order.
+                    properties:
+                      shippingTotal:
+                        type: number
+                        description: Total shipping fee for the order.
+                      tipTotal:
+                        type: string
+                        description: Total tip amount for the order.
+                        example: '0'
+                      serviceFeeTotal:
+                        type: number
+                        description: Total service fee for the order.
+                        example: 148
+                      taxTotal:
+                        type: number
+                        description: Total tax applied to the order.
+                        example: 28
+                      savedTotal:
+                        type: number
+                        description: Total amount saved (e.g., discounts).
+                      rebateTotal:
+                        type: number
+                        description: Total rebate applied to the order.
+                  orderStatus:
+                    type: string
+                    description: "Current status of the order.  \nPossible values: `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`\n"
+                    example: COMPLETED
+                  orderTotal:
+                    type: number
+                    description: Total amount for the order, including all fees and taxes.
+                    example: 408
+                  deliverySource:
+                    type: string
+                    description: "The delivery platform through which the order was placed.  \nPossible values: `DOORDASH`, `UBEREATS`, `GRUBHUB`\n"
+                    example: DOORDASH
+                  subTotal:
+                    type: number
+                    description: Subtotal amount for the order (before fees and taxes).
+                    example: 5.34
+                  createdAt:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp when the order was created.
+                    example: '2023-04-17T12:32:27.304Z'
+                  updatedAt:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp when the order was last updated.
+                    example: '2023-04-17T12:34:40.376Z'
+                  test:
+                    type: boolean
+                    description: Indicates if this order is a test order.
+                    example: true
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+              examples:
+                Order must be on Active/Accepted state:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Unable to update order details! Order must be on Active/Accepted state.
+                Store is disabled, unable to perform this action:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Store is disabled, unable to perform this action.
+                Product is not for sale:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Product ${inventory.name} (${adjustmentProductId}) is not for sale.
+                Order Products cannot be empty:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Order Products cannot be empty must contain atleast 1 item! If you want to remove the item, please cancel the order itself.
+                DD - Doordash Order Adjustment cannot be empty:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Doordash Order Adjustment cannot be empty must contain atleast 1 item!
+                UE - UberEats Order Adjustment cannot be empty:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - UberEats Order Adjustment cannot be empty must contain atleast 1 item!
+                UE - Product quantity must be less than of the current quantity:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Product ${orderProduct.productSnapshot.name} (${item.productId}) must be less than of the current quantity.
+                UE - UberEats only allows an item to be replaced once:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Product ${orderProduct.productSnapshot.name} (${item.productId}) was the replacement item. UberEats only allows an item to be replaced once.
+                UE - UberEats exceeded the allowed quantity:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Please select a different item — Exceeded the allowed quantity by Uber Eats, if it contains Alcoholic items, reduce the quantity to meet the standard.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - Product ${inventory.name} (${adjustmentProductId}) does not exists on Doordash master catalog
+x-tagGroups:
+- name: getting started
+  tags:
+  - Introduction
+  - What is this documentation for?
+  - Getting Started
+- name: guides
+  tags:
+  - Preparing Your Store
+  - Using Webhooks
+  - Uploading store menu
+  - Receiving and processing order
+- name: apis
+  tags:
+  - Integrators
+  - integrator_users
+  - Stores
+  - Store Products
+  - Lotto Scratcher Games
+  - Order
+- name: Delivery Services Onboarding
+  tags:
+  - Pick a Delivery Service for Onboarding API
+  - Uber Eats Onboarding API Workflow
+- name: webhooks
+  tags:
+  - Webhooks
+- name: models
+  tags:
+  - models
+- name: faqs
+  tags:
+  - faq
+- name: changelog
+  tags:
+  - Changelog

@@ -1,0 +1,332 @@
+openapi: 3.2.0
+info:
+  title: Bevz Integrator Service Integrators API
+  contact:
+    name: API Support
+    email: tech@bevz.com
+  description: '# Introduction
+
+
+    Welcome to the Bevz Integrator Service API documentation.
+
+
+    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
+
+
+    ## Who is this documentation for?
+
+
+    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
+
+
+    ## Key Features
+
+
+    By integrating with the Bevz platform, you gain access to:
+
+
+    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
+
+    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
+
+    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
+
+    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
+
+    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
+
+
+    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
+
+    '
+  version: 1.12.0
+servers:
+- url: https://api.bevz.com/integrator-service
+  description: Production server
+- url: https://sandbox-api.bevz.com/integrator-service
+  description: Sandbox server
+tags:
+- name: Integrators
+paths:
+  /integrators/{integrator_id}:
+    patch:
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      tags:
+      - Integrators
+      operationId: patchOrder
+      summary: Setup Order Notification Webhook
+      description: 'Configure the webhook URL to receive real-time order notifications from Bevz.
+
+
+        Use this endpoint to set up or update the webhook endpoint where order events (such as new orders, status updates, and cancellations) will be delivered for your integration.
+
+
+        #### How It Works
+
+
+        1. Create a webhook endpoint on your server to handle incoming order notifications.
+
+        2. Use this API to register your webhook URL with Bevz.
+
+        3. Bevz will send HTTP POST requests to your endpoint whenever relevant order events occur.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - orderNotificationUrl
+              properties:
+                orderNotificationUrl:
+                  type: string
+                  description: Webhook URL to receive order notifications.
+                  example: https://sample_order_webhook.com
+      responses:
+        '200':
+          description: Integrator status successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Integrator status successfully updated
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                '"orderNotificationUrl" is required':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"orderNotificationUrl" is required'
+                '"orderNotificationUrl" must be a string':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"orderNotificationUrl" must be a string'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - IntegratorId not found
+  /integrators/{integrator_id}ㅤ:
+    patch:
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      tags:
+      - Integrators
+      operationId: patchMenuUpload
+      summary: Setup Menu Upload Notification
+      description: 'Configure the webhook URL to receive real-time menu upload status notifications from Bevz.
+
+
+        Use this endpoint to set up or update the webhook endpoint where menu upload events (such as processing, completed, or failed uploads) will be delivered for your integration.
+
+
+        #### How It Works
+
+
+        1. Create a webhook endpoint on your server to handle incoming menu upload notifications.
+
+        2. Use this API to register your webhook URL with Bevz.
+
+        3. Bevz will send HTTP POST requests to your endpoint whenever a menu upload event occurs.
+
+        '
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - menuUploadNotificationUrl
+              properties:
+                menuUploadNotificationUrl:
+                  type: string
+                  description: Webhook URL to receive menu upload status notifications.
+                  example: https://sample_menu_webhook.com
+      responses:
+        '200':
+          description: Integrator status successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Integrator status successfully updated
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                '"menuUploadNotificationUrl" is required':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"menuUploadNotificationUrl" is required'
+                '"menuUploadNotificationUrl" must be a string':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"menuUploadNotificationUrl" must be a string'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - IntegratorId not found
+x-tagGroups:
+- name: getting started
+  tags:
+  - Introduction
+  - What is this documentation for?
+  - Getting Started
+- name: guides
+  tags:
+  - Preparing Your Store
+  - Using Webhooks
+  - Uploading store menu
+  - Receiving and processing order
+- name: apis
+  tags:
+  - Integrators
+  - integrator_users
+  - Stores
+  - Store Products
+  - Lotto Scratcher Games
+  - Order
+- name: Delivery Services Onboarding
+  tags:
+  - Pick a Delivery Service for Onboarding API
+  - Uber Eats Onboarding API Workflow
+- name: webhooks
+  tags:
+  - Webhooks
+- name: models
+  tags:
+  - models
+- name: faqs
+  tags:
+  - faq
+- name: changelog
+  tags:
+  - Changelog

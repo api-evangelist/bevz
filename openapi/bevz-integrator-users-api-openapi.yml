@@ -1,0 +1,564 @@
+openapi: 3.2.0
+info:
+  title: Bevz Integrator Service Integrator Users API
+  contact:
+    name: API Support
+    email: tech@bevz.com
+  description: '# Introduction
+
+
+    Welcome to the Bevz Integrator Service API documentation.
+
+
+    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
+
+
+    ## Who is this documentation for?
+
+
+    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
+
+
+    ## Key Features
+
+
+    By integrating with the Bevz platform, you gain access to:
+
+
+    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
+
+    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
+
+    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
+
+    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
+
+    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
+
+
+    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
+
+    '
+  version: 1.12.0
+servers:
+- url: https://api.bevz.com/integrator-service
+  description: Production server
+- url: https://sandbox-api.bevz.com/integrator-service
+  description: Sandbox server
+tags:
+- name: integrator_users
+  description: The Integrator Users API allows you to manage user accounts and access permissions for your integrator account.
+  x-displayName: Integrator Users
+paths:
+  /integrators/{integrator_id}/users:
+    parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: "JWT token for authenticating API requests.  \n"
+      example: Bearer yourJWTtoken
+    get:
+      tags:
+      - integrator_users
+      operationId: getUser
+      summary: Retrieve All Integrator User Access
+      description: 'Retrieve a list of all user accounts associated with a specific integrator.
+
+
+        Use this endpoint to:
+
+        - View all users who have access to your integrator account.
+
+        - Audit user roles, statuses, and contact information.
+
+        - Manage access and permissions for your integration team.
+
+        '
+      responses:
+        '200':
+          description: Retrieved Integrator users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: 'Represents an integrator user account on the Bevz platform.
+
+                    This object contains all essential information about the user, including identity, authentication credentials, status, and timestamps.
+
+                    Use this schema to view, create, or update integrator user records via the API.
+
+                    '
+                  properties:
+                    id:
+                      type: number
+                      description: Unique identifier for the user.
+                      example: f92b15e2-116b-4503-a25c-347295494136
+                    integrator_id:
+                      type: number
+                      description: Unique identifier of the integrator to which this user belongs.
+                      example: '220510005'
+                    email:
+                      type: string
+                      description: "Email address registered for the user.  \nThis is provided during [Create Integrator User](#tag/integrator_users/operation/postUser) and is used for [Generating a JWT token](#tag/Getting-Started/Authentication/Generating-a-JWT-Token).\n"
+                      example: sample_email@bevz.com
+                    password:
+                      type: string
+                      description: "Hashed password for the user account.  \nSet during [Create Integrator User](#tag/integrator_users/operation/postUser) and used for authentication when [Generating a JWT token](#tag/Getting-Started/Authentication/Generating-a-JWT-Token).\nPasswords are always returned as a hash for security.\n"
+                      example: $2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lT
+                    active:
+                      type: boolean
+                      description: "Indicates whether the user account is active.  \nActive users can be managed via [Update Integrator Users Access](#tag/integrator_users/operation/putUser) and are permitted to access the API.\n"
+                      example: true
+                    created_at:
+                      type: string
+                      format: date-time
+                      description: ISO 8601 timestamp indicating when the user account was created.
+                      example: '2023-02-13T07:00:30.895Z'
+                    updated_at:
+                      type: string
+                      format: date-time
+                      description: ISO 8601 timestamp indicating when the user account was last updated.
+                      example: '2023-02-13T07:00:30.895Z'
+                    deleted_at:
+                      type: string
+                      format: date-time
+                      description: ISO 8601 timestamp indicating when the user account was deleted (if applicable).
+                      example: null
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - '"email" must be a string'
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - IntegratorId not found
+    post:
+      tags:
+      - integrator_users
+      operationId: postUser
+      summary: Create Integrator User
+      description: "Create a new user account under your integrator account.\n\nUse this endpoint to add additional users (such as developers or admins) who require access to your integrator account.  \nEach user will receive their own login credentials and can be managed independently.\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - integrator_id
+              - email
+              - password
+              properties:
+                integrator_id:
+                  type: integer
+                  description: Unique identifier of the integrator to which this user belongs.
+                  example: 220510005
+                email:
+                  type: string
+                  description: Email address registered for the user.
+                  example: sample_email@bevz.com
+                password:
+                  type: string
+                  description: Password for the user account.
+                  example: sample_password
+      responses:
+        '200':
+          description: New Integrator User successfully added
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: New Integrator User successfully added
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - '"email" must be a string'
+              examples:
+                Email already exists, please use a different email:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Email already exists, please use a different email
+                '"testfield" is not allowed':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"testfield" is not allowed'
+                Different data type:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"integrator_id" must be a number'
+                    - '"email" must be a string'
+                    - '"password" must be a string'
+                Empty object:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"integrator_id" is required'
+                    - '"email" is required'
+                    - '"password" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/users/{user_id}:
+    put:
+      tags:
+      - integrator_users
+      operationId: putUser
+      summary: Update Integrator User Access
+      description: "Update the access status of a user account under a specific integrator.\n\nUse this endpoint to activate or deactivate a user's access to your integrator account.  \nThis is useful for managing team members, onboarding new users, or revoking access for users who no longer require it.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the user.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - active
+              properties:
+                active:
+                  type: boolean
+                  description: Set to `true` to activate the user, or `false` to deactivate.
+                  example: true
+      responses:
+        '200':
+          description: Integrator users successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Integrator users successfully updated
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - '"email" must be a string'
+              examples:
+                Empty Object for Request Body:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"active" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - IntegratorId User not found
+  /integrators/{integrator_id}/users/{user_id}/change-password:
+    post:
+      tags:
+      - integrator_users
+      operationId: changePassword
+      summary: Change Integrator User Password
+      description: "Change the password for a specific integrator user account.\n\nUse this endpoint to securely update a user's password.  \nThe user must provide their current password (`old_password`) and a new password (`new_password`).  \nThis is useful for routine password changes or when a user suspects their credentials have been compromised.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: user_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the user.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - old_password
+              - new_password
+              properties:
+                old_password:
+                  type: string
+                  description: The user's current password.
+                  example: currentPassword123
+                new_password:
+                  type: string
+                  description: The new password to set for the user account.
+                  example: newSecurePassword456
+      responses:
+        '200':
+          description: Integrator user password successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Integrator user password successfully updated
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - '"email" must be a string'
+              examples:
+                Incorrect old password!:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Incorrect old password!
+                Empty Object for Request Body:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"old_password" is required'
+                    - '"new_password" is required'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+x-tagGroups:
+- name: getting started
+  tags:
+  - Introduction
+  - What is this documentation for?
+  - Getting Started
+- name: guides
+  tags:
+  - Preparing Your Store
+  - Using Webhooks
+  - Uploading store menu
+  - Receiving and processing order
+- name: apis
+  tags:
+  - Integrators
+  - integrator_users
+  - Stores
+  - Store Products
+  - Lotto Scratcher Games
+  - Order
+- name: Delivery Services Onboarding
+  tags:
+  - Pick a Delivery Service for Onboarding API
+  - Uber Eats Onboarding API Workflow
+- name: webhooks
+  tags:
+  - Webhooks
+- name: models
+  tags:
+  - models
+- name: faqs
+  tags:
+  - faq
+- name: changelog
+  tags:
+  - Changelog

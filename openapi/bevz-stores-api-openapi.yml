@@ -1,0 +1,2291 @@
+openapi: 3.2.0
+info:
+  title: Bevz Integrator Service Stores API
+  contact:
+    name: API Support
+    email: tech@bevz.com
+  description: '# Introduction
+
+
+    Welcome to the Bevz Integrator Service API documentation.
+
+
+    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
+
+
+    ## Who is this documentation for?
+
+
+    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
+
+
+    ## Key Features
+
+
+    By integrating with the Bevz platform, you gain access to:
+
+
+    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
+
+    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
+
+    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
+
+    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
+
+    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
+
+
+    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
+
+    '
+  version: 1.12.0
+servers:
+- url: https://api.bevz.com/integrator-service
+  description: Production server
+- url: https://sandbox-api.bevz.com/integrator-service
+  description: Sandbox server
+tags:
+- name: Stores
+paths:
+  /integrators/{integrator_id}/stores:
+    get:
+      tags:
+      - Stores
+      operationId: getStores
+      summary: Retrieve All Provisioned Stores
+      description: 'Fetch a list of all stores that have been provisioned under your integrator account.
+
+
+        Use this endpoint to view all stores managed by your organization, including their identifiers, contact information, operational status, and integration details.
+
+
+        For details on the store object schema, see [Store](#tag/models/Store).
+
+        '
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: Authorization
+        in: header
+        description: JWT token for authenticating API requests.
+        example: Bearer yourJWTtoken
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Retrieved all provisioned stores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  description: "Represents a retail store managed on the Bevz platform.  \nThis object contains all essential information about the store, including its identity, contact details, operational hours, delivery service settings, and more.\nUse this schema to view, create, or update store records via the API.\n"
+                  properties:
+                    storeId:
+                      type: string
+                      description: Unique identifier for the store.
+                      example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+                    address:
+                      type: object
+                      description: Physical address where the store is located.
+                      properties:
+                        city:
+                          type: string
+                          description: City where the store operates.
+                          example: Santa Monica
+                        latitude:
+                          type: number
+                          description: Latitude coordinate of the store location (positive or negative float).
+                          example: 42.3456778143501
+                        longtitude:
+                          type: number
+                          description: Longitude coordinate of the store location (positive or negative float).
+                          example: -71.09837363184101
+                        state:
+                          type: string
+                          description: State or province abbreviation.
+                          example: CA
+                        street1:
+                          type: string
+                          description: Primary street address of the store.
+                          example: 123123 10th St
+                        zip:
+                          type: string
+                          description: Postal or ZIP code.
+                          example: '90401'
+                    email:
+                      type: string
+                      description: Contact email address for the store.
+                      example: developer@bevz.com
+                    enabled:
+                      type: boolean
+                      description: Indicates whether the store is active and can operate in the app.
+                      example: true
+                    hours:
+                      type: array
+                      description: List of store operating hours for each day of the week.
+                      items:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            example: DAILY_HOURS
+                          days:
+                            type: array
+                            description: '* 1 Sunday
+
+                              * 2 Monday
+
+                              * 3 Tuesday
+
+                              * 4 Wednesday
+
+                              * 5 Thursday
+
+                              * 6 Friday
+
+                              * 7 Saturday
+
+                              '
+                            example:
+                            - 1
+                            - 2
+                            - 3
+                            - 4
+                            - 5
+                            - 6
+                            - 7
+                          openTime:
+                            type: string
+                            format: hh:mm A
+                            example: 12:00 AM
+                          closeTime:
+                            type: string
+                            format: hh:mm A
+                            example: 4:00 PM
+                    name:
+                      type: string
+                      description: Display name of the store.
+                      example: Bevz Test Store
+                    phone:
+                      type: string
+                      description: Primary contact phone number for the store.
+                      example: 639123456789
+                    phones:
+                      type: array
+                      description: List of additional contacts associated with the store, each with their phone number.
+                      items:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: John Doe
+                          number:
+                            type: string
+                            example: 639123456789
+                    taxRate:
+                      type: string
+                      description: Sales tax rate (%) applied to purchases at this store.
+                      example: '9.50'
+                    updatedAt:
+                      type: number
+                      description: Epoch timestamp (in milliseconds) of the last update to the store record.
+                      example: 1677773721909
+                    deliverySettings:
+                      type: object
+                      description: 'Configuration settings for each supported delivery service (e.g., DoorDash, Grubhub, Uber Eats).
+
+                        Includes authorization status, commission rates, menu sync status, and other integration-specific options.
+
+                        '
+                      properties:
+                        doordash:
+                          type: object
+                          description: DoorDash delivery service integration settings.
+                          properties:
+                            storeId:
+                              type: string
+                              description: DoorDash store identifier.
+                              example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+                            authorized:
+                              type: boolean
+                              description: Whether the store is authorized with DoorDash.
+                              example: true
+                            enabled:
+                              type: boolean
+                              description: Whether DoorDash integration is enabled for this store.
+                              example: true
+                            roundPrice:
+                              type: boolean
+                              description: Whether prices should be rounded for DoorDash orders.
+                              example: true
+                            percentToCharge:
+                              type: number
+                              description: Commission percentage charged for DoorDash orders.
+                              example: 17
+                            revSharePercentage:
+                              type: number
+                              description: Revenue share percentage for DoorDash.
+                              example: 1.5
+                            reason:
+                              type: string
+                              description: Reason for any status or configuration changes.
+                              example: ''
+                            note:
+                              type: string
+                              description: Additional notes regarding DoorDash integration.
+                              example: ''
+                            menuSync:
+                              type: object
+                              description: Current menu synchronization status with DoorDash.
+                              properties:
+                                menuSynching:
+                                  type: boolean
+                                  description: Indicates if a menu sync is currently in progress.
+                                  example: false
+                                syncStart:
+                                  type: number
+                                  description: Epoch timestamp when menu sync started.
+                                  example: 0
+                                syncEnd:
+                                  type: number
+                                  description: Epoch timestamp when menu sync ended.
+                                  example: 0
+                                status:
+                                  type: string
+                                  description: Result status of the last menu sync (e.g., SUCCESS, FAILURE, IN_PROGRESS).
+                                  example: SUCCESS
+                                menuId:
+                                  type: string
+                                  description: DoorDash menu identifier.
+                                  example: ''
+                        grubhub:
+                          type: object
+                          description: Grubhub delivery service integration settings.
+                          properties:
+                            storeId:
+                              type: string
+                              description: Grubhub store identifier.
+                              example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+                            authorized:
+                              type: boolean
+                              description: Whether the store is authorized with Grubhub.
+                              example: true
+                            enabled:
+                              type: boolean
+                              description: Whether Grubhub integration is enabled for this store.
+                              example: true
+                            roundPrice:
+                              type: boolean
+                              description: Whether prices should be rounded for Grubhub orders.
+                              example: true
+                            percentToCharge:
+                              type: number
+                              description: Commission percentage charged for Grubhub orders.
+                              example: 17
+                            revSharePercentage:
+                              type: number
+                              description: Revenue share percentage for Grubhub.
+                              example: 1.5
+                            reason:
+                              type: string
+                              description: Reason for any status or configuration changes.
+                              example: ''
+                            note:
+                              type: string
+                              description: Additional notes regarding Grubhub integration.
+                              example: ''
+                            menuSync:
+                              type: object
+                              description: Current menu synchronization status with Grubhub.
+                              properties:
+                                menuSynching:
+                                  type: boolean
+                                  description: Indicates if a menu sync is currently in progress.
+                                  example: false
+                                syncStart:
+                                  type: number
+                                  description: Epoch timestamp when menu sync started.
+                                  example: 0
+                                syncEnd:
+                                  type: number
+                                  description: Epoch timestamp when menu sync ended.
+                                  example: 0
+                                status:
+                                  type: string
+                                  description: Result status of the last menu sync (e.g., SUCCESS, FAILED).
+                                  example: SUCCESS
+                                menuId:
+                                  type: string
+                                  description: Grubhub menu identifier.
+                                  example: ''
+                        uberEats:
+                          type: object
+                          description: Uber Eats delivery service integration settings.
+                          properties:
+                            storeId:
+                              type: string
+                              description: Uber Eats store identifier.
+                              example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+                            authorized:
+                              type: boolean
+                              description: Whether the store is authorized with Uber Eats.
+                              example: true
+                            enabled:
+                              type: boolean
+                              description: Whether Uber Eats integration is enabled for this store.
+                              example: true
+                            roundPrice:
+                              type: boolean
+                              description: Whether prices should be rounded for Uber Eats orders.
+                              example: true
+                            percentToCharge:
+                              type: number
+                              description: Commission percentage charged for Uber Eats orders.
+                              example: 17
+                            revSharePercentage:
+                              type: number
+                              description: Revenue share percentage for Uber Eats.
+                              example: 1.5
+                            reason:
+                              type: string
+                              description: Reason for any status or configuration changes.
+                              example: ''
+                            note:
+                              type: string
+                              description: Additional notes regarding Uber Eats integration.
+                              example: ''
+                            menuSync:
+                              type: object
+                              description: Current menu synchronization status with Uber Eats.
+                              properties:
+                                menuSynching:
+                                  type: boolean
+                                  description: Indicates if a menu sync is currently in progress.
+                                  example: false
+                                syncStart:
+                                  type: number
+                                  description: Epoch timestamp when menu sync started.
+                                  example: 0
+                                syncEnd:
+                                  type: number
+                                  description: Epoch timestamp when menu sync ended.
+                                  example: 0
+                                status:
+                                  type: string
+                                  description: Result status of the last menu sync (e.g., SUCCESS, FAILED).
+                                  example: SUCCESS
+                                menuId:
+                                  type: string
+                                  description: Uber Eats menu identifier.
+                                  example: ''
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+    post:
+      tags:
+      - Stores
+      operationId: createStore
+      summary: Create a New Store
+      description: "Register a new store under your integrator account.\n\nUse this endpoint to create a store by providing essential details such as name, address, contact information, and operational settings.  \nAfter creation, the store will be available for menu uploads, order processing, and delivery service onboarding.\n\n#### Example Usage\n\n- Onboard a new retail location to the Bevz platform.\n- Register a store for menu management and delivery service integration.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Unique identifier for the integrator.
+      - name: Authorization
+        in: header
+        description: JWT token for authenticating API requests.
+        example: Bearer yourJWTtoken
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: 'JSON payload containing the details of the store to be created.
+
+          '
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                account:
+                  type: object
+                  description: 'Contains the account credentials for the store owner.
+
+                    This information is used to create a user account associated with the new store.
+
+                    '
+                  properties:
+                    emailAddress:
+                      type: string
+                      description: 'Email address for the store owner''s account.
+
+                        This will be used as the username for login and for account-related notifications.
+
+                        '
+                      example: sample_email@bevz.com
+                    password:
+                      type: string
+                      description: 'Password for the store owner''s account.
+
+                        Must meet security requirements as defined by the platform (e.g., minimum length, character types).
+
+                        '
+                      example: sample_password
+                    confirmPassword:
+                      type: string
+                      description: 'Confirmation of the password to ensure accuracy during account creation.
+
+                        Must match the value provided in the `password` field.
+
+                        '
+                      example: sample_password
+                operationHours:
+                  type: array
+                  description: 'Defines the store''s operating hours for specific days of the week.
+
+                    Each entry specifies the opening and closing times, as well as the days these hours apply.
+
+                    Multiple entries can be used to represent different schedules (e.g., split shifts or varying hours on different days).
+
+                    '
+                  items:
+                    type: object
+                    properties:
+                      openTime:
+                        type: string
+                        description: Opening time for the store on the specified days, in 12-hour format with AM/PM.
+                        format: hh:mm A
+                        example: 03:30 AM
+                      closeTime:
+                        type: string
+                        description: Closing time for the store on the specified days, in 12-hour format with AM/PM.
+                        format: hh:mm A
+                        example: 02:00 PM
+                      days:
+                        type: array
+                        description: "List of days of the week when these hours apply.\nUse the following mapping:\n  * 1 = Sunday\n  * 2 = Monday\n  * 3 = Tuesday\n  * 4 = Wednesday\n  * 5 = Thursday\n  * 6 = Friday\n  * 7 = Saturday\nYou can specify multiple days in a single entry (e.g., `[2, 3, 4, 5, 6]` for Monday–Friday).\n"
+                        items:
+                          type: integer
+                          minimum: 1
+                          maximum: 7
+                        example:
+                        - 1
+                        - 2
+                        - 3
+                store:
+                  type: object
+                  description: 'Contains essential details about the store, including its name, address, and contact information.
+
+                    '
+                  properties:
+                    name:
+                      type: string
+                      description: The display name of the store.
+                      example: Bevz Test Store
+                    address:
+                      type: object
+                      required:
+                      - street1
+                      - state
+                      - city
+                      - zipCode
+                      description: Physical address where the store is located.
+                      properties:
+                        city:
+                          type: string
+                          description: City where the store operates.
+                          example: Santa Monica
+                        state:
+                          type: string
+                          description: State or province abbreviation.
+                          example: CA
+                        street1:
+                          type: string
+                          description: Primary street address of the store.
+                          example: 123123 10th St
+                        street2:
+                          type: string
+                          description: Secondary address line (optional)
+                          example: ''
+                        zipCode:
+                          type: string
+                          description: Postal or ZIP code.
+                          example: '90401'
+                    phoneNumber:
+                      type: string
+                      description: Primary contact phone number for the store.
+                      example: '7852630348'
+                    emailAddress:
+                      type: string
+                      description: Contact email address for the store.
+                      example: bevz_test_store@bevz.com
+      responses:
+        '200':
+          description: Successful Bevz subscription
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  storeId:
+                    type: string
+                    example: 831fd907-b455-4e92-828b-2e5421d057d7
+                  checkoutLink:
+                    type: string
+                    example: https://checkout.stripe.com/c/pay/longstringhere
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                '"account.emailAddress" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"account.emailAddress" is not allowed to be empty'
+                Email already exists. Please use a different email:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Email already exists. Please use a different email
+                '"account.password" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"account.password" is not allowed to be empty'
+                '"account.password" length must be at least 8 characters long':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"account.password" length must be at least 8 characters long'
+                Password should be the same:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Password should be the same
+                operationHours must be in hh:mm A format:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - operationHours[0].openTime must be in hh:mm A format
+                    - operationHours[0].closeTime must be in hh:mm A format
+                Opening time should be before Closing time:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - 'Opening time should be before Closing time: [{days: [1], openTime: "07:00 PM", closeTime: "08:00 AM", type: "DAILY"}]'
+                '"operationHours[0].type" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"operationHours[0].type" is not allowed to be empty'
+                '"store.name" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"store.name" is not allowed to be empty'
+                '"store.address.street1" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"store.address.street1" is not allowed to be empty'
+                '"store.address.city" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"store.address.city" is not allowed to be empty'
+                '"store.address.state" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"store.address.state" is not allowed to be empty'
+                '"store.address.zipCode" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"store.address.zipCode" is not allowed to be empty'
+                '"store.phoneNumber" is not allowed to be empty':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"store.phoneNumber" is not allowed to be empty'
+                Invalid phone number.  Please input a valid phone number:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Invalid phone number.  Please input a valid phone number
+                '"store.emailAddress" must be valid email':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"store.emailAddress" must be valid email'
+                Invalid address. Please input a valid address:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Invalid address. Please input a valid address
+                operationHours[0].days[1] must be greater than or equal to 1:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - operationHours[0].days[1] must be greater than or equal to 1
+                operationHours[0].days[1] must be less than or equal to 7:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - operationHours[0].days[1] must be less than or equal to 7
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}:
+    parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: "JWT token for authenticating API requests.  \n"
+      example: Bearer yourJWTtoken
+    get:
+      tags:
+      - Stores
+      operationId: getIntegratorStore
+      summary: Get Store by store_id
+      description: 'Retrieve detailed information about a specific store using its unique `store_id`.
+
+
+        Use this endpoint to fetch all available data for a store, including its identity, contact information, operational status, integration settings, and delivery service configurations.
+
+
+        For details on the store object schema, see [Store](#tag/models/Store).
+
+        '
+      responses:
+        '200':
+          description: Successfuly retrieved store
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    storeId:
+                      type: string
+                      example: 831fd907-b455-4e92-828b-2e5421d057d7
+                    address:
+                      type: object
+                      description: address where the store is located
+                      properties:
+                        city:
+                          type: string
+                          example: Santa Magdalena
+                        latitude:
+                          type: number
+                          description: can be positive or negative float value
+                          example: 42.3456778143501
+                        longtitude:
+                          type: number
+                          description: can be positive or negative float value
+                          example: -71.09837363184101
+                        state:
+                          type: string
+                          example: CA
+                        street1:
+                          type: string
+                          description: primary street
+                          example: 123123 10th St
+                        zipCode:
+                          type: string
+                          example: 90401
+                    email:
+                      type: string
+                      description: email used by store for contact and business
+                      example: developer@bevz.com
+                    setup:
+                      type: boolean
+                      description: whether can store operate in the app or not
+                      example: true
+                    subscriptionStatus:
+                      type: string
+                      description: trialing | active | inactive | cancelling | canceled
+                      example: active
+                    hours:
+                      type: array
+                      description: list of store hours each in each specific day(s)
+                      items:
+                        type: object
+                        properties:
+                          type:
+                            type: string
+                            example: DAILY_HOURS
+                          days:
+                            type: array
+                            description: '* 1 Sunday
+
+                              * 2 Monday
+
+                              * 3 Tuesday
+
+                              * 4 Wednesday
+
+                              * 5 Thursday
+
+                              * 6 Friday
+
+                              * 7 Saturday
+
+                              '
+                            example:
+                            - 1
+                            - 2
+                            - 3
+                            - 4
+                            - 5
+                            - 6
+                            - 7
+                          openTime:
+                            type: string
+                            format: hh:mm A
+                            example: 12:00 AM
+                          closeTime:
+                            type: string
+                            format: hh:mm A
+                            example: 4:00 PM
+                    name:
+                      type: string
+                      example: Percy Store
+                    deliverySettings:
+                      type: object
+                      properties:
+                        doordash:
+                          type: object
+                          properties:
+                            note:
+                              type: string
+                              example: ''
+                            reason:
+                              type: string
+                              example: ''
+                            roundPrice:
+                              type: boolean
+                              example: false
+                            authorized:
+                              type: boolean
+                              example: true
+                            menuSync:
+                              type: object
+                              properties:
+                                menuId:
+                                  type: string
+                                  example: ''
+                                menuSynching:
+                                  type: boolean
+                                  example: false
+                                syncStart:
+                                  type: number
+                                  example: 0
+                                syncEnd:
+                                  type: number
+                                  example: 0
+                                status:
+                                  type: string
+                                  example: SUCCESS
+                            storeId:
+                              type: string
+                              example: 831fd907-b455-4e92-828b-2e5421d057d6
+                            percentToCharge:
+                              type: string
+                              example: '35'
+                            enabled:
+                              type: boolean
+                              example: false
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - Integrator unauthorized to perform this action!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+    patch:
+      tags:
+      - Stores
+      operationId: patchStore
+      summary: Update Store Details
+      description: 'Update one or more fields for a specific store.
+
+
+        Use this endpoint to modify store attributes such as name, contact information, address, operational hours, or integration settings.
+
+        Only the fields provided in the request body will be updated; all other fields will remain unchanged.
+
+
+        > **Note:**
+
+        At least one field must be included in the request body to perform an update.
+
+
+        #### Example Usage
+
+
+        - Update the store''s phone number or email address.
+
+        - Change the store''s operational hours or address.
+
+        - Modify delivery service integration settings.
+
+        '
+      requestBody:
+        description: 'JSON payload containing the fields to update for the store.
+
+          All fields are optional, but at least one field must be provided.
+
+          '
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Represents the payload for updating (patching) store details on the Bevz platform.
+
+                Only the fields provided in the request body will be updated; all other fields will remain unchanged.
+
+                Use this schema to update store information, operational hours, tax rate, and delivery service integration settings.
+
+                '
+              properties:
+                name:
+                  type: string
+                  description: Updated display name for the store.
+                  example: Update Test Store Name
+                phoneNumber:
+                  type: string
+                  description: Updated primary contact phone number for the store.
+                  example: '17000000000'
+                enabled:
+                  type: boolean
+                  description: Indicates whether the store is active and can operate in the app.
+                  example: true
+                taxRate:
+                  type: string
+                  description: Sales tax rate (%) to be applied to purchases at this store.
+                  example: '9.5'
+                hours:
+                  type: array
+                  description: 'List of updated store operating hours for specific days of the week.
+
+                    Each entry specifies the opening and closing times, as well as the days these hours apply.
+
+                    Use multiple entries to represent different schedules (e.g., split shifts or varying hours).
+
+                    '
+                  items:
+                    type: object
+                    properties:
+                      openTime:
+                        type: string
+                        description: Opening time in 12-hour format with AM/PM.
+                        example: 03:30 AM
+                      closeTime:
+                        type: string
+                        description: Closing time in 12-hour format with AM/PM.
+                        example: 02:00 PM
+                      days:
+                        type: array
+                        description: "List of days of the week when these hours apply.\nUse the following mapping:\n  * 1 = Sunday\n  * 2 = Monday\n  * 3 = Tuesday\n  * 4 = Wednesday\n  * 5 = Thursday\n  * 6 = Friday\n  * 7 = Saturday\nYou can specify multiple days in a single entry (e.g., `[2, 3, 4, 5, 6]` for Monday–Friday).\n"
+                        items:
+                          type: integer
+                          minimum: 1
+                          maximum: 7
+                        example:
+                        - 1
+                        - 2
+                        - 3
+                address:
+                  type: object
+                  required:
+                  - street1
+                  - state
+                  - city
+                  - zipCode
+                  description: Physical address where the store is located.
+                  properties:
+                    city:
+                      type: string
+                      description: City where the store operates.
+                      example: Santa Monica
+                    state:
+                      type: string
+                      description: State or province abbreviation.
+                      example: CA
+                    street1:
+                      type: string
+                      description: Primary street address of the store.
+                      example: 123123 10th St
+                    street2:
+                      type: string
+                      description: Secondary address line (optional)
+                      example: ''
+                    zipCode:
+                      type: string
+                      description: Postal or ZIP code.
+                      example: '90401'
+                deliverySettings:
+                  type: object
+                  description: 'Configuration settings for a specific delivery service integration (e.g., DoorDash, Grubhub, Uber Eats).
+
+                    Use this object to enable/disable the service, adjust commission rates, or update integration-specific options.
+
+                    '
+                  required:
+                  - type
+                  - settings
+                  properties:
+                    type:
+                      type: string
+                      description: 'The delivery service to update. Allowed values: `doordash`, `grubhub`, `uberEats`.
+
+                        '
+                      example: doordash
+                    settings:
+                      type: object
+                      description: Settings specific to the selected delivery service.
+                      properties:
+                        enabled:
+                          type: boolean
+                          description: Enable or disable this delivery service for the store.
+                          example: true
+                        percentToCharge:
+                          type: number
+                          description: 'Commission percentage to apply to all product prices for this delivery service.
+
+                            Value must be between 1 and 100.
+
+                            '
+                          example: 1
+                        roundPrice:
+                          type: boolean
+                          description: 'Set to `true` to round product prices to the nearest $x.99 for this service.
+
+                            '
+                          example: false
+                        reason:
+                          type: string
+                          description: "Reason for updating the delivery service settings.\n**Allowed Values:**\n  - out_of_business\n  - operational_issues\n  - delete_store\n  - payment_issue\n  - store_self_disabled_in_their_POS_portal\n  - store_pos_connectivity_issues\n"
+                        notes:
+                          type: string
+                          description: Additional notes or comments regarding the update.
+      responses:
+        '200':
+          description: Integrator store successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Integrator store successfully updated
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - '"email" must be a string'
+              examples:
+                '"enabled" is required':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"enabled" is required'
+                unknown field in request body:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"field" is not allowed'
+                Opening time should be before Closing time:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Opening time should be before Closing time
+                Invalid address. Please input a valid address:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Invalid address. Please input a valid address
+                Doordash delivery settings is currently not configured. Please contact admin to assist you with onboarding.:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Doordash delivery settings is currently not configured. Please contact admin to assist you with onboarding.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/provision:
+    post:
+      tags:
+      - Stores
+      operationId: postStore
+      summary: Provision  Existing Store
+      description: "Provision an existing store to your integrator account.\n\nIf you already have a store associated with Bevz but it’s not currently integrated with your account, you’ll need to provision it.  \nProvisioning an existing store allows you to connect it with your integrator account, giving you management access to its data and operations.\n\n#### When to Use\n\n- The store exists on Bevz but is not yet linked to your integrator account.\n- You want to enable menu management, order processing, and delivery service integration for an existing store.\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              properties:
+                email:
+                  type: string
+                  description: Email address associated with the store to be provisioned.
+                  example: test_email@bevz.com
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: Authorization
+        in: header
+        description: JWT token for authenticating API requests.
+        example: Bearer yourJWTtoken
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Integrator store successfully provisioned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Integrator store successfully provisioned
+                  data:
+                    type: object
+                    properties:
+                      storeId:
+                        type: string
+                        example: 47431637-f45d-42da-a364-428b33023c9b
+                      address:
+                        type: object
+                        properties:
+                          street1:
+                            type: string
+                            example: 123123 10th St
+                          state:
+                            type: string
+                            example: CA
+                          city:
+                            type: string
+                            example: Santa Monica
+                          zipCode:
+                            type: string
+                            example: '90401'
+                      email:
+                        type: string
+                        example: test_integrator@bevz.com
+                      setup:
+                        type: boolean
+                        example: true
+                      name:
+                        type: string
+                        example: Bevz Test Store
+                      hours:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                              example: ''
+                            days:
+                              type: array
+                              example:
+                              - 1
+                              - 2
+                            openTime:
+                              type: string
+                              example: 03:30 AM
+                            closeTime:
+                              type: string
+                              example: 02:00 PM
+                      phone:
+                        type: string
+                        example: '7852630348'
+                      phones:
+                        type: array
+                      taxRate:
+                        type: string
+                        example: 6%
+                      updatedAt:
+                        type: string
+                        example: '2023-03-09T04:18:57.658Z'
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - '"email" must be a string'
+              examples:
+                Cannot provision, store is already provisioned with another Bevz Integrator:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Cannot provision, store is already provisioned with another Bevz Integrator
+                '"email" is required':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"email" is required'
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - Cannot provision, store does not exist in Bevz
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/deprovision:
+    post:
+      tags:
+      - Stores
+      operationId: removeStore
+      summary: Deprovision store
+      description: "Remove a store's integration from your integrator account.\n\nUse this endpoint to deprovision (disconnect) a store that is currently linked to your integrator account.  \nDeprovisioning a store revokes your management access, disables menu management and order processing for your integration, and makes the store available for other partners to provision if needed.\n\n> **Note:**\nThis action only affects your integrator's access. The store record remains in the Bevz platform and can be re-provisioned by another partner in the future.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      responses:
+        '200':
+          description: Integrator store successfully deprovisioned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Integrator store successfully deprovisioned
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - '"email" must be a string'
+              examples:
+                Cannot  deprovision, store is already provisioned with another Bevz Integrator:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Cannot  deprovision, store is already provisioned with another Bevz Integrator
+                Cannot deprovision, store must be offline to continue deprovisioning:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Cannot deprovision, store must be offline to continue deprovisioning
+                Store is currently not provisioned with any Integrator:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Store is currently not provisioned with any Integrator
+                Cannot deprovision, store does not exist in Bevz:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Cannot deprovision, store does not exist in Bevz
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/menu:
+    parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: "JWT token for authenticating API requests.  \n"
+      example: Bearer yourJWTtoken
+    post:
+      tags:
+      - Stores
+      operationId: postMenu
+      summary: Menu Upload
+      description: "Upload a menu for a specific store in either JSON or CSV format.\n\nRequired fields for each product are: `upc`, `name`, and `price`.\n\n#### Supported Formats\n\n- **JSON:**  \n  Submit a structured array of menu items. You may customize attribute names using the `upc_column_name`, `name_column_name`, and `price_column_name` fields in the payload.\n- **CSV:**  \n  Upload a CSV file with columns for `upc`, `name`, and `price` (additional columns such as `description`, `stock`, `quantity`, `size`, and `imageurl` are supported).\n\n#### Example CSV Format\n\n| merchantSuppliedId | upc         | name                                   | price | description                                                                 | stock | quantity | size         | imageurl                                                        |\n|--------------------|-------------|----------------------------------------|-------|-----------------------------------------------------------------------------|-------|----------|--------------|-----------------------------------------------------------------|\n| 9c5494ea34         | 00980012301 | FERRERO ROCHER                         | 1.99  | Chocolate                                                                   | 10    | single   | 12 piece box | https://bevz-media.s3-us-west-1.amazonaws.com/example.png       |\n| fb20157d77         | 00980080005 | NUTELLA                                | 1.00  | Chocolate spread                                                            | 10    | single   | 350g         | https://bevz-media.s3-us-west-1.amazonaws.com/example.png       |\n| ...                | ...         | ...                                    | ...   | ...                                                                         | ...   | ...      | ...          | ...                                                             |\n\n#### Best Practices\n\n- Ensure all required fields are present and valid for each menu item.\n- For large menus, consider uploading in smaller batches for easier troubleshooting.\n- Use the error file (if provided) to quickly identify and correct any issues with your menu data.\n- After uploading, use the [Retrieve the menu upload status](#tag/Stores/operation/getMenu) endpoint to check the status and download any error reports.\n\nFor details on the menu object schema, see [Integrator Menu](#tag/models/Menu-Upload).\n"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 'Represents a menu upload payload for an integrator on the Bevz platform.
+
+                This schema allows integrators to upload or synchronize their store menu, with support for custom column mappings and detailed product information.
+
+                Use this object to create or update a store''s menu via the API.
+
+                '
+              required:
+              - menu
+              properties:
+                upc_column_name:
+                  type: string
+                  description: 'If the UPC attribute in your `menu` object uses a different key (e.g., `upc_code` instead of `upc`), specify the custom column name here.
+
+                    This allows flexible mapping between your data and Bevz''s expected fields.
+
+                    '
+                  example: upc_code
+                price_column_name:
+                  type: string
+                  description: 'If the price attribute in your `menu` object uses a different key (e.g., `menu_price` instead of `price`), specify the custom column name here.
+
+                    '
+                  example: menu_price
+                name_column_name:
+                  type: string
+                  description: 'If the name attribute in your `menu` object uses a different key (e.g., `item_name` instead of `name`), specify the custom column name here.
+
+                    '
+                  example: product_name
+                stockcount_column_name:
+                  type: string
+                  description: 'If the stock count attribute in your `menu` object uses a different key (e.g., `stock` instead of `stockCount`), specify the custom column name here.
+
+                    '
+                  example: stock
+                menu:
+                  type: array
+                  description: "Array of menu items to be uploaded.  \nEach object in the array represents a product to be added or updated in the store's menu.\n"
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - upc
+                    - price
+                    properties:
+                      name:
+                        type: string
+                        description: The product name.
+                        example: Ben & Jerry's the Tonight Dough (16 oz)
+                      upc:
+                        type: string
+                        description: 'The Universal Product Code (UPC) is a unique 12-digit number assigned to each product.
+
+                          Used for product identification, inventory control, and price comparison.
+
+                          '
+                        example: '76840485116'
+                      price:
+                        type: string
+                        description: The in-store price of the product.
+                        example: '8.90'
+                      merchantSuppliedId:
+                        type: string
+                        description: 'Optional field representing the integrator''s internal product ID for improved product mapping.
+
+                          Can be any string value.
+
+                          '
+                        example: e3260b0aa450
+                      description:
+                        type: string
+                        description: Custom product description for your inventory.
+                        example: Ben and Jerry's The Tonight Dough Caramel & Chocolate Ice Cream
+                      stock:
+                        type: string
+                        description: Number of units available in your inventory.
+                        example: '10'
+                      size:
+                        type: string
+                        description: The product's unit size or packaging.
+                        example: 1 Pint
+                      quantity:
+                        type: string
+                        description: The product quantity or packaging type (e.g., "Single", "Pack").
+                        example: Single
+                      imageurl:
+                        type: string
+                        description: URL of the product image.
+                        example: https://bevz-media.s3-us-west-1.amazonaws.com/example.png
+          text/csv:
+            schema:
+              type: object
+              required:
+              - upc
+              - name
+              - price
+              properties:
+                upc:
+                  type: string
+                  description: Universal Product Code for the product.
+                name:
+                  type: string
+                  description: Product name.
+                price:
+                  type: string
+                  description: Product price.
+      responses:
+        '200':
+          description: Menu successfully uploaded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Menu successfully uploaded
+                  data:
+                    type: object
+                    properties:
+                      uploadMenuId:
+                        type: string
+                        format: uuid
+                        example: 6df29c78-1018-48a6-8215-8bfa51a2b92d
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+                    example:
+                    - '"email" must be a string'
+              examples:
+                An ongoing upload for this storeId is still in progress, please wait for upload to complete:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - An ongoing upload for this storeId is still in progress, please wait for upload to complete.
+                Incorrect file format! File should be in CSV or JSON format.:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Incorrect file format! File should be in CSV or JSON format.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/menu/{menu_id}:
+    get:
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: menu_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the menu.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      tags:
+      - Stores
+      operationId: getMenu
+      summary: Retrieve the menu upload status
+      description: 'Retrieve the status and results of a specific menu upload operation for a store.
+
+
+        Use this endpoint to:
+
+        - Check if your menu upload has completed processing.
+
+        - View the status (e.g., pending, completed, failed) and any error messages.
+
+        - Download an error file listing any products that failed to upload or match.
+
+        - See which products were successfully enabled in the store''s catalog.
+
+        '
+      responses:
+        '200':
+          description: Retrieved Integrator menu successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Auto-incrementing unique identifier for the menu upload record.
+                      example: 1
+                    store_id:
+                      type: string
+                      description: 'Unique identifier of the store where the uploaded menu will be used.
+
+                        This value matches the `store_id` path parameter from the [Menu Upload](#tag/Stores/operation/postMenu) endpoint.
+
+                        '
+                      example: 6e066cfe-9122-4c30-a7fc-a8894dd72f4h
+                    file_path:
+                      type: string
+                      description: 'URL or file path where the uploaded menu file (CSV or JSON) is stored.
+
+                        This file contains the raw menu data submitted by the integrator.
+
+                        '
+                      example: https://integrator-menu-569241935122.s3.us-west-1.amazonaws.com/raw/a990fb29-3ea7-4e59-b293-a20574807927_b8c49890-67e5-42b8-aaaa-855ffbe92511.csv
+                    status:
+                      type: string
+                      description: "Current processing status of the menu upload.\n\n- `in progress`: The [Menu Upload](#tag/Stores/operation/postMenu) is still being processed.  \n- `completed`: The upload has finished processing.\n- `failed`: The upload failed due to critical errors. Contact Bevz support for assistance.\n"
+                      example: completed
+                    error_file:
+                      type: string
+                      description: 'URL or file path where unmatched or problematic products from the uploaded file are listed.
+
+                        Download this file to review and correct any items that failed to upload or match.
+
+                        '
+                      example: https://integrator-menu-569241935122.s3.us-west-1.amazonaws.com/error/a990fb29-3ea7-4e59-b293-a20574807927_b8c49890-67e5-42b8-aaaa-855ffbe92511_error-file.csv
+                    date:
+                      type: string
+                      format: date-time
+                      description: 'ISO 8601 timestamp indicating when the [Menu Upload](#tag/Stores/operation/postMenu) started.
+
+                        '
+                      example: 2023-03-09 04:18:57.658000+00:00
+                    time_completed:
+                      type: string
+                      format: date-time
+                      description: 'ISO 8601 timestamp indicating when the [Menu Upload](#tag/Stores/operation/postMenu) completed.
+
+                        '
+                      example: 2023-03-09 04:18:57.658000+00:00
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - Menu Id not found!
+  /integrators/{integrator_id}/stores/{store_id}/menu-sync:
+    parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: Authorization
+      in: header
+      required: true
+      schema:
+        type: string
+      description: "JWT token for authenticating API requests.  \n"
+      example: Bearer yourJWTtoken
+    post:
+      tags:
+      - Stores
+      operationId: menuSync
+      summary: Menu Sync
+      description: "Trigger a manual menu synchronization for a specific store across supported delivery services (such as DoorDash, Grubhub, Uber Eats, and more).\n\nUse this endpoint to ensure that your latest menu updates are reflected on third-party delivery platforms.  \n\nThis is especially useful after making changes to your menu, such as adding new products, updating prices, or modifying availability.\n"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - service
+              properties:
+                service:
+                  type: string
+                  description: 'The delivery service to synchronize the menu with.
+
+                    Allowed values: `DOORDASH`, `GRUBHUB`, `UBEREATS`.
+
+                    '
+                  example: DOORDASH
+      responses:
+        '200':
+          description: Successful menu sync of delivery settings
+          content:
+            application/json:
+              schema:
+                type: object
+              examples:
+                DOORDASH:
+                  value:
+                    message: Successful menu sync of delivery settings
+                    data:
+                      reference: ''
+                      store:
+                        merchant_supplied_id: '123456'
+                        provider_type: ''
+                      open_hours:
+                        day_index: MON
+                        start_time: 00:00
+                        end_time: '13:00'
+                      special_hours:
+                        date: ''
+                        start_time: 00:00
+                        end_time: '13:00'
+                        closed: false
+                      menu:
+                        name: All Day Menu
+                        subtitle: ''
+                        merchant_supplied_id: '123456'
+                        active: true
+                        categories: []
+                UBEREATS:
+                  value:
+                    message: Successful menu sync of delivery settings
+                    data:
+                      menus:
+                        id: 0362cbc6-7a7b-4831-9663-df0300bd0ec6
+                        title:
+                          translations:
+                            en_us: All Day Menu
+                        service_availability:
+                          time_periods:
+                            start_time: 00:00
+                            end_time: '13:00'
+                            day_of_week: monday
+                        category_ids: f3159f66-01ac-46bd-ba81-379c24f28056
+                      categories:
+                        id: f3159f66-01ac-46bd-ba81-379c24f28056
+                        title:
+                          translations:
+                            en_us: Beer
+                        entities:
+                          id: 82043a42-24cc-4043-8110-156b6087ce3e
+                          type: ITEM
+                      items:
+                        id: 8938435b-5e2f-4ffd-828d-4eff05a0c7a1
+                        image_url: https://bevz-media.s3-us-west-1.amazonaws.com/7c82c115-85bc-450e-b229-2ee219fa58e0.png
+                        title:
+                          translations:
+                            en_us: 10th Mountain Bourbon - 750ml/Single
+                        description:
+                          translations:
+                            en_us: 10th Mountain Bourbon is made with 75% corn mash. On the nose, smells of medium sweetness with hints of vanilla, oak and honey. The palate has exceptional flavors of toasted nuts with a medium body. The finish is sweet with hints of vanilla and a medium to long finish.
+                        price_info:
+                          price: '199'
+                          overrides: []
+                        tax_info:
+                          tax_rate: '7'
+                        dish_info: {}
+                        tax_label_info: {}
+                        product_info: {}
+                      modifier_groups: []
+                      menutype: MENU_TYPE_FULFILLMENT_DELIVERY
+                      display_options:
+                        disable_item_instructions: true
+                GRUBHUB:
+                  value:
+                    message: Successful menu sync of delivery settings
+                    data:
+                      job_id: 9be8f5db-fab8-4b07-a32c-64c0726f135g
+                      details: Ingestion in progress.
+                      merchant_statuses:
+                        merchant_id: '123456'
+                        status: REQUESTED
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+                    items:
+                      type: string
+              examples:
+                Delivery settings not configured:
+                  summary: Delivery settings not configured
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - DoorDash|Grubhub|UberEats is not configured on this store, please contact your Bevz administrator.
+                Not authorized to use service:
+                  summary: Not authorized to use service
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Not authorized to use DoorDash|Grubhub|UberEats.
+                Service disabled on store:
+                  summary: Service disabled on store
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - DoorDash|Grubhub|UberEats is disabled on this store, cannot proceed on syncing.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/generate-checkout-link:
+    get:
+      tags:
+      - Stores
+      operationId: generateCheckoutLink
+      summary: Generate Checkout Link
+      description: 'Generate a Stripe checkout link for a specific store.
+
+
+        This is useful if a store needs to complete or retry payment for onboarding, subscription, or other services.
+
+
+        The response will include a unique Stripe checkout URL for the store.
+
+        '
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      responses:
+        '200':
+          description: Successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  checkoutLink:
+                    type: string
+                    example: https://checkout.stripe.com/c/pay/longstringhere
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+              examples:
+                Unable to generate checkout link! Store status is currently trialing:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Unable to generate checkout link! Store status is currently trialing
+                Unable to generate checkout link! Store status is currently active:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Unable to generate checkout link! Store status is currently active
+                Unable to generate checkout link! Store status is currently cancelling:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Unable to generate checkout link! Store status is currently cancelling
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/subscription-link:
+    post:
+      tags:
+      - Stores
+      operationId: getSubscriptionLink
+      summary: Get Subscription Link
+      description: 'Generate a subscription management link for a specific store.
+
+
+        Use this endpoint to provide your customers with a convenient and user-friendly way to manage their subscriptions, such as updating payment methods, or viewing billing history.
+
+        '
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - orderNotificationUrl
+              properties:
+                callback_url:
+                  type: string
+                  description: URL to redirect the user after subscription management actions are completed.
+                  example: https://retailer.bevz.com
+      responses:
+        '200':
+          description: Sucessful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Generated subcription management portal
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        customerPortalLink:
+                          type: string
+                          example: https://billing.stripe.com/p/session/longstringhere
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bad request! Please check your input.
+                  errors:
+                    type: array
+              examples:
+                Invalid customerId:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Invalid customerId
+                Unable to access store, can only update store within the Integrator's umbrella:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Unable to access store, can only update store within the Integrator's umbrella
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+        '404':
+          description: 404 Resource is not found!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 404 Resource is not found!
+                  errors:
+                    type: array
+                    example:
+                    - Store not found
+x-tagGroups:
+- name: getting started
+  tags:
+  - Introduction
+  - What is this documentation for?
+  - Getting Started
+- name: guides
+  tags:
+  - Preparing Your Store
+  - Using Webhooks
+  - Uploading store menu
+  - Receiving and processing order
+- name: apis
+  tags:
+  - Integrators
+  - integrator_users
+  - Stores
+  - Store Products
+  - Lotto Scratcher Games
+  - Order
+- name: Delivery Services Onboarding
+  tags:
+  - Pick a Delivery Service for Onboarding API
+  - Uber Eats Onboarding API Workflow
+- name: webhooks
+  tags:
+  - Webhooks
+- name: models
+  tags:
+  - models
+- name: faqs
+  tags:
+  - faq
+- name: changelog
+  tags:
+  - Changelog

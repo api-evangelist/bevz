@@ -1,0 +1,763 @@
+openapi: 3.2.0
+info:
+  title: Bevz Integrator Service Uber Eats Onboarding API Workflow API
+  contact:
+    name: API Support
+    email: tech@bevz.com
+  description: '# Introduction
+
+
+    Welcome to the Bevz Integrator Service API documentation.
+
+
+    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
+
+
+    ## Who is this documentation for?
+
+
+    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
+
+
+    ## Key Features
+
+
+    By integrating with the Bevz platform, you gain access to:
+
+
+    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
+
+    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
+
+    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
+
+    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
+
+    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
+
+
+    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
+
+    '
+  version: 1.12.0
+servers:
+- url: https://api.bevz.com/integrator-service
+  description: Production server
+- url: https://sandbox-api.bevz.com/integrator-service
+  description: Sandbox server
+tags:
+- name: Uber Eats Onboarding API Workflow
+  description: 'The Uber Eats API allows you to onboard your store to Uber Eats and manage related operations.
+
+
+    Uber Eats onboarding is a three-step process:
+
+    1. **Generate OAuth URL:** Obtain an authorization link for the store owner to grant access.
+
+    2. **Exchange Authorization Code:** After authorization, exchange the received code for an access token.
+
+    3. **Provision Store:** Use the access token and Uber Eats store ID to complete the onboarding and enable integration features.
+
+
+    ### Process Flow
+
+    <img alt="Bevz Create Store Workflow" src="https://join-bevz.s3.us-west-1.amazonaws.com/apidocs_ubereats_pos_workflow.png" />
+
+    '
+paths:
+  /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/generate-oauth:
+    get:
+      tags:
+      - Uber Eats Onboarding API Workflow
+      operationId: generateOAuth
+      summary: Step 1. Generate OAuth URL for Uber Eats onboarding
+      description: "Use this endpoint to obtain a unique OAuth URL that will redirect the store owner to Uber Eats for authentication and authorization.  \n\nAfter successful authorization, Uber Eats will redirect the user to the specified `redirect_uri` with an authorization code, which can then be exchanged for access tokens.\n\n#### When to Use\n\n- Initiate the Uber Eats onboarding process for a store.\n- Allow store owners to securely grant your integration access to their Uber Eats account.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      - name: redirect_uri
+        in: query
+        required: true
+        schema:
+          type: string
+          format: link
+        description: Redirect URI after successful OAuth authorization. Must match the URI registered with Uber Eats.
+      responses:
+        '200':
+          description: Successfully retrieved Ubereats OAuth link
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  oauth_link:
+                    type: string
+                    format: link
+                    example: https://auth.uber.com/oauth/v2/authorize?client_id=YOUR_CLIENT_ID&response_type=code&scope=STORE_READ+STORE_WRITE&redirect_uri=YOUR_REDIRECT_URI
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/exchange-authorization-code:
+    post:
+      tags:
+      - Uber Eats Onboarding API Workflow
+      operationId: exchangeCode
+      summary: Step 2. Exchange Authorization Code for Access Token
+      description: "Use this endpoint as the second step in the Uber Eats onboarding OAuth flow.  \n\nAfter the store owner authorizes your integration via the OAuth URL, Uber Eats will redirect to your specified `redirect_uri` with an `authorization_code`.  \n\nSubmit that code here to obtain an access token, which can be used to make authenticated requests to Uber Eats APIs on behalf of the store.\n\n#### When to Use\n\n- Immediately after the store owner completes the OAuth authorization step and you receive the `authorization_code` in your redirect handler.\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                authorization_code:
+                  type: string
+                  description: The authorization code received from Uber Eats after the user authorizes the application.
+                  example: crd.EA.CAESEKbPSOAMB0wtsKCg5fyADcgiATE.134ewdsasde3
+                redirect_uri:
+                  type: string
+                  description: The redirect URI that was used in the initial authorization request. Must match exactly.
+                  example: https://yourapp.com/oauth/callback
+              required:
+              - authorization_code
+              - redirect_uri
+      responses:
+        '200':
+          description: Successfully retrieved stores from Ubereats
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                    description: The access token received from UberEats after exchanging the authorization code.
+                    example: IA.AQAAAATvVfIsrU8lhn6bW4Z_vF9dft4qmTc0d3uLh6T3pQ
+                  stores:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          description: The unique identifier for the store on UberEats platform.
+                          example: 12345678-9abc-def0-1234-56789abcdef
+                        name:
+                          type: string
+                          description: The name of the store as registered on UberEats.
+                          example: Sample Restaurant
+                        location:
+                          type: object
+                          properties:
+                            latitude:
+                              type: number
+                              format: string
+                              description: The latitude coordinate of the store's location.
+                              example: '37.7749'
+                            longitude:
+                              type: number
+                              format: string
+                              description: The longitude coordinate of the store's location.
+                              example: '-122.4194'
+                            street_address_line_one:
+                              type: string
+                              description: The physical address of the store.
+                              example: 123 Main St, City, State, ZIP
+                            city:
+                              type: string
+                              description: The city where the store is located.
+                              example: San Francisco
+                            country_code:
+                              type: string
+                              description: The country code of the store's location.
+                              example: US
+                            postal_code:
+                              type: string
+                              description: The postal code of the store's location.
+                              example: '94103'
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                invalid_grant:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - invalid_grant
+                invalid_client:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - invalid_client
+                invalid_request:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - invalid_request
+                invalid_scope:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - invalid_scope
+                access_denied:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - access_denied
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/provision-store:
+    post:
+      tags:
+      - Uber Eats Onboarding API Workflow
+      operationId: provisionStore
+      summary: Step 3. Provision Store on Uber Eats
+      description: 'Use this endpoint as the final step in the Uber Eats onboarding process.
+
+
+        After obtaining an access token and the Uber Eats store ID, call this endpoint to link the store in your system with its Uber Eats counterpart.
+
+
+        This enables menu synchronization, order management, and other integration features between your platform and Uber Eats.
+
+
+        #### When to Use
+
+
+        - After successfully exchanging the authorization code for an access token and retrieving the Uber Eats store ID.
+
+        '
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: Authorization
+        in: header
+        required: true
+        schema:
+          type: string
+        description: "JWT token for authenticating API requests.  \n"
+        example: Bearer yourJWTtoken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_token:
+                  type: string
+                  description: The access token received from Uber Eats after exchanging the authorization code.
+                  example: IA.AQAAAATvVfIsrU8lhn6bW4Z_vF9dft4qmTc0d3uLh6T3pQ
+                uber_store_id:
+                  type: string
+                  description: The unique identifier for the store on Uber Eats platform.
+                  example: 12345678-9abc-def0-1234-56789abcdef
+              required:
+              - access_token
+              - uber_store_id
+      responses:
+        '200':
+          description: Successfully provisioned store with Ubereats
+          content:
+            application/json:
+              schema:
+                type: object
+                description: "Represents a retail store managed on the Bevz platform.  \nThis object contains all essential information about the store, including its identity, contact details, operational hours, delivery service settings, and more.\nUse this schema to view, create, or update store records via the API.\n"
+                properties:
+                  storeId:
+                    type: string
+                    description: Unique identifier for the store.
+                    example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+                  address:
+                    type: object
+                    description: Physical address where the store is located.
+                    properties:
+                      city:
+                        type: string
+                        description: City where the store operates.
+                        example: Santa Monica
+                      latitude:
+                        type: number
+                        description: Latitude coordinate of the store location (positive or negative float).
+                        example: 42.3456778143501
+                      longtitude:
+                        type: number
+                        description: Longitude coordinate of the store location (positive or negative float).
+                        example: -71.09837363184101
+                      state:
+                        type: string
+                        description: State or province abbreviation.
+                        example: CA
+                      street1:
+                        type: string
+                        description: Primary street address of the store.
+                        example: 123123 10th St
+                      zip:
+                        type: string
+                        description: Postal or ZIP code.
+                        example: '90401'
+                  email:
+                    type: string
+                    description: Contact email address for the store.
+                    example: developer@bevz.com
+                  enabled:
+                    type: boolean
+                    description: Indicates whether the store is active and can operate in the app.
+                    example: true
+                  hours:
+                    type: array
+                    description: List of store operating hours for each day of the week.
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                          example: DAILY_HOURS
+                        days:
+                          type: array
+                          description: '* 1 Sunday
+
+                            * 2 Monday
+
+                            * 3 Tuesday
+
+                            * 4 Wednesday
+
+                            * 5 Thursday
+
+                            * 6 Friday
+
+                            * 7 Saturday
+
+                            '
+                          example:
+                          - 1
+                          - 2
+                          - 3
+                          - 4
+                          - 5
+                          - 6
+                          - 7
+                        openTime:
+                          type: string
+                          format: hh:mm A
+                          example: 12:00 AM
+                        closeTime:
+                          type: string
+                          format: hh:mm A
+                          example: 4:00 PM
+                  name:
+                    type: string
+                    description: Display name of the store.
+                    example: Bevz Test Store
+                  phone:
+                    type: string
+                    description: Primary contact phone number for the store.
+                    example: 639123456789
+                  phones:
+                    type: array
+                    description: List of additional contacts associated with the store, each with their phone number.
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          example: John Doe
+                        number:
+                          type: string
+                          example: 639123456789
+                  taxRate:
+                    type: string
+                    description: Sales tax rate (%) applied to purchases at this store.
+                    example: '9.50'
+                  updatedAt:
+                    type: number
+                    description: Epoch timestamp (in milliseconds) of the last update to the store record.
+                    example: 1677773721909
+                  deliverySettings:
+                    type: object
+                    description: 'Configuration settings for each supported delivery service (e.g., DoorDash, Grubhub, Uber Eats).
+
+                      Includes authorization status, commission rates, menu sync status, and other integration-specific options.
+
+                      '
+                    properties:
+                      doordash:
+                        type: object
+                        description: DoorDash delivery service integration settings.
+                        properties:
+                          storeId:
+                            type: string
+                            description: DoorDash store identifier.
+                            example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+                          authorized:
+                            type: boolean
+                            description: Whether the store is authorized with DoorDash.
+                            example: true
+                          enabled:
+                            type: boolean
+                            description: Whether DoorDash integration is enabled for this store.
+                            example: true
+                          roundPrice:
+                            type: boolean
+                            description: Whether prices should be rounded for DoorDash orders.
+                            example: true
+                          percentToCharge:
+                            type: number
+                            description: Commission percentage charged for DoorDash orders.
+                            example: 17
+                          revSharePercentage:
+                            type: number
+                            description: Revenue share percentage for DoorDash.
+                            example: 1.5
+                          reason:
+                            type: string
+                            description: Reason for any status or configuration changes.
+                            example: ''
+                          note:
+                            type: string
+                            description: Additional notes regarding DoorDash integration.
+                            example: ''
+                          menuSync:
+                            type: object
+                            description: Current menu synchronization status with DoorDash.
+                            properties:
+                              menuSynching:
+                                type: boolean
+                                description: Indicates if a menu sync is currently in progress.
+                                example: false
+                              syncStart:
+                                type: number
+                                description: Epoch timestamp when menu sync started.
+                                example: 0
+                              syncEnd:
+                                type: number
+                                description: Epoch timestamp when menu sync ended.
+                                example: 0
+                              status:
+                                type: string
+                                description: Result status of the last menu sync (e.g., SUCCESS, FAILURE, IN_PROGRESS).
+                                example: SUCCESS
+                              menuId:
+                                type: string
+                                description: DoorDash menu identifier.
+                                example: ''
+                      grubhub:
+                        type: object
+                        description: Grubhub delivery service integration settings.
+                        properties:
+                          storeId:
+                            type: string
+                            description: Grubhub store identifier.
+                            example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+                          authorized:
+                            type: boolean
+                            description: Whether the store is authorized with Grubhub.
+                            example: true
+                          enabled:
+                            type: boolean
+                            description: Whether Grubhub integration is enabled for this store.
+                            example: true
+                          roundPrice:
+                            type: boolean
+                            description: Whether prices should be rounded for Grubhub orders.
+                            example: true
+                          percentToCharge:
+                            type: number
+                            description: Commission percentage charged for Grubhub orders.
+                            example: 17
+                          revSharePercentage:
+                            type: number
+                            description: Revenue share percentage for Grubhub.
+                            example: 1.5
+                          reason:
+                            type: string
+                            description: Reason for any status or configuration changes.
+                            example: ''
+                          note:
+                            type: string
+                            description: Additional notes regarding Grubhub integration.
+                            example: ''
+                          menuSync:
+                            type: object
+                            description: Current menu synchronization status with Grubhub.
+                            properties:
+                              menuSynching:
+                                type: boolean
+                                description: Indicates if a menu sync is currently in progress.
+                                example: false
+                              syncStart:
+                                type: number
+                                description: Epoch timestamp when menu sync started.
+                                example: 0
+                              syncEnd:
+                                type: number
+                                description: Epoch timestamp when menu sync ended.
+                                example: 0
+                              status:
+                                type: string
+                                description: Result status of the last menu sync (e.g., SUCCESS, FAILED).
+                                example: SUCCESS
+                              menuId:
+                                type: string
+                                description: Grubhub menu identifier.
+                                example: ''
+                      uberEats:
+                        type: object
+                        description: Uber Eats delivery service integration settings.
+                        properties:
+                          storeId:
+                            type: string
+                            description: Uber Eats store identifier.
+                            example: a744c900-fe43-4ec8-9ae1-f096c9f50240
+                          authorized:
+                            type: boolean
+                            description: Whether the store is authorized with Uber Eats.
+                            example: true
+                          enabled:
+                            type: boolean
+                            description: Whether Uber Eats integration is enabled for this store.
+                            example: true
+                          roundPrice:
+                            type: boolean
+                            description: Whether prices should be rounded for Uber Eats orders.
+                            example: true
+                          percentToCharge:
+                            type: number
+                            description: Commission percentage charged for Uber Eats orders.
+                            example: 17
+                          revSharePercentage:
+                            type: number
+                            description: Revenue share percentage for Uber Eats.
+                            example: 1.5
+                          reason:
+                            type: string
+                            description: Reason for any status or configuration changes.
+                            example: ''
+                          note:
+                            type: string
+                            description: Additional notes regarding Uber Eats integration.
+                            example: ''
+                          menuSync:
+                            type: object
+                            description: Current menu synchronization status with Uber Eats.
+                            properties:
+                              menuSynching:
+                                type: boolean
+                                description: Indicates if a menu sync is currently in progress.
+                                example: false
+                              syncStart:
+                                type: number
+                                description: Epoch timestamp when menu sync started.
+                                example: 0
+                              syncEnd:
+                                type: number
+                                description: Epoch timestamp when menu sync ended.
+                                example: 0
+                              status:
+                                type: string
+                                description: Result status of the last menu sync (e.g., SUCCESS, FAILED).
+                                example: SUCCESS
+                              menuId:
+                                type: string
+                                description: Uber Eats menu identifier.
+                                example: ''
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Invalid OAuth 2.0 credentials provided.:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Invalid OAuth 2.0 credentials provided.
+                User not allowed to access the store:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - User not allowed to access the store
+                Invalid request:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Invalid request
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+x-tagGroups:
+- name: getting started
+  tags:
+  - Introduction
+  - What is this documentation for?
+  - Getting Started
+- name: guides
+  tags:
+  - Preparing Your Store
+  - Using Webhooks
+  - Uploading store menu
+  - Receiving and processing order
+- name: apis
+  tags:
+  - Integrators
+  - integrator_users
+  - Stores
+  - Store Products
+  - Lotto Scratcher Games
+  - Order
+- name: Delivery Services Onboarding
+  tags:
+  - Pick a Delivery Service for Onboarding API
+  - Uber Eats Onboarding API Workflow
+- name: webhooks
+  tags:
+  - Webhooks
+- name: models
+  tags:
+  - models
+- name: faqs
+  tags:
+  - faq
+- name: changelog
+  tags:
+  - Changelog

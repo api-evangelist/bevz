@@ -1,0 +1,488 @@
+openapi: 3.2.0
+info:
+  title: Bevz Integrator Service Store Products API
+  contact:
+    name: API Support
+    email: tech@bevz.com
+  description: '# Introduction
+
+
+    Welcome to the Bevz Integrator Service API documentation.
+
+
+    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
+
+
+    ## Who is this documentation for?
+
+
+    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
+
+
+    ## Key Features
+
+
+    By integrating with the Bevz platform, you gain access to:
+
+
+    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
+
+    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
+
+    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
+
+    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
+
+    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
+
+
+    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
+
+    '
+  version: 1.12.0
+servers:
+- url: https://api.bevz.com/integrator-service
+  description: Production server
+- url: https://sandbox-api.bevz.com/integrator-service
+  description: Sandbox server
+tags:
+- name: Store Products
+  description: Store Products refer to inventory items that are available in a specific store. These products can be managed, updated, and retrieved through the Store Products API.
+paths:
+  /integrators/{integrator_id}/stores/{store_id}/products:
+    get:
+      tags:
+      - Store Products
+      operationId: getProducts
+      summary: Get Store Products
+      description: "Retrieve a list of products available for sale in a specific store.\n\nUse this endpoint to fetch the current product catalog for a store, including inventory, pricing, and categorization details.  \nYou can filter products by category, limit the number of results, and paginate through large catalogs.\n\n#### Example Usage\n\n- Retrieve all products in the \"Liquor\" category for a store.\n- Paginate through a large product catalog using the `limit` and `next_page` parameters.\n\nFor details on the product object schema, see [Store Products](#tag/models/Store-Products).\n"
+      parameters:
+      - name: integrator_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Unique identifier for the integrator.
+      - name: store_id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: Unique identifier for the store.
+      - name: categoryL1
+        in: query
+        required: false
+        schema:
+          type: string
+          example: Liquor
+        description: Filter products by top-level category (e.g., "Liquor").
+      - name: categoryL2
+        in: query
+        required: false
+        schema:
+          type: string
+          example: Rum
+        description: Filter products by second-level category (e.g., "Rum").
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          example: 10
+        description: Maximum number of products to return per page.
+      - name: next_page
+        in: query
+        required: false
+        schema:
+          type: string
+          example: fb867d3b-d41f-4aaf-8b70-a7ffc7614ea0
+        description: Token for fetching the next page of results.
+      - name: Authorization
+        in: header
+        description: JWT token for authenticating API requests.
+        example: Bearer yourJWTtoken
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Retrieved Store products
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next_page:
+                    type: string
+                    example: fb867d3b-d41f-4aaf-8b70-a7ffc7614ea0
+                    description: Token for fetching the next page of results, if more products are available.
+                  data:
+                    type: array
+                    description: List of product objects for the store.
+                    items:
+                      type: object
+                      properties:
+                        quantity:
+                          type: string
+                          example: Single
+                          description: The quantity or packaging unit of the product (e.g., Single, 6 Pack).
+                        size:
+                          type: string
+                          example: 375.00 ML Glass Bottle
+                          description: The size and packaging type of the product.
+                        upc:
+                          type: string
+                          example: 082000003809
+                          description: Universal Product Code (UPC) for the product.
+                        categoryL1:
+                          type: string
+                          example: Liquor
+                          description: Top-level product category (e.g., Liquor, Beer, Wine).
+                        categoryL2:
+                          type: string
+                          example: Rum
+                          description: Second-level product category (e.g., Rum, Vodka).
+                        createdAt:
+                          type: string
+                          example: '2024-06-24T01:56:49.901Z'
+                          description: ISO 8601 timestamp when the product was created in the system.
+                        storeId:
+                          type: string
+                          example: 80c7b843-bb32-4eda-acb8-bd39a6826561
+                          description: Unique identifier for the store this product belongs to.
+                        name:
+                          type: string
+                          example: Captain Morgan White Rum
+                          description: Display name of the product.
+                        isAvailableOnDoorDash:
+                          type: boolean
+                          example: true
+                          description: Indicates if the product is available for sale on DoorDash.
+                        stockCount:
+                          type: integer
+                          example: 1
+                          description: Number of units of this product currently in stock.
+                        updatedAt:
+                          type: string
+                          example: '2024-06-24T01:56:49.901Z'
+                          description: ISO 8601 timestamp when the product was last updated.
+                        images:
+                          type: array
+                          example: []
+                          description: List of image URLs or image objects associated with the product.
+                        forSale:
+                          type: boolean
+                          example: true
+                          description: Indicates if the product is currently available for sale.
+                        inStorePrice:
+                          type: integer
+                          example: 7.99
+                          description: In-store price of the product (in dollars).
+                        merchantSuppliedId:
+                          type: string
+                          example: '72518102101'
+                          description: Identifier for the product as supplied by the merchant.
+                        productId:
+                          type: string
+                          example: 3f67bb88-b89e-4359-8b84-edfef9950b16
+                          description: Unique identifier for the product in the system.
+                        prices:
+                          type: object
+                          description: Object containing delivery service-specific prices for the product.
+                          properties:
+                            doordashPrice:
+                              type: integer
+                              example: 8.99
+                              description: Price of the product on DoorDash (in dollars).
+                            uberEatsPrice:
+                              type: integer
+                              example: 0
+                              description: Price of the product on Uber Eats (in dollars).
+                            grubhubPrice:
+                              type: integer
+                              example: 0
+                              description: Price of the product on Grubhub (in dollars).
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+  /integrators/{integrator_id}/stores/{store_id}/products/{product_id}:
+    parameters:
+    - name: integrator_id
+      in: path
+      required: true
+      schema:
+        type: integer
+        format: int64
+      description: Unique identifier for the integrator.
+    - name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the store.
+    - name: product_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Unique identifier for the product within the store.
+    - name: Authorization
+      in: header
+      description: "JWT token for authenticating API requests.  \n"
+      example: Bearer yourJWTtoken
+      required: true
+      schema:
+        type: string
+    patch:
+      tags:
+      - Store Products
+      operationId: patchProduct
+      summary: Update Store Product
+      description: 'Update the details of a specific product in a store.
+
+
+        Use this endpoint to modify product attributes such as price, stock count, sale status, display name, or merchant-supplied ID.
+
+        Only the fields provided in the request body will be updated; all other fields will remain unchanged.
+
+
+        Typical use cases include:
+
+        - Adjusting inventory levels after a sale or restock.
+
+        - Updating the product''s in-store price.
+
+        - Changing the product''s display name or marking it as unavailable for sale.
+
+        '
+      requestBody:
+        description: 'JSON payload specifying the product fields to update.
+
+          Only include the fields you wish to modify.
+
+          '
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inStorePrice:
+                  type: number
+                  format: float
+                  description: Updated in-store price for the product.
+                  example: 8.99
+                stockCount:
+                  type: number
+                  description: Updated inventory count for the product.
+                  example: 5
+                forSale:
+                  type: boolean
+                  description: 'Set to `false` to mark the product as unavailable for sale.
+
+                    '
+                  example: false
+                name:
+                  type: string
+                  description: Updated display name for the product.
+                  example: Product Test Name
+                merchantSuppliedId:
+                  type: string
+                  description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+                  example: '72518102101'
+      responses:
+        '200':
+          description: Successfully updated store product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfuly updated store product
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Product ID is not found under this store:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Product ID is not found under this store.
+                stockCount must be greater than or equal to 0:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"stockCount" must be greater than or equal to 0'
+                inStorePrice must be a positive number:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"inStorePrice" must be a positive number'
+                '"randomfield" is not allowed':
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - '"randomfield" is not allowed'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+    delete:
+      tags:
+      - Store Products
+      operationId: deleteProduct
+      summary: Delete Store Product
+      description: 'Use this endpoint to remove a specific product from a store''s catalog.
+
+        '
+      responses:
+        '200':
+          description: Successfully deleted store product
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Successfully deleted store product
+        '400':
+          description: Bad request! Please check your input.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Unable to delete item, store product does not exist:
+                  value:
+                    message: Bad request! Please check your input.
+                    errors:
+                    - Unable to delete item, store product does not exist
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  errors:
+                    type: array
+              examples:
+                Integrator unauthorized to perform this action!:
+                  value:
+                    message: Unauthorized request! Please check your permission.
+                    errors:
+                    - Integrator unauthorized to perform this action!
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: User is not authorized to access this resource with an explicit deny
+x-tagGroups:
+- name: getting started
+  tags:
+  - Introduction
+  - What is this documentation for?
+  - Getting Started
+- name: guides
+  tags:
+  - Preparing Your Store
+  - Using Webhooks
+  - Uploading store menu
+  - Receiving and processing order
+- name: apis
+  tags:
+  - Integrators
+  - integrator_users
+  - Stores
+  - Store Products
+  - Lotto Scratcher Games
+  - Order
+- name: Delivery Services Onboarding
+  tags:
+  - Pick a Delivery Service for Onboarding API
+  - Uber Eats Onboarding API Workflow
+- name: webhooks
+  tags:
+  - Webhooks
+- name: models
+  tags:
+  - models
+- name: faqs
+  tags:
+  - faq
+- name: changelog
+  tags:
+  - Changelog

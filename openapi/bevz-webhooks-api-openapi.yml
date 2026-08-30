@@ -1,0 +1,859 @@
+openapi: 3.2.0
+info:
+  title: Bevz Integrator Service Webhooks API
+  contact:
+    name: API Support
+    email: tech@bevz.com
+  description: '# Introduction
+
+
+    Welcome to the Bevz Integrator Service API documentation.
+
+
+    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
+
+
+    ## Who is this documentation for?
+
+
+    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
+
+
+    ## Key Features
+
+
+    By integrating with the Bevz platform, you gain access to:
+
+
+    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
+
+    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
+
+    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
+
+    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
+
+    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
+
+
+    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
+
+    '
+  version: 1.12.0
+servers:
+- url: https://api.bevz.com/integrator-service
+  description: Production server
+- url: https://sandbox-api.bevz.com/integrator-service
+  description: Sandbox server
+tags:
+- name: Webhooks
+paths: {}
+webhooks:
+  order:
+    post:
+      summary: Order Notification Webhook
+      description: "This webhook is triggered by Bevz to notify your integration of order-related events in real time.\n\nWhenever a relevant order event occurs (such as a new order, status update, or cancellation), Bevz will send an HTTP POST request to your configured webhook endpoint.  \n\nThe request body will contain the full order payload, allowing you to process, acknowledge, or update your internal systems accordingly.\n\n| **Type**                    | **Description**                                           |\n|-----------------------------|-----------------------------------------------------------|\n| `order.pending`             | When a new order is created and awaiting acceptance.      |\n| `order.accepted`            | When the order has been accepted by the store.            |\n| `order.out_for_delivery`    | When the order is out for delivery.                       |\n| `order.completed`           | When the order has been successfully delivered/completed. |\n| `order.rejected`            | When the order has been rejected by the store.            |\n| `order.canceled`            | When the order has been canceled by the customer or store.|\n"
+      operationId: orderWebhook
+      tags:
+      - Webhooks
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Represents a customer order placed through the Bevz platform.
+
+                  This schema includes all relevant details about the order, such as products, delivery information, fees, status, and timestamps.
+
+                  Use this object to view, create, or update order records via the API.
+
+                  '
+                properties:
+                  type:
+                    type: string
+                    description: Type of the object, always "order".
+                    example: order.accepted
+                  data:
+                    type: object
+                    description: Details of the order.
+                    properties:
+                      orderId:
+                        type: string
+                        description: Unique identifier for the order.
+                        example: bj1B0tzQEe2B0ysLv-VTcg-test
+                      integratorId:
+                        type: string
+                        description: Unique identifier for the integrator associated with this order.
+                        example: '220510005'
+                      ownerId:
+                        type: string
+                        description: Unique identifier for the owner of the order (typically the store owner).
+                        example: fa44331d-1143-4d03-b1fd-f0a61a11db29
+                      storeId:
+                        type: string
+                        description: Unique identifier for the store where the order was placed.
+                        example: 831fd907-b455-4e92-828b-2e5421d057d7
+                      customerId:
+                        type: string
+                        description: Identifier for the customer placing the order (may be a platform-specific value).
+                        example: DOORDASH_CUSTOMER
+                      orderProducts:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            productSnapshot:
+                              type: object
+                              description: Snapshot of the product details at the time of ordering.
+                              properties:
+                                images:
+                                  type: array
+                                  description: List of product images.
+                                  items:
+                                    type: object
+                                    properties:
+                                      src:
+                                        type: string
+                                        description: Image URL.
+                                        example: https://bevz-media.s3-us-west-1.amazonaws.com/ef81f97b-1d8a-4f91-906d-3542427e99f2.png
+                                      primary:
+                                        type: boolean
+                                        description: Indicates if this is the primary image.
+                                        example: true
+                                quantity:
+                                  type: string
+                                  description: Quantity or packaging type (e.g., "6 Pack").
+                                  example: 6 Pack
+                                productId:
+                                  type: string
+                                  description: Unique identifier for the product.
+                                  example: cd017f3f-fbda-41c1-b9d9-842eab06cbea
+                                taxable:
+                                  type: boolean
+                                  description: Indicates if the product is taxable.
+                                  example: true
+                                description:
+                                  type: string
+                                  description: Product description.
+                                  example: Enjoy the refreshing lemon-lime taste in every sip of 7UP. Free of caffeine and with crisp, carbonated fizz in every bottle, you can indulge in the delicious drink without feeling the effects of caffeine.
+                                upc:
+                                  type: string
+                                  description: Universal Product Code for the product.
+                                  example: 078000000382
+                                extras:
+                                  type: object
+                                  description: Additional product options or add-ons.
+                                priority:
+                                  type: boolean
+                                  description: Indicates if the product is a priority item in the order.
+                                  example: false
+                                createdAt:
+                                  type: string
+                                  format: date-time
+                                  description: ISO 8601 timestamp when the product was created.
+                                  example: '2019-08-02T15:11:28.608Z'
+                                size:
+                                  type: string
+                                  description: Size or packaging of the product.
+                                  example: 12 oz Cans
+                                price:
+                                  type: number
+                                  format: float
+                                  description: Price of the product at the time of order.
+                                  example: 4.99
+                                name:
+                                  type: string
+                                  description: Name of the product.
+                                  example: 7 UP
+                                disabled:
+                                  type: boolean
+                                  description: Indicates if the product is currently disabled.
+                                  example: false
+                                categories:
+                                  type: object
+                                  description: Product category hierarchy.
+                                  properties:
+                                    L1:
+                                      type: string
+                                      description: Top-level category.
+                                      example: Soft Drinks
+                                    L2:
+                                      type: string
+                                      description: Second-level category.
+                                      example: Soda
+                                updatedAt:
+                                  type: string
+                                  format: date-time
+                                  description: ISO 8601 timestamp when the product was last updated.
+                                  example: '2019-08-02T15:11:28.608Z'
+                            quantity:
+                              type: number
+                              description: Quantity of this product in the order.
+                              example: 1
+                            productId:
+                              type: string
+                              description: Unique identifier for the product.
+                              example: a00dd3f1-dac9-4574-8e23-51a94dd7094c
+                            merchantSuppliedId:
+                              type: string
+                              description: Optional merchant-supplied identifier (e.g., SKU or barcode).
+                              example: 507f191e810c19729de860ea
+                            selectedPrice:
+                              type: number
+                              description: Price of the product at the time of order.
+                              example: 3.99
+                            alternativeProductName:
+                              type: string
+                              description: Other names of the product.
+                              example: A&W Root Beer Cans (12 fl oz x 12 ct)
+                      deliveryDetails:
+                        type: object
+                        properties:
+                          customerDetails:
+                            type: object
+                            description: Customer contact information.
+                            properties:
+                              name:
+                                type: string
+                                description: Customer name.
+                                example: Bevz Staging
+                              phone:
+                                type: string
+                                description: Customer phone number.
+                                example: (917) 123-1234
+                              email:
+                                type: string
+                                description: Customer email address.
+                              pinCode:
+                                type: string
+                                description: The pin code to access the customer phone number (For Uber Eats only).
+                                example: 555 55 555
+                          deliveryType:
+                            type: string
+                            description: 'Delivery method for the order. Possible values: `PICK_UP`, `DELIVERY`.
+
+                              '
+                            example: DELIVERY
+                          deliveryInstructions:
+                            type: string
+                            description: Special instructions for the delivery.
+                          deliveryAddress:
+                            type: object
+                            description: Delivery address details.
+                            properties:
+                              street1:
+                                type: string
+                                description: Primary street address.
+                                example: 123123 10th St
+                              street2:
+                                type: string
+                                description: Secondary address line (optional).
+                              state:
+                                type: string
+                                description: State or province abbreviation.
+                                example: CA
+                              city:
+                                type: string
+                                description: City name.
+                                example: Santa Monica
+                              zipCode:
+                                type: string
+                                description: Postal or ZIP code.
+                                example: '90401'
+                          driver:
+                            type: object
+                            description: Delivery driver details.
+                            properties:
+                              name:
+                                type: string
+                                description: Driver's name.
+                                example: John Doe
+                              phone:
+                                type: string
+                                description: Driver's phone number.
+                                example: 091234567890
+                              estimated_time_arrival:
+                                type: string
+                                description: Estimated time of arrival for the delivery.
+                      fees:
+                        type: object
+                        description: Breakdown of fees applied to the order.
+                        properties:
+                          shippingTotal:
+                            type: number
+                            description: Total shipping fee for the order.
+                          tipTotal:
+                            type: string
+                            description: Total tip amount for the order.
+                            example: '0'
+                          serviceFeeTotal:
+                            type: number
+                            description: Total service fee for the order.
+                            example: 148
+                          taxTotal:
+                            type: number
+                            description: Total tax applied to the order.
+                            example: 28
+                          savedTotal:
+                            type: number
+                            description: Total amount saved (e.g., discounts).
+                          rebateTotal:
+                            type: number
+                            description: Total rebate applied to the order.
+                      orderStatus:
+                        type: string
+                        description: "Current status of the order.  \nPossible values: `PENDING`, `ACCEPTED`, `OUT_FOR_DELIVERY`, `COMPLETED`, `CANCELED`, `EXPIRED`\n"
+                        example: ACCEPTED
+                      orderTotal:
+                        type: number
+                        description: Total amount for the order, including all fees and taxes.
+                        example: 408
+                      deliverySource:
+                        type: string
+                        description: "The delivery platform through which the order was placed.  \nPossible values: `DOORDASH`, `UBEREATS`, `GRUBHUB`\n"
+                        example: DOORDASH
+                      subTotal:
+                        type: number
+                        description: Subtotal amount for the order (before fees and taxes).
+                        example: 5.34
+                      createdAt:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 timestamp when the order was created.
+                        example: '2023-04-17T12:32:27.304Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 timestamp when the order was last updated.
+                        example: '2023-04-17T12:34:40.376Z'
+                      test:
+                        type: boolean
+                        description: Indicates if this order is a test order.
+                        example: true
+  menusync:
+    post:
+      summary: Menu Upload Webhook
+      description: "This webhook is triggered by Bevz to notify your integration of menu upload events in real time.\n\nWhenever a menu upload is processed (in progress, completed, or failed), Bevz will send an HTTP POST request to your configured webhook endpoint.  \n\nThe request body will contain details about the menu upload status, including an error file.\n"
+      operationId: menuUploadWebhook
+      tags:
+      - Webhooks
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    description: Auto-incrementing unique identifier for the menu upload record.
+                    example: 1
+                  store_id:
+                    type: string
+                    description: 'Unique identifier of the store where the uploaded menu will be used.
+
+                      This value matches the `store_id` path parameter from the [Menu Upload](#tag/Stores/operation/postMenu) endpoint.
+
+                      '
+                    example: 6e066cfe-9122-4c30-a7fc-a8894dd72f4h
+                  file_path:
+                    type: string
+                    description: 'URL or file path where the uploaded menu file (CSV or JSON) is stored.
+
+                      This file contains the raw menu data submitted by the integrator.
+
+                      '
+                    example: https://integrator-menu-569241935122.s3.us-west-1.amazonaws.com/raw/a990fb29-3ea7-4e59-b293-a20574807927_b8c49890-67e5-42b8-aaaa-855ffbe92511.csv
+                  status:
+                    type: string
+                    description: "Current processing status of the menu upload.\n\n- `in progress`: The [Menu Upload](#tag/Stores/operation/postMenu) is still being processed.  \n- `completed`: The upload has finished processing.\n- `failed`: The upload failed due to critical errors. Contact Bevz support for assistance.\n"
+                    example: completed
+                  error_file:
+                    type: string
+                    description: 'URL or file path where unmatched or problematic products from the uploaded file are listed.
+
+                      Download this file to review and correct any items that failed to upload or match.
+
+                      '
+                    example: https://integrator-menu-569241935122.s3.us-west-1.amazonaws.com/error/a990fb29-3ea7-4e59-b293-a20574807927_b8c49890-67e5-42b8-aaaa-855ffbe92511_error-file.csv
+                  date:
+                    type: string
+                    format: date-time
+                    description: 'ISO 8601 timestamp indicating when the [Menu Upload](#tag/Stores/operation/postMenu) started.
+
+                      '
+                    example: 2023-03-09 04:18:57.658000+00:00
+                  time_completed:
+                    type: string
+                    format: date-time
+                    description: 'ISO 8601 timestamp indicating when the [Menu Upload](#tag/Stores/operation/postMenu) completed.
+
+                      '
+                    example: 2023-03-09 04:18:57.658000+00:00
+  store-status:
+    post:
+      summary: Store Status Webhook
+      description: 'This webhook is triggered by Bevz to notify your integration when store settings are updated in real time.
+
+
+        Whenever tracked store fields change (such as operating hours or delivery settings), Bevz will send an HTTP POST request to your configured webhook endpoint.
+
+
+        The request body will contain only the fields that changed, allowing you to efficiently sync your internal systems.
+
+
+        | **Event**                      | **Description**                                                   |
+
+        |--------------------------------|-------------------------------------------------------------------|
+
+        | `store_settings_updated`       | When a store''s tracked settings (hours, delivery settings) change.|
+
+
+        ### Tracked Fields
+
+
+        The following store fields are monitored for changes:
+
+
+        | **Field**            | **Description**                                                        |
+
+        |----------------------|------------------------------------------------------------------------|
+
+        | `hours`              | Store operating hours for each day of the week.                        |
+
+        | `deliverySettings`   | Configuration settings for supported delivery services (DoorDash, Grubhub, Uber Eats). |
+
+        '
+      operationId: storeStatusWebhook
+      tags:
+      - Webhooks
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 'Payload sent to your webhook endpoint when tracked store settings are updated.
+
+                  Only the fields that changed are included in the `data` object.
+
+                  '
+                properties:
+                  event:
+                    type: string
+                    description: The type of event that triggered this webhook.
+                    example: store_settings_updated
+                  bevzStoreId:
+                    type: string
+                    description: Unique identifier for the store whose settings changed.
+                    example: 831fd907-b455-4e92-828b-2e5421d057d7
+                  data:
+                    type: object
+                    description: 'Contains only the store fields that changed. Possible fields include `hours` and `deliverySettings`.
+
+                      '
+                    properties:
+                      hours:
+                        type: array
+                        description: Updated store operating hours (included only if hours changed).
+                        items:
+                          type: object
+                          properties:
+                            type:
+                              type: string
+                              example: DAILY_HOURS
+                            days:
+                              type: array
+                              description: '* 1 Sunday
+
+                                * 2 Monday
+
+                                * 3 Tuesday
+
+                                * 4 Wednesday
+
+                                * 5 Thursday
+
+                                * 6 Friday
+
+                                * 7 Saturday
+
+                                '
+                              example:
+                              - 1
+                              - 2
+                              - 3
+                              - 4
+                              - 5
+                              - 6
+                              - 7
+                            openTime:
+                              type: string
+                              format: hh:mm A
+                              example: 12:00 AM
+                            closeTime:
+                              type: string
+                              format: hh:mm A
+                              example: 4:00 PM
+                      deliverySettings:
+                        type: object
+                        description: Updated delivery service settings (included only if delivery settings changed).
+                        properties:
+                          doordash:
+                            allOf:
+                            - $ref: '#/components/schemas/DeliverySettings'
+                            - type: object
+                              required:
+                              - isExisting
+                              properties:
+                                isExisting:
+                                  type: boolean
+                                  description: 'Indicates if the store already exists on the selected delivery service.
+
+                                    '
+                                data:
+                                  type: object
+                                  required:
+                                  - storeId
+                                  - firstName
+                                  - lastName
+                                  - email
+                                  - phone
+                                  - legalBusinessName
+                                  - entity
+                                  - ein
+                                  - routingNumber
+                                  - accountNumber
+                                  - dob
+                                  - ssn
+                                  properties:
+                                    storeId:
+                                      type: string
+                                      description: Unique identifier for the store.
+                                      example: dc89f739-4537-44df-8677-a805083ce2de
+                                    firstName:
+                                      type: string
+                                      description: Store owner's first name.
+                                      example: John
+                                    lastName:
+                                      type: string
+                                      description: Store owner's last name.
+                                      example: Doe
+                                    email:
+                                      type: string
+                                      description: Store owner's email address.
+                                      example: john.doe@email.com
+                                    phone:
+                                      type: string
+                                      description: Store owner's phone number.
+                                      example: '2344345435'
+                                    legalBusinessName:
+                                      type: string
+                                      description: Official legal name of the business entity.
+                                      example: Bevz Test Business
+                                    entity:
+                                      type: string
+                                      description: 'Type of business entity.
+
+                                        Allowed values: `sole_proprietorship`, `partnership`, `c_corporation`, `s_corporation`, `limited_liability_company`.
+
+                                        '
+                                      example: sole_proprietorship
+                                    ein:
+                                      type: string
+                                      description: Employer Identification Number (EIN) for the business. Must be numbers only.
+                                      pattern: ^[\d*]+$
+                                      example: '123456789'
+                                    routingNumber:
+                                      type: string
+                                      description: Bank routing number for ACH transfers. Must be numbers only.
+                                      pattern: ^[\d*]+$
+                                      example: '021000021'
+                                    accountNumber:
+                                      type: string
+                                      description: Bank account number for deposits and withdrawals. Must be numbers only.
+                                      pattern: ^[\d*]+$
+                                      example: 000123456789
+                                    dob:
+                                      type: string
+                                      description: Date of birth of the legal representative (MM/DD/YYYY).
+                                      example: 09/25/1995
+                                    ssn:
+                                      type: string
+                                      description: Last 4 digits of the Social Security Number (SSN) of the legal representative. Must be 4 digits only.
+                                      pattern: ^\d{4}$
+                                      example: '1234'
+                                    taxRate:
+                                      type: string
+                                      description: Sales tax rate for the store (optional).
+                                      example: '8.75'
+                                    carriesCbd:
+                                      type: boolean
+                                      description: Indicates if the store carries CBD products (optional).
+                                      example: false
+                                    carriesOralNicotine:
+                                      type: boolean
+                                      description: Indicates if the store carries oral nicotine products (optional).
+                                      example: false
+                          grubhub:
+                            allOf:
+                            - $ref: '#/components/schemas/DeliverySettings'
+                            - type: object
+                              required:
+                              - isExisting
+                              properties:
+                                isExisting:
+                                  type: boolean
+                                  description: 'Indicates if the store already exists on the selected delivery service.
+
+                                    '
+                                data:
+                                  type: object
+                                  required:
+                                  - firstName
+                                  - lastName
+                                  - salesTax
+                                  properties:
+                                    firstName:
+                                      type: string
+                                      description: Store owner's first name.
+                                      example: John
+                                    lastName:
+                                      type: string
+                                      description: Store owner's last name.
+                                      example: Doe
+                                    email:
+                                      type: string
+                                      description: Store owner's email address (optional).
+                                      example: john.doe@email.com
+                                    salesTax:
+                                      type: string
+                                      description: Sales tax rate for the store.
+                                      example: '8.75'
+                                    sentitiveData:
+                                      type: object
+                                      required:
+                                      - bankName
+                                      - routingNumber
+                                      - bankAccountNumber
+                                      - ein
+                                      - legalBusinessName
+                                      - legalRepName
+                                      - legalDOB
+                                      - legalEmail
+                                      - ssn
+                                      - typeOfEntity
+                                      properties:
+                                        routingNumber:
+                                          type: string
+                                          description: Bank routing number for ACH transfers.
+                                          example: '12345'
+                                        bankAccountNumber:
+                                          type: string
+                                          description: Bank account number for deposits and withdrawals.
+                                          example: '000000'
+                                        ein:
+                                          type: string
+                                          description: Employer Identification Number (EIN) for the business.
+                                          example: '12345'
+                                        legalBusinessName:
+                                          type: string
+                                          description: Official legal name of the business entity.
+                                          example: Bevz Test Business
+                                        legalDOB:
+                                          type: string
+                                          description: Date of birth of the legal representative (MM/DD/YYYY).
+                                          example: 09/25/1995
+                                        legalEmail:
+                                          type: string
+                                          description: Email address of the legal representative.
+                                          example: bevz_legal@bevz.com
+                                        ssn:
+                                          type: string
+                                          description: Social Security Number (SSN) of the legal representative.
+                                          example: '12345'
+                                        typeOfEntity:
+                                          type: string
+                                          description: "Type of business entity.  \nAllowed values: `sole_proprietorship`, `partnership`, `c_corporation`, `s_corporation`, `limited_liability_company`.\n"
+                                          example: sole_proprietorship
+                          uberEats:
+                            allOf:
+                            - $ref: '#/components/schemas/DeliverySettings'
+                            - type: object
+                              required:
+                              - isExisting
+                              properties:
+                                isExisting:
+                                  type: boolean
+                                  description: 'Indicates if the store already exists on the selected delivery service.
+
+                                    '
+                                data:
+                                  type: object
+                                  required:
+                                  - firstName
+                                  - lastName
+                                  - phone
+                                  - title
+                                  - street
+                                  - city
+                                  - state
+                                  - zipCode
+                                  - storeName
+                                  - storePhone
+                                  - liquorLicense
+                                  properties:
+                                    firstName:
+                                      type: string
+                                      description: First name of the store owner or legal representative.
+                                      example: John
+                                    lastName:
+                                      type: string
+                                      description: Last name of the store owner or legal representative.
+                                      example: Doe
+                                    email:
+                                      type: string
+                                      description: Email address of the store owner or legal representative.
+                                    phone:
+                                      type: string
+                                      description: Contact phone number of the store owner or legal representative.
+                                      example: '9171168545'
+                                    title:
+                                      type: string
+                                      description: Title or position of the store owner or legal representative (e.g., Owner, Manager).
+                                      example: Test Title
+                                    street:
+                                      type: string
+                                      description: Street address of the store.
+                                      example: 123123 10th St
+                                    city:
+                                      type: string
+                                      description: City where the store is located.
+                                      example: Santa Monica
+                                    state:
+                                      type: string
+                                      description: State or province abbreviation where the store is located.
+                                      example: CA
+                                    zipCode:
+                                      type: string
+                                      description: Postal or ZIP code of the store location.
+                                      example: '90401'
+                                    storeName:
+                                      type: string
+                                      description: Legal or display name of the store.
+                                      example: Bevz Store
+                                    storePhone:
+                                      type: string
+                                      description: Primary contact phone number for the store.
+                                    liquorLicense:
+                                      type: string
+                                      description: Liquor license number for the store, if applicable.
+                                    sentitiveData:
+                                      type: object
+                                      required:
+                                      - bankName
+                                      - routingNumber
+                                      - bankAccountNumber
+                                      - ein
+                                      - legalBusinessName
+                                      - legalRepName
+                                      - legalDOB
+                                      - legalEmail
+                                      - ssn
+                                      - typeOfEntity
+                                      properties:
+                                        bankName:
+                                          type: string
+                                          description: Name of the bank where the business account is held.
+                                          example: Bevz Test Bank
+                                        routingNumber:
+                                          type: string
+                                          description: Bank routing number for ACH or wire transfers.
+                                          example: '12345'
+                                        bankAccountNumber:
+                                          type: string
+                                          description: Bank account number for deposits and withdrawals.
+                                          example: '000000'
+                                        ein:
+                                          type: string
+                                          description: Employer Identification Number (EIN) for the business.
+                                          example: '12345'
+                                        legalBusinessName:
+                                          type: string
+                                          description: Official legal name of the business entity.
+                                          example: Bevz Test Business
+                                        legalRepName:
+                                          type: string
+                                          description: Full name of the legal representative for the business.
+                                          example: John Doe
+                                        legalDOB:
+                                          type: string
+                                          description: Date of birth of the legal representative (MM/DD/YYYY).
+                                          example: 09/25/1995
+                                        legalEmail:
+                                          type: string
+                                          description: Email address of the legal representative.
+                                          example: bevz_legal@bevz.com
+                                        ssn:
+                                          type: string
+                                          description: Social Security Number (SSN) of the legal representative.
+                                          example: '12345'
+                                        typeOfEntity:
+                                          type: string
+                                          description: "Type of business entity.  \nAllowed values: `sole_proprietorship`, `partnership`, `c_corporation`, `s_corporation`, `limited_liability_company`.\n"
+                                          example: sole_proprietorship
+components:
+  schemas:
+    DeliverySettings:
+      type: object
+      required:
+      - deliveryService
+      discriminator:
+        propertyName: deliveryService
+        mapping:
+          DOORDASH: '#/components/schemas/DeliverySettingsDD'
+          GRUBHUB: '#/components/schemas/DeliverySettingsGH'
+      properties:
+        deliveryService:
+          type: string
+          description: DOORDASH | GRUBHUB
+x-tagGroups:
+- name: getting started
+  tags:
+  - Introduction
+  - What is this documentation for?
+  - Getting Started
+- name: guides
+  tags:
+  - Preparing Your Store
+  - Using Webhooks
+  - Uploading store menu
+  - Receiving and processing order
+- name: apis
+  tags:
+  - Integrators
+  - integrator_users
+  - Stores
+  - Store Products
+  - Lotto Scratcher Games
+  - Order
+- name: Delivery Services Onboarding
+  tags:
+  - Pick a Delivery Service for Onboarding API
+  - Uber Eats Onboarding API Workflow
+- name: webhooks
+  tags:
+  - Webhooks
+- name: models
+  tags:
+  - models
+- name: faqs
+  tags:
+  - faq
+- name: changelog
+  tags:
+  - Changelog
