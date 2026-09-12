@@ -2,20 +2,20 @@
   "repo": "bevz",
   "feeds": [
     {
-      "source": "https://www.bevz.com/pricing",
-      "feed_url": "https://www.bevz.com/pricing",
+      "source": "https://join.bevz.com/",
+      "feed_url": "https://join.bevz.com/",
       "title": "",
       "saved": 0,
       "method": "none"
     },
     {
-      "source": "https://join.bevz.com/",
-      "feed_url": "https://join.bevz.com/",
+      "source": "https://www.bevz.com/pricing",
+      "feed_url": "https://www.bevz.com/pricing",
       "title": "",
       "saved": 0,
       "method": "none"
     }
   ],
   "post_count": 0,
-  "fetched": "2026-08-30T22:33:40Z"
+  "fetched": "2026-09-06T19:17:18Z"
 }
