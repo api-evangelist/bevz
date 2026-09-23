@@ -7,38 +7,7 @@ info:
   description: '# Introduction
 
 
-    Welcome to the Bevz Integrator Service API documentation.
-
-
-    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
-
-
-    ## Who is this documentation for?
-
-
-    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
-
-
-    ## Key Features
-
-
-    By integrating with the Bevz platform, you gain access to:
-
-
-    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
-
-    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
-
-    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
-
-    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
-
-    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
-
-
-    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
-
-    '
+    Welcome to the Bevz Integrator Service API documentation.'
   version: 1.12.0
 servers:
 - url: https://api.bevz.com/integrator-service
@@ -82,9 +51,7 @@ paths:
 
         2. Use this API to register your webhook URL with Bevz.
 
-        3. Bevz will send HTTP POST requests to your endpoint whenever relevant order events occur.
-
-        '
+        3. Bevz will send HTTP POST requests to your endpoint whenever relevant order events occur.'
       requestBody:
         content:
           application/json:
@@ -205,9 +172,7 @@ paths:
 
         2. Use this API to register your webhook URL with Bevz.
 
-        3. Bevz will send HTTP POST requests to your endpoint whenever a menu upload event occurs.
-
-        '
+        3. Bevz will send HTTP POST requests to your endpoint whenever a menu upload event occurs.'
       requestBody:
         content:
           application/json:

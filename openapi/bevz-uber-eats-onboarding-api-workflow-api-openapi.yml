@@ -1,44 +1,13 @@
 openapi: 3.2.0
 info:
-  title: Bevz Integrator Service Uber Eats Onboarding API Workflow API
+  title: Bevz Integrator Service Uber Eats Onboarding API Workflow…
   contact:
     name: API Support
     email: tech@bevz.com
   description: '# Introduction
 
 
-    Welcome to the Bevz Integrator Service API documentation.
-
-
-    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
-
-
-    ## Who is this documentation for?
-
-
-    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
-
-
-    ## Key Features
-
-
-    By integrating with the Bevz platform, you gain access to:
-
-
-    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
-
-    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
-
-    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
-
-    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
-
-    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
-
-
-    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
-
-    '
+    Welcome to the Bevz Integrator Service API documentation.'
   version: 1.12.0
 servers:
 - url: https://api.bevz.com/integrator-service
@@ -59,11 +28,7 @@ tags:
     3. **Provision Store:** Use the access token and Uber Eats store ID to complete the onboarding and enable integration features.
 
 
-    ### Process Flow
-
-    <img alt="Bevz Create Store Workflow" src="https://join-bevz.s3.us-west-1.amazonaws.com/apidocs_ubereats_pos_workflow.png" />
-
-    '
+    ### Process Flow'
 paths:
   /integrators/{integrator_id}/stores/{store_id}/onboard-delivery-services/ubereats/generate-oauth:
     get:
@@ -71,7 +36,18 @@ paths:
       - Uber Eats Onboarding API Workflow
       operationId: generateOAuth
       summary: Step 1. Generate OAuth URL for Uber Eats onboarding
-      description: "Use this endpoint to obtain a unique OAuth URL that will redirect the store owner to Uber Eats for authentication and authorization.  \n\nAfter successful authorization, Uber Eats will redirect the user to the specified `redirect_uri` with an authorization code, which can then be exchanged for access tokens.\n\n#### When to Use\n\n- Initiate the Uber Eats onboarding process for a store.\n- Allow store owners to securely grant your integration access to their Uber Eats account.\n"
+      description: 'Use this endpoint to obtain a unique OAuth URL that will redirect the store owner to Uber Eats for authentication and authorization.
+
+
+        After successful authorization, Uber Eats will redirect the user to the specified `redirect_uri` with an authorization code, which can then be exchanged for access tokens.
+
+
+        #### When to Use
+
+
+        - Initiate the Uber Eats onboarding process for a store.
+
+        - Allow store owners to securely grant your integration access to their Uber Eats account.'
       parameters:
       - name: integrator_id
         in: path
@@ -146,7 +122,19 @@ paths:
       - Uber Eats Onboarding API Workflow
       operationId: exchangeCode
       summary: Step 2. Exchange Authorization Code for Access Token
-      description: "Use this endpoint as the second step in the Uber Eats onboarding OAuth flow.  \n\nAfter the store owner authorizes your integration via the OAuth URL, Uber Eats will redirect to your specified `redirect_uri` with an `authorization_code`.  \n\nSubmit that code here to obtain an access token, which can be used to make authenticated requests to Uber Eats APIs on behalf of the store.\n\n#### When to Use\n\n- Immediately after the store owner completes the OAuth authorization step and you receive the `authorization_code` in your redirect handler.\n"
+      description: 'Use this endpoint as the second step in the Uber Eats onboarding OAuth flow.
+
+
+        After the store owner authorizes your integration via the OAuth URL, Uber Eats will redirect to your specified `redirect_uri` with an `authorization_code`.
+
+
+        Submit that code here to obtain an access token, which can be used to make authenticated requests to Uber Eats APIs on behalf of the store.
+
+
+        #### When to Use
+
+
+        - Immediately after the store owner completes the OAuth authorization step and you receive the `authorization_code` in your redirect handler.'
       parameters:
       - name: integrator_id
         in: path
@@ -322,9 +310,7 @@ paths:
         #### When to Use
 
 
-        - After successfully exchanging the authorization code for an access token and retrieving the Uber Eats store ID.
-
-        '
+        - After successfully exchanging the authorization code for an access token and retrieving the Uber Eats store ID.'
       parameters:
       - name: integrator_id
         in: path

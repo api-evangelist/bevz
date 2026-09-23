@@ -7,38 +7,7 @@ info:
   description: '# Introduction
 
 
-    Welcome to the Bevz Integrator Service API documentation.
-
-
-    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
-
-
-    ## Who is this documentation for?
-
-
-    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
-
-
-    ## Key Features
-
-
-    By integrating with the Bevz platform, you gain access to:
-
-
-    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
-
-    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
-
-    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
-
-    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
-
-    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
-
-
-    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
-
-    '
+    Welcome to the Bevz Integrator Service API documentation.'
   version: 1.12.0
 servers:
 - url: https://api.bevz.com/integrator-service
@@ -50,35 +19,7 @@ tags:
   description: '## Lotto Scratcher Games
 
 
-    Retrieve lottery scratch-off game data from supported state lotteries. This endpoint provides game catalogs that can be used to display lotto ticket information in POS systems.
-
-
-    ### Supported Lotteries
-
-    - California (CA_LOTTERY)
-
-    - Massachusetts (MA_LOTTERY)
-
-    - Ohio (OH_LOTTERY)
-
-    - Michigan (MI_LOTTERY)
-
-    - Arizona (AZ_LOTTERY)
-
-    - Connecticut (CT_LOTTERY)
-
-    - Illinois (IL_LOTTERY)
-
-    - Georgia (GA_LOTTERY)
-
-    - Florida (FL_LOTTERY)
-
-
-    ### UPC Barcode Lookup
-
-    When a customer''s lottery ticket is scanned, pass the 12-digit UPC-A barcode along with the source to look up the specific game. The system extracts the game number from the barcode and returns the matching game details.
-
-    '
+    Retrieve lottery scratch-off game data from supported state lotteries.'
 paths:
   /integrators/{integrator_id}/lotto-scratcher-games:
     get:
@@ -107,9 +48,7 @@ paths:
 
         - When a customer''s lottery ticket is scanned at the POS, pass the 12-digit UPC-A barcode along with the `source` to look up the specific game.
 
-        - The system extracts the game number from the barcode and returns the matching game details.
-
-        '
+        - The system extracts the game number from the barcode and returns the matching game details.'
       parameters:
       - name: integrator_id
         in: path

@@ -7,38 +7,7 @@ info:
   description: '# Introduction
 
 
-    Welcome to the Bevz Integrator Service API documentation.
-
-
-    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
-
-
-    ## Who is this documentation for?
-
-
-    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
-
-
-    ## Key Features
-
-
-    By integrating with the Bevz platform, you gain access to:
-
-
-    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
-
-    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
-
-    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
-
-    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
-
-    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
-
-
-    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
-
-    '
+    Welcome to the Bevz Integrator Service API documentation.'
   version: 1.12.0
 servers:
 - url: https://api.bevz.com/integrator-service
@@ -80,9 +49,7 @@ paths:
 
         - Audit user roles, statuses, and contact information.
 
-        - Manage access and permissions for your integration team.
-
-        '
+        - Manage access and permissions for your integration team.'
       responses:
         '200':
           description: Retrieved Integrator users
@@ -201,7 +168,12 @@ paths:
       - integrator_users
       operationId: postUser
       summary: Create Integrator User
-      description: "Create a new user account under your integrator account.\n\nUse this endpoint to add additional users (such as developers or admins) who require access to your integrator account.  \nEach user will receive their own login credentials and can be managed independently.\n"
+      description: 'Create a new user account under your integrator account.
+
+
+        Use this endpoint to add additional users (such as developers or admins) who require access to your integrator account.
+
+        Each user will receive their own login credentials and can be managed independently.'
       requestBody:
         required: true
         content:
@@ -308,7 +280,12 @@ paths:
       - integrator_users
       operationId: putUser
       summary: Update Integrator User Access
-      description: "Update the access status of a user account under a specific integrator.\n\nUse this endpoint to activate or deactivate a user's access to your integrator account.  \nThis is useful for managing team members, onboarding new users, or revoking access for users who no longer require it.\n"
+      description: 'Update the access status of a user account under a specific integrator.
+
+
+        Use this endpoint to activate or deactivate a user''s access to your integrator account.
+
+        This is useful for managing team members, onboarding new users, or revoking access for users who no longer require it.'
       parameters:
       - name: integrator_id
         in: path
@@ -422,7 +399,14 @@ paths:
       - integrator_users
       operationId: changePassword
       summary: Change Integrator User Password
-      description: "Change the password for a specific integrator user account.\n\nUse this endpoint to securely update a user's password.  \nThe user must provide their current password (`old_password`) and a new password (`new_password`).  \nThis is useful for routine password changes or when a user suspects their credentials have been compromised.\n"
+      description: 'Change the password for a specific integrator user account.
+
+
+        Use this endpoint to securely update a user''s password.
+
+        The user must provide their current password (`old_password`) and a new password (`new_password`).
+
+        This is useful for routine password changes or when a user suspects their credentials have been compromised.'
       parameters:
       - name: integrator_id
         in: path

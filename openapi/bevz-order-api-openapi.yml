@@ -7,38 +7,7 @@ info:
   description: '# Introduction
 
 
-    Welcome to the Bevz Integrator Service API documentation.
-
-
-    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
-
-
-    ## Who is this documentation for?
-
-
-    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
-
-
-    ## Key Features
-
-
-    By integrating with the Bevz platform, you gain access to:
-
-
-    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
-
-    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
-
-    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
-
-    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
-
-    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
-
-
-    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
-
-    '
+    Welcome to the Bevz Integrator Service API documentation.'
   version: 1.12.0
 servers:
 - url: https://api.bevz.com/integrator-service
@@ -54,7 +23,22 @@ paths:
       - Order
       operationId: testStoreOrders
       summary: Test Store Orders
-      description: "### Create a Test Order\n\nUse this endpoint to simulate order creation and test your integration with the Bevz platform.  \nThis is ideal for validating your order processing logic, webhook handling, and end-to-end workflows before going live.\n\n#### How It Works\n\n- Submit a test order with your desired items, delivery source, and (optionally) delivery instructions and address.\n- The system will process the order as if it were real, triggering all standard order notifications and webhooks.\n- Use this to verify your POS or integration receives and handles order events correctly.\n"
+      description: '### Create a Test Order
+
+
+        Use this endpoint to simulate order creation and test your integration with the Bevz platform.
+
+        This is ideal for validating your order processing logic, webhook handling, and end-to-end workflows before going live.
+
+
+        #### How It Works
+
+
+        - Submit a test order with your desired items, delivery source, and (optionally) delivery instructions and address.
+
+        - The system will process the order as if it were real, triggering all standard order notifications and webhooks.
+
+        - Use this to verify your POS or integration receives and handles order events correctly.'
       parameters:
       - name: integrator_id
         in: path
@@ -472,7 +456,38 @@ paths:
       - Order
       operationId: getStoreOrders
       summary: Get Store Orders
-      description: "### Retrieve Store Orders\n\nUse this endpoint to fetch a list of orders for a specific store.  \nYou can filter orders by status and date range to view only the orders that are relevant to your needs.\n\n#### How It Works\n\n- Provide the required `integrator_id` and `store_id` in the path.\n- Optionally, use query parameters to narrow down your results.\n- The response will include order details such as order ID, status, items, timestamps, and delivery information.\n\n#### Example Usage\n\n- Retrieve all completed orders for a store in the last 7 days.\n- Monitor new incoming orders by polling for `PENDING` or `ACCEPTED` statuses.\n\n#### Best Practices\n\n- Use date filters to limit the size of your response and improve performance.\n- Combine with webhooks for real-time order updates and use this endpoint for historical or reconciliation purposes.\n"
+      description: '### Retrieve Store Orders
+
+
+        Use this endpoint to fetch a list of orders for a specific store.
+
+        You can filter orders by status and date range to view only the orders that are relevant to your needs.
+
+
+        #### How It Works
+
+
+        - Provide the required `integrator_id` and `store_id` in the path.
+
+        - Optionally, use query parameters to narrow down your results.
+
+        - The response will include order details such as order ID, status, items, timestamps, and delivery information.
+
+
+        #### Example Usage
+
+
+        - Retrieve all completed orders for a store in the last 7 days.
+
+        - Monitor new incoming orders by polling for `PENDING` or `ACCEPTED` statuses.
+
+
+        #### Best Practices
+
+
+        - Use date filters to limit the size of your response and improve performance.
+
+        - Combine with webhooks for real-time order updates and use this endpoint for historical or reconciliation purposes.'
       parameters:
       - name: integrator_id
         in: path
@@ -849,7 +864,20 @@ paths:
       - Order
       operationId: getOrderId
       summary: Get Order by OrderId
-      description: "### Retrieve a specific Order by Order ID\n\nUse this endpoint to fetch details of a specific order placed at a store.  \nThis includes information such as order status, items, timestamps, and delivery details.\n\n#### How It Works\n\n- Provide the required `integrator_id`, `store_id` and `order_id` in the path.\n- The response will include order details such as order ID, status, items, timestamps, and delivery information.\n"
+      description: '### Retrieve a specific Order by Order ID
+
+
+        Use this endpoint to fetch details of a specific order placed at a store.
+
+        This includes information such as order status, items, timestamps, and delivery details.
+
+
+        #### How It Works
+
+
+        - Provide the required `integrator_id`, `store_id` and `order_id` in the path.
+
+        - The response will include order details such as order ID, status, items, timestamps, and delivery information.'
       parameters:
       - name: integrator_id
         in: path
@@ -1209,7 +1237,91 @@ paths:
       - Order
       operationId: patchOrderStatus
       summary: Patch Order Status
-      description: "### Update the Status of an Order\n\nUse this endpoint to update the status of an order as it progresses through its lifecycle.  \nSupported statuses include: **ACCEPTED**, **OUT_FOR_DELIVERY**, **COMPLETED**, **CANCELED**, and **REJECTED**.\n\n#### Status Definitions\n\n- **ACCEPTED**: The store has accepted the order and is preparing it.\n- **OUT_FOR_DELIVERY**: The order has been picked up by the courier and is on its way to the customer.\n- **COMPLETED**: The order has been successfully delivered and the transaction is complete.\n- **CANCELED**: The order was canceled by the store, delivery service, courier, or customer after being accepted.\n- **REJECTED**: The store cannot fulfill the order and has rejected it.\n\n> **Note:**  \n> For some delivery services, order status updates may occur automatically. You will receive webhook notifications for these automatic updates via your configured \"Order Webhook\" endpoint.\n\n#### Delivery Service Requirements\n\nThe following tables outline which actions require manual status updates for each delivery service, along with important notes and required fields.\n\n### DOORDASH\n\n| **Action**   | **Manual Action Required** | **Description**                                                                                       |\n|--------------|---------------------------|--------------------------------------------------------------------------------------------------------|\n| ACCEPTED     | No                        | Confirm within 3–8 minutes to prevent expiration. Auto-accepts after 1 minute if not confirmed.        |\n| OUT_FOR_DELIVERY | No                    | Dasher has picked up the order and is delivering it.                                                   |\n| COMPLETED    | No                        | Order is completed.                                                                                    |\n| REJECTED     | Yes                       | Store must reject if unable to fulfill. Reason required. Notes optional.                               |\n| CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance. Reason required. Notes optional.              |\n\n### UBER EATS\n\n| **Action**   | **Manual Action Required** | **Description**                                                                                      |\n|--------------|---------------------------|-------------------------------------------------------------------------------------------------------|\n| ACCEPTED     | Yes                       | Confirm within 10 minutes to prevent expiration.                                                      |\n| OUT_FOR_DELIVERY | No                    | Driver has picked up the order and is delivering it.                                                  |\n| COMPLETED    | No                        | Order is completed.                                                                                   |\n| REJECTED     | Yes                       | Store must reject if unable to fulfill.                                                               |\n| CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance.                                              |\n\n### GRUBHUB\n\n| **Action**   | **Manual Action Required** | **Description**                                                                                      |\n|--------------|---------------------------|-------------------------------------------------------------------------------------------------------|\n| ACCEPTED     | No                        | Confirm within 10 minutes to prevent expiration. Auto-accepts after 1 minute if not confirmed.        |\n| OUT_FOR_DELIVERY | No                    | Driver has picked up the order and is delivering it.                                                  |\n| COMPLETED    | No                        | Order is completed.                                                                                   |\n| REJECTED     | Yes                       | Store must reject if unable to fulfill. Reason required. Notes optional.                              |\n| CANCELED     | No*                       | Store must cancel if unable to fulfill after acceptance. Reason required. Notes optional.             |\n"
+      description: '### Update the Status of an Order
+
+
+        Use this endpoint to update the status of an order as it progresses through its lifecycle.
+
+        Supported statuses include: **ACCEPTED**, **OUT_FOR_DELIVERY**, **COMPLETED**, **CANCELED**, and **REJECTED**.
+
+
+        #### Status Definitions
+
+
+        - **ACCEPTED**: The store has accepted the order and is preparing it.
+
+        - **OUT_FOR_DELIVERY**: The order has been picked up by the courier and is on its way to the customer.
+
+        - **COMPLETED**: The order has been successfully delivered and the transaction is complete.
+
+        - **CANCELED**: The order was canceled by the store, delivery service, courier, or customer after being accepted.
+
+        - **REJECTED**: The store cannot fulfill the order and has rejected it.
+
+
+        > **Note:**
+
+        > For some delivery services, order status updates may occur automatically. You will receive webhook notifications for these automatic updates via your configured "Order Webhook" endpoint.
+
+
+        #### Delivery Service Requirements
+
+
+        The following tables outline which actions require manual status updates for each delivery service, along with important notes and required fields.
+
+
+        ### DOORDASH
+
+
+        | **Action** | **Manual Action Required** | **Description** |
+
+        |--------------|---------------------------|--------------------------------------------------------------------------------------------------------|
+
+        | ACCEPTED | No | Confirm within 3–8 minutes to prevent expiration. Auto-accepts after 1 minute if not confirmed. |
+
+        | OUT_FOR_DELIVERY | No | Dasher has picked up the order and is delivering it. |
+
+        | COMPLETED | No | Order is completed. |
+
+        | REJECTED | Yes | Store must reject if unable to fulfill. Reason required. Notes optional. |
+
+        | CANCELED | No* | Store must cancel if unable to fulfill after acceptance. Reason required. Notes optional. |
+
+
+        ### UBER EATS
+
+
+        | **Action** | **Manual Action Required** | **Description** |
+
+        |--------------|---------------------------|-------------------------------------------------------------------------------------------------------|
+
+        | ACCEPTED | Yes | Confirm within 10 minutes to prevent expiration. |
+
+        | OUT_FOR_DELIVERY | No | Driver has picked up the order and is delivering it. |
+
+        | COMPLETED | No | Order is completed. |
+
+        | REJECTED | Yes | Store must reject if unable to fulfill. |
+
+        | CANCELED | No* | Store must cancel if unable to fulfill after acceptance. |
+
+
+        ### GRUBHUB
+
+
+        | **Action** | **Manual Action Required** | **Description** |
+
+        |--------------|---------------------------|-------------------------------------------------------------------------------------------------------|
+
+        | ACCEPTED | No | Confirm within 10 minutes to prevent expiration. Auto-accepts after 1 minute if not confirmed. |
+
+        | OUT_FOR_DELIVERY | No | Driver has picked up the order and is delivering it. |
+
+        | COMPLETED | No | Order is completed. |
+
+        | REJECTED | Yes | Store must reject if unable to fulfill. Reason required. Notes optional. |
+
+        | CANCELED | No* | Store must cancel if unable to fulfill after acceptance. Reason required. Notes optional. |'
       parameters:
       - name: integrator_id
         in: path
@@ -1619,7 +1731,94 @@ paths:
       - Order
       operationId: postOrderAdjustment
       summary: Post Order Adjustment
-      description: "\n### Adjust Items in an Order\n\nUse this endpoint to update, remove, or substitute items in an existing order—especially when fulfilling orders from delivery platforms like DoorDash, Uber Eats, and GrubHub.\nThis allows you to keep the order accurate and up-to-date if items are out of stock, need to be replaced, or require quantity changes.\n\n#### Supported Delivery Services\n\n| Service | ITEM_UPDATE | ITEM_REMOVE | ITEM_SUBSTITUTE |\n|---------|-------------|-------------|-----------------|\n| DOORDASH | ✓ | ✓ | ✓ |\n| UBEREATS | ✓ | ✓ | ✓ |\n| GRUBHUB | ✓ | ✓ | ✗ |\n\n> **Note:**\n> GrubHub only supports `ITEM_UPDATE` and `ITEM_REMOVE` adjustment types. Substitutions are not available for GrubHub orders.\n\n#### Supported Adjustment Types\n\n- **ITEM_UPDATE**: Change the quantity of an item in the order (e.g., customer requests fewer units).\n- **ITEM_REMOVE**: Remove an item that cannot be fulfilled from the order.\n- **ITEM_REMOVE with turn off**: Remove an item and temporarily hide it from your menu for a specified duration.\n- **ITEM_SUBSTITUTE** *(DoorDash & Uber Eats only)*: Replace an unavailable item with a substitute product.\n- **ITEM_SUBSTITUTE with turn off** *(DoorDash & Uber Eats only)*: Substitute an item and also temporarily turn off the original item from your menu.\n\n#### Turn Off Duration Options\n\nWhen using `turn_off: true`, specify the duration with `turn_off_duration`:\n- `\"7d\"` - Turn off for 7 days\n- `\"30d\"` - Turn off for 30 days\n- `\"never\"` - Turn off indefinitely (until manually re-enabled)\n\n#### How It Works\n\n- Specify the delivery service (`DOORDASH`, `UBEREATS`, or `GRUBHUB`) and provide an array of item adjustments.\n- For each item, indicate the adjustment type and provide relevant details (such as new quantity, substitute item info, or turn-off duration).\n- The system will update the order accordingly and, if requested, update menu availability for the affected items.\n- **Important:** The order must be in `ACCEPTED` state to allow adjustments.\n\n#### Example Scenarios\n\n- **A customer orders two sodas, but only one is available:**\n  Use `ITEM_UPDATE` to adjust the quantity.\n- **An item is out of stock:**\n  Use `ITEM_REMOVE` to remove it, and optionally set `turn_off` to temporarily hide it from your menu.\n- **A product is unavailable, but you can offer a substitute (DoorDash/Uber Eats):**\n  Use `ITEM_SUBSTITUTE` and provide the substitute item details.\n\n#### Notes\n  - For substitutions, provide the replacement item details in the `adjustments` object (requires `productId`, `name`, `quantity`, and `price`).\n  - Use `turn_off` and `turn_off_duration` to temporarily hide unavailable items from your menu.\n  - GrubHub orders only allow one adjustment per order.\n"
+      description: '### Adjust Items in an Order
+
+
+        Use this endpoint to update, remove, or substitute items in an existing order—especially when fulfilling orders from delivery platforms like DoorDash, Uber Eats, and GrubHub.
+
+        This allows you to keep the order accurate and up-to-date if items are out of stock, need to be replaced, or require quantity changes.
+
+
+        #### Supported Delivery Services
+
+
+        | Service | ITEM_UPDATE | ITEM_REMOVE | ITEM_SUBSTITUTE |
+
+        |---------|-------------|-------------|-----------------|
+
+        | DOORDASH | ✓ | ✓ | ✓ |
+
+        | UBEREATS | ✓ | ✓ | ✓ |
+
+        | GRUBHUB | ✓ | ✓ | ✗ |
+
+
+        > **Note:**
+
+        > GrubHub only supports `ITEM_UPDATE` and `ITEM_REMOVE` adjustment types. Substitutions are not available for GrubHub orders.
+
+
+        #### Supported Adjustment Types
+
+
+        - **ITEM_UPDATE**: Change the quantity of an item in the order (e.g., customer requests fewer units).
+
+        - **ITEM_REMOVE**: Remove an item that cannot be fulfilled from the order.
+
+        - **ITEM_REMOVE with turn off**: Remove an item and temporarily hide it from your menu for a specified duration.
+
+        - **ITEM_SUBSTITUTE** *(DoorDash & Uber Eats only)*: Replace an unavailable item with a substitute product.
+
+        - **ITEM_SUBSTITUTE with turn off** *(DoorDash & Uber Eats only)*: Substitute an item and also temporarily turn off the original item from your menu.
+
+
+        #### Turn Off Duration Options
+
+
+        When using `turn_off: true`, specify the duration with `turn_off_duration`:
+
+        - `"7d"` - Turn off for 7 days
+
+        - `"30d"` - Turn off for 30 days
+
+        - `"never"` - Turn off indefinitely (until manually re-enabled)
+
+
+        #### How It Works
+
+
+        - Specify the delivery service (`DOORDASH`, `UBEREATS`, or `GRUBHUB`) and provide an array of item adjustments.
+
+        - For each item, indicate the adjustment type and provide relevant details (such as new quantity, substitute item info, or turn-off duration).
+
+        - The system will update the order accordingly and, if requested, update menu availability for the affected items.
+
+        - **Important:** The order must be in `ACCEPTED` state to allow adjustments.
+
+
+        #### Example Scenarios
+
+
+        - **A customer orders two sodas, but only one is available:**
+
+        Use `ITEM_UPDATE` to adjust the quantity.
+
+        - **An item is out of stock:**
+
+        Use `ITEM_REMOVE` to remove it, and optionally set `turn_off` to temporarily hide it from your menu.
+
+        - **A product is unavailable, but you can offer a substitute (DoorDash/Uber Eats):**
+
+        Use `ITEM_SUBSTITUTE` and provide the substitute item details.
+
+
+        #### Notes
+
+        - For substitutions, provide the replacement item details in the `adjustments` object (requires `productId`, `name`, `quantity`, and `price`).
+
+        - Use `turn_off` and `turn_off_duration` to temporarily hide unavailable items from your menu.
+
+        - GrubHub orders only allow one adjustment per order.'
       parameters:
       - name: integrator_id
         in: path

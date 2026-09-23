@@ -7,38 +7,7 @@ info:
   description: '# Introduction
 
 
-    Welcome to the Bevz Integrator Service API documentation.
-
-
-    The Bevz Integrator Service empowers our partners—including integrators and third-party POS providers—to seamlessly manage stores and related operations through a secure, scalable, and high-performance REST API platform.
-
-
-    ## Who is this documentation for?
-
-
-    This documentation is designed for integrators and third-party POS systems looking to leverage the Bevz SaaS platform to automate and streamline store management, menu operations, and more.
-
-
-    ## Key Features
-
-
-    By integrating with the Bevz platform, you gain access to:
-
-
-    - **Rapid Store Onboarding:** Effortlessly provision and deprovision stores using our dedicated APIs.
-
-    - **Menu Management:** Upload, update, and synchronize store menus programmatically.
-
-    - **User & Access Management:** Manage integrator admin users and developer access for your organization.
-
-    - **Order Processing:** Receive and process orders in real time via webhooks and API endpoints.
-
-    - **Reporting & Analytics:** (Coming Soon) Access comprehensive reporting tools to monitor and optimize your operations.
-
-
-    Explore the following sections to get started, review API endpoints, and discover best practices for a successful integration with Bevz.
-
-    '
+    Welcome to the Bevz Integrator Service API documentation.'
   version: 1.12.0
 servers:
 - url: https://api.bevz.com/integrator-service
@@ -55,7 +24,23 @@ paths:
       - Store Products
       operationId: getProducts
       summary: Get Store Products
-      description: "Retrieve a list of products available for sale in a specific store.\n\nUse this endpoint to fetch the current product catalog for a store, including inventory, pricing, and categorization details.  \nYou can filter products by category, limit the number of results, and paginate through large catalogs.\n\n#### Example Usage\n\n- Retrieve all products in the \"Liquor\" category for a store.\n- Paginate through a large product catalog using the `limit` and `next_page` parameters.\n\nFor details on the product object schema, see [Store Products](#tag/models/Store-Products).\n"
+      description: 'Retrieve a list of products available for sale in a specific store.
+
+
+        Use this endpoint to fetch the current product catalog for a store, including inventory, pricing, and categorization details.
+
+        You can filter products by category, limit the number of results, and paginate through large catalogs.
+
+
+        #### Example Usage
+
+
+        - Retrieve all products in the "Liquor" category for a store.
+
+        - Paginate through a large product catalog using the `limit` and `next_page` parameters.
+
+
+        For details on the product object schema, see Store Products.'
       parameters:
       - name: integrator_id
         in: path
@@ -280,9 +265,7 @@ paths:
 
         - Updating the product''s in-store price.
 
-        - Changing the product''s display name or marking it as unavailable for sale.
-
-        '
+        - Changing the product''s display name or marking it as unavailable for sale.'
       requestBody:
         description: 'JSON payload specifying the product fields to update.
 
@@ -392,9 +375,7 @@ paths:
       - Store Products
       operationId: deleteProduct
       summary: Delete Store Product
-      description: 'Use this endpoint to remove a specific product from a store''s catalog.
-
-        '
+      description: Use this endpoint to remove a specific product from a store's catalog.
       responses:
         '200':
           description: Successfully deleted store product
