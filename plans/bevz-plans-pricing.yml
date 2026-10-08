@@ -67,3 +67,32 @@ limits_attached_to_tiers:
   published: false
   note: No per-tier API call quota, store count cap (other than the 10+ store Enterprise threshold), or rate limit is published.
 contact: support@bevz.com
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - negotiated
+  - subscription
+  units: []
+  plans:
+  - name: Basic
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Growth
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods:
+    - month
+  - name: Enterprise
+    access: other
+    model: negotiated
+    model_how: derived
+    units: []
+    periods:
+    - month
