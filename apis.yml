@@ -571,6 +571,8 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: RateLimits
+  url: rate-limits/bevz-rate-limits.yml
 - type: CapabilityMap
   url: capabilities/bevz-capability-edges.yml
   name: Bevz Business Capability Map
