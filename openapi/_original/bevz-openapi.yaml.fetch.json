@@ -1,0 +1,12 @@
+{
+ "url": "https://docs.bevz.com/bevz-openapi.yaml",
+ "requested_url": "https://docs.bevz.com/bevz-openapi.yaml",
+ "status": 200,
+ "content_type": "application/yaml",
+ "bytes": 30253,
+ "sha256": "676146a26c938f877c836424db56448e152ea3bc8c6186357a7ea0cf278e1af9",
+ "fetched_at": "2026-10-19",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
