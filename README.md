@@ -64,6 +64,133 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Bevz is a company surfaced as a portfolio company of techstars and added to the API Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+Bevz is a delivery-management platform built for liquor stores and convenience retailers that consolidates multiple third-party delivery apps (DoorDash, Uber Eats, GrubHub) into a single dashboard. Its products cover menu management across platforms (Connect), AI-powered marketing and local promotion on Yelp, Google, and Facebook (Reach), cross-platform performance analytics (Reporting+), and a white-label direct-delivery storefront for restricted items (Shop.Bevz). Bevz bundles an iPad plus software, access to a 215,000+ product catalog, barcode scanning, onboarding, and training. Behind the merchant product Bevz operates a real partner API: the Bevz Integrator Service, a REST API documented with a published OpenAPI 3.0.3 contract covering 30 operations across store provisioning, menu upload and sync, product catalog maintenance, order lifecycle management, order adjustments and delivery-service onboarding for DoorDash, Grubhub and Uber Eats, plus three outbound webhooks. It is aimed at POS vendors and third-party integrators, is credentialed by Bevz rather than self-serve, and runs a separate sandbox environment with a formal certification path to production. Bevz is a Techstars-backed company.
 
-Backed by: techstars — https://bevz.com/
+**Areas:** Company · Delivery Management · Liquor Retail · Convenience Stores · Point-of-Sale · Food Delivery · Retail Technology · Marketing · Menu Management · Order Management · Webhook · Integrator API
+
+## Bevz on APIs.io
+
+Everything profiled for Bevz is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/bevz/](https://apis.io/providers/bevz/)** — or go straight to one of the APIs or properties below.
+
+### APIs (9)
+
+- [Bevz Integrator Users API](https://apis.io/apis/bevz/bevz-integrator-users-api/) — The Integrator Users API allows you to manage user accounts and access permissions for your integrator account.
+- [Bevz Integrators API](https://apis.io/apis/bevz/bevz-integrators-api/) — The Integrators API from Bevz — 2 operation(s) for integrators.
+- [Bevz Lotto Scratcher Games API](https://apis.io/apis/bevz/bevz-lotto-scratcher-games-api/) — ## Lotto Scratcher Games Retrieve lottery scratch-off game data from supported state lotteries. This endpoint provides game catalogs that can be used to…
+- [Bevz Order API](https://apis.io/apis/bevz/bevz-order-api/) — The Order API from Bevz — 3 operation(s) for order.
+- [Bevz Pick a Delivery Service for Onboarding API](https://apis.io/apis/bevz/bevz-pick-a-delivery-service-for-onboarding-api-api/) — This document outlines the integration flow for onboarding new DoorDash and Grubhub stores through the [Delivery Services Onboarding…
+- [Bevz Store Products API](https://apis.io/apis/bevz/bevz-store-products-api/) — Store Products refer to inventory items that are available in a specific store. These products can be managed, updated, and retrieved through the Store…
+- [Bevz Stores API](https://apis.io/apis/bevz/bevz-stores-api/) — The Stores API from Bevz — 9 operation(s) for stores.
+- [Bevz Uber Eats Onboarding API Workflow API](https://apis.io/apis/bevz/bevz-uber-eats-onboarding-api-workflow-api/) — The Uber Eats API allows you to onboard your store to Uber Eats and manage related operations. Uber Eats onboarding is a three-step process: 1. **Generate…
+- [Bevz Webhooks API](https://apis.io/apis/bevz/bevz-webhooks-api/) — The Webhooks API from Bevz — 0 operation(s) for webhooks.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Bevz Webhooks](https://apis.io/asyncapis/bevz/bevz-webhooks/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [bevz-mcp.yml](https://apis.io/servers/bevz/bevz-mcp-yml/)
+
+#### Overlays (1)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Bevz Integrator Service Overlay](https://apis.io/overlays/bevz/bevz-integrator-service-overlay/)
+
+#### Security (2)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Bevz Authentication](https://apis.io/security/bevz/bevz-authentication/)
+- [Bevz Domain Security](https://apis.io/security/bevz/bevz-domain-security/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Bevz Plans Pricing](https://apis.io/plans/bevz/bevz-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Bevz Rate Limits](https://apis.io/rate-limits/bevz/bevz-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://bevz.com/)
+- [Documentation](https://docs.bevz.com/)
+- [Getting started](https://docs.bevz.com/#tag/Getting-Started)
+- [API reference](https://docs.bevz.com/)
+- [Pricing](https://www.bevz.com/pricing)
+- [Sign up](https://join.bevz.com/)
+- [Support](https://www.bevz.com/support)
+- [Blog](https://www.bevz.com/blog)
+- [Terms of service](https://www.bevz.com/terms-of-service)
+- [Privacy policy](https://www.bevz.com/privacy-policy)
+
+## API Evangelist rating
+
+**Kin Score 53.0** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 55.6 |
+| Contract governance | 4.5 |
+| Operational transparency | 23.7 |
+| Developer ergonomics | 60.1 |
+| Access clarity | 76.3 |
+
+**Agent readiness 28.4** — agent-aware
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | — |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | derived (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | derived (partial credit) |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 24.5** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/bevz/](https://apis.io/providers/bevz/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Bevz: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/bevz/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
